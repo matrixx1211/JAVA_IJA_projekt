@@ -6,17 +6,10 @@
 	"configurations": [
 		{
 			"type": "java",
-			"name": "Spustit",
-			"request": "launch",
-			"mainClass": "${file}",
-			"vmArgs": "--module-path=lib/javafx-sdk-18 --add-modules=javafx.controls,javafx.fxml"
-		},
-		{
-			"type": "java",
 			"name": "Launch App",
 			"request": "launch",
-			"mainClass": "App",
-			"vmArgs": "--module-path=lib/javafx-sdk-18 --add-modules=javafx.controls,javafx.fxml"
+			"mainClass": "ija.proj.App",
+			"vmArgs": "--module-path=lib/javafx-sdk-18/lib --add-modules=javafx.controls,javafx.fxml"
 		}
 	]
 }
