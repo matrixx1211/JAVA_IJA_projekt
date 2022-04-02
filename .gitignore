@@ -1,6 +1,9 @@
 # Builde věci
 build
 
+# Bordel věci
+.idea
+
 # Compiled class file
 *.class
 
