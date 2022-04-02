@@ -1,0 +1,46 @@
+{
+  "tables": [{
+    "id": 1,
+    "name": "Name",
+    "interface": false,
+    "attributes": [{
+      "name": "Name",
+      "type": "integer",
+      "accessibility": "+"
+    }],
+    "methods": [{
+      "name": "Name",
+      "input_params": ["integer", "string"],
+      "return_type": "integer",
+      "accessibility": "-"
+    }],
+    "pos": {
+      "x": 10,
+      "y": 10
+    }
+  },
+    {
+      "id": 2,
+      "name": "Name",
+      "interface": true,
+      "attributes": [],
+      "methods": [{
+        "name": "Name",
+        "input_params": ["integer", "string"],
+        "return_type": "integer",
+        "accessibility": "~"
+      }],
+      "pos": {
+        "x": 120,
+        "y": 110
+      }
+    }
+  ],
+  "relations": [{
+    "id": 1,
+    "first_id": 1,
+    "second_id": 2,
+    "third_id": null,
+    "type": "agregation"
+  }]
+}
