@@ -21,6 +21,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("UMLEditor"));
         stage.setScene(scene);
+        stage.setTitle("UML Editor");
         stage.show();
     }
 

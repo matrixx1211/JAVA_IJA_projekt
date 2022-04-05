@@ -45,7 +45,7 @@
          <items>
             <AnchorPane maxWidth="350.0">
                <children>
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Akce" textAlignment="CENTER" wrapText="false">
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Akce" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="18.0" fx:id="x1" />
                      </font>
@@ -53,14 +53,14 @@
                         <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
                      </textFill>
                   </Label>
-                  <Button fx:id="createClassBtn" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#createClass" prefHeight="25.0" prefWidth="189.0" text="Create Class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
-                  <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="222.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0" />
-                  <Button layoutX="17.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+                  <Button fx:id="createClassBtn" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#createClass" prefHeight="25.0" prefWidth="189.0" text="Create Class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                  <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="222.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+                  <Button layoutX="17.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
                </children>
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                <content>
-                  <AnchorPane fx:id="main" id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
                      <children>
                         <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Tabulky" textAlignment="CENTER" textFill="$x2" wrapText="false" />
                      </children>
@@ -74,9 +74,18 @@
                   </ContextMenu>
                </contextMenu>
             </ScrollPane>
-            <AnchorPane maxWidth="350.0">
+            <AnchorPane fx:id="detail" maxWidth="350.0">
                <children>
-                  <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Detail konkrétní tabulky" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  <Label fx:id="detailText" id="detailText" alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Detail" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="18.0" fx:id="x11" />
+                     </font>
+                     <textFill>
+                        <Color red="0.624" green="0.624" blue="0.624" fx:id="x21" />
+                     </textFill>
+                  </Label>
+                  <Button fx:id="addAttributeBtn" id="addAttributesBtn" disable="true" layoutX="57.0" layoutY="41.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                  <Button fx:id="addMethodBtn" id="addMethodBtn" disable="true" layoutX="67.0" layoutY="51.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
                </children>
             </AnchorPane>
          </items>
