@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassDiagram extends Element {
-	List<UMLClass> classes;
+	public List<UMLClass> classes;
 	List<UMLClassifier> classifiers;
 
 	public ClassDiagram(String name) {
@@ -13,8 +13,8 @@ public class ClassDiagram extends Element {
 		this.classifiers = new ArrayList<UMLClassifier>();
 	}
 
-	public UMLClass createClass(String name) {
-		UMLClass obj = new UMLClass(name);
+	public UMLClass createClass(String name, Integer id) {
+		UMLClass obj = new UMLClass(name, id);
 		if (this.classes.contains(obj)) {
 			return null;
 		} else {

@@ -1,5 +1,6 @@
 package ija.proj;
 
+import ija.proj.uml.ClassDiagram;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,11 +13,13 @@ import java.io.IOException;
  * JavaFX App
  */
 public class App extends Application {
-    private static Scene scene;
+    public static Scene scene;
+    public static ClassDiagram classDiagram;
+    public Integer idCounter = 1;
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("UMLEditor"), 640, 480);
+        scene = new Scene(loadFXML("UMLEditor"));
         stage.setScene(scene);
         stage.show();
     }
@@ -31,6 +34,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        classDiagram = new ClassDiagram("Diagram");
         launch();
     }
 

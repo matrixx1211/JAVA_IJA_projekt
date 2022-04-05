@@ -1,6 +1,8 @@
 package ija.proj.uml;
 
-public class Element extends Object {
+import ija.proj.App;
+
+public class Element extends App {
 	String name;
 
 	public Element(String name) {

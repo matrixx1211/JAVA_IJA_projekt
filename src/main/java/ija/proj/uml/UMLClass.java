@@ -8,13 +8,15 @@ public class UMLClass extends UMLClassifier {
     boolean isAbstract;
     List<UMLAttribute> attributes;
     List<UMLOperation> operations;
+    Integer id;
 
-    public UMLClass(String name) {
+    public UMLClass(String name, Integer id) {
         super(name);
         this.isUserDefined = true;
         this.isAbstract = false;
         this.attributes = new ArrayList<UMLAttribute>();
         this.operations = new ArrayList<UMLOperation>();
+        this.id = id;
     }
 
     public boolean isAbstract() {
@@ -47,6 +49,10 @@ public class UMLClass extends UMLClassifier {
             return pos;
         }
         return -1;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public List<UMLAttribute> getAttributes() {
