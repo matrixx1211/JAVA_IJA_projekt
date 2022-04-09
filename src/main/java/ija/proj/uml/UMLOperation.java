@@ -7,13 +7,13 @@ import java.util.List;
 public class UMLOperation extends UMLAttribute {
     List<UMLAttribute> args;
 
-    public UMLOperation (String name, UMLClassifier type) {
-        super(name, type);
+    public UMLOperation (String name, UMLClassifier type, String accessibility) {
+        super(name, type, accessibility);
         args = new ArrayList<UMLAttribute>();
     }
 
-    public static UMLOperation create(String name, UMLClassifier type, UMLAttribute... args) {
-        UMLOperation obj = new UMLOperation(name, type);
+    public static UMLOperation create(String name, UMLClassifier type, String accessibility, UMLAttribute... args) {
+        UMLOperation obj = new UMLOperation(name, type, accessibility);
         
         for (UMLAttribute arg : args) {
             obj.addArgument(arg);

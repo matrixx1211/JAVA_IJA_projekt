@@ -5,29 +5,31 @@ import java.util.Collections;
 import java.util.List;
 
 public class UMLClass extends UMLClassifier {
-    boolean isAbstract;
+    Boolean isAbstract;
     List<UMLAttribute> attributes;
     List<UMLOperation> operations;
     Integer id;
+    Boolean isInterface;
 
-    public UMLClass(String name, Integer id) {
+    public UMLClass(String name, Integer id, Boolean isInterface) {
         super(name);
         this.isUserDefined = true;
         this.isAbstract = false;
         this.attributes = new ArrayList<UMLAttribute>();
         this.operations = new ArrayList<UMLOperation>();
         this.id = id;
+        this.isInterface = isInterface;
     }
 
-    public boolean isAbstract() {
+    public Boolean isAbstract() {
         return isAbstract;
     }
 
-    public void setAbstract(boolean isAbstract) {
+    public void setAbstract(Boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
 
-    public boolean addAttribute(UMLAttribute attr) {
+    public Boolean addAttribute(UMLAttribute attr) {
         if (!this.attributes.contains(attr))
             if (this.attributes.add(attr))
                 return true;

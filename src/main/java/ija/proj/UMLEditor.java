@@ -2,16 +2,22 @@ package ija.proj;
 
 import java.io.IOException;
 
+import ija.proj.uml.UMLAttribute;
 import ija.proj.uml.UMLClass;
+import ija.proj.uml.UMLClassifier;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class UMLEditor extends App{
-    private String activeTableName = null;
+    private String activeObjName = null;
+    UMLClass activeObj;
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
 
     @FXML
     private Label detailText;
@@ -27,6 +33,24 @@ public class UMLEditor extends App{
     private AnchorPane main;
     @FXML
     private AnchorPane detail;
+    @FXML
+    private TextField newAttributeName;
+    @FXML
+    private TextField newAttributeType;
+    @FXML
+    private ChoiceBox newAttributeAccess;
+
+
+    @FXML
+    private TableView attributesTable;
+    @FXML
+    private TableColumn attributesTableAccess;
+    @FXML
+    private TableColumn attributesTableName;
+    @FXML
+    private TableColumn attributesTableType;
+    @FXML
+    private TableColumn attributesTableAction;
 
     @FXML
     private void gotoUMLClass() throws IOException {
@@ -34,20 +58,34 @@ public class UMLEditor extends App{
     }
     @FXML
     private void changeClassName() throws IOException {
-        //TODO: upravit věci protože mezera not gut
         String newName = newClassName.getText();
-        classDiagram.changeClassName(activeTableName, newName);
+        if (newName.isEmpty()) {
+            newName = " ";
+        }
+        classDiagram.changeClassName(activeObjName, newName);
         ((Label) detail.lookup("#detailText")).setText("Detail of "+newName);
-        TitledPane classTable = ((TitledPane) main.lookup("#"+activeTableName));
+        TitledPane classTable = ((TitledPane) main.lookup("#"+ activeObjName.replaceAll("\\s+","€")));
         classTable.setText(newName);
-        classTable.setId(newName.trim());
-        System.out.println(newName);
-        System.out.println(activeTableName);
-        activeTableName = newName;
+        classTable.setId(newName.replaceAll("\\s+","€"));
 
+        // změny ID pro attributes a operations
+        VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
+        attributes.setId((newName+"Attributes").replaceAll("\\s+","€"));
+
+        VBox operations = ((VBox) main.lookup(("#"+activeObjName+"Operations").replaceAll("\\s+","€")));
+        operations.setId((newName+"Operations").replaceAll("\\s+","€"));
+
+        activeObjName = newName;
     }
     @FXML
     private void addAttribute() throws IOException {
+        UMLClassifier type = classDiagram.classifierForName(newAttributeType.getText());
+        UMLAttribute attr = new UMLAttribute(newAttributeName.getText(), type, newAttributeAccess.getSelectionModel().getSelectedItem().toString());
+        activeObj.addAttribute(attr);
+        VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
+        Text attribute = new Text(newAttributeName.getText());
+        attributes.getChildren().add(attribute);
+        System.out.println(type);
 
     }
     @FXML
@@ -55,42 +93,87 @@ public class UMLEditor extends App{
 
     }
     @FXML
-    private void createClass() throws IOException {
+    private void clickedInterfaceBtn() throws IOException {
+        createClass(true);
+    }
+    @FXML
+    private void clickedClassBtn() throws IOException {
+        createClass(false);
+    }
+
+    private void createClass(Boolean isInterface) throws IOException {
         String name = className.getText();
-        UMLClass newObj = classDiagram.createClass(name, idCounter);
+        if (name.isEmpty())
+        {
+            name = " ";
+        }
+
+        UMLClass newObj = classDiagram.createClass(name, idCounter, false);
         if (newObj != null) {
             // vytvoření listu
             VBox vbox = new VBox();
 
-            // atributy
-            VBox attributes = new VBox();
-            vbox.getChildren().add(attributes);
+            if (!isInterface) {
+                // atributy
+                VBox attributes = new VBox();
+                vbox.getChildren().add(attributes);
+                attributes.setId((name+"Attributes").replaceAll("\\s+","€"));
 
-            // separátor
-            vbox.getChildren().add(new Separator());
+                // separátor
+                vbox.getChildren().add(new Separator());
+            }
 
             // metody
-            VBox methods = new VBox();
-            vbox.getChildren().add(methods);
+            VBox operations = new VBox();
+            vbox.getChildren().add(operations);
+            operations.setId((name+"Operations").replaceAll("\\s+","€"));
 
             // vytvoření tabulky Třídy
             TitledPane titledPane = new TitledPane(name, vbox);
-            titledPane.setId(String.valueOf(name));
+            titledPane.setId(name.replaceAll("\\s+","€"));
             titledPane.setPrefSize(-1, -1);
             titledPane.setLayoutX(10*idCounter);
             titledPane.setLayoutY(10*idCounter);
+            titledPane.setCollapsible(false);
             titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    activeTableName = titledPane.getId();
+                    activeObjName = titledPane.getId();
                     Label label = new Label("My Label");
                     ((Label) detail.lookup("#detailText")).setText("Detail of "+titledPane.getText()); //! toto mě stálo 5 hodin života
                     ((TextField) detail.lookup("#newClassName")).setText(titledPane.getText());
-                    activeTableName = titledPane.getText();
+                    activeObjName = titledPane.getText();
                     ((Button) detail.lookup("#addAttributeBtn")).setDisable(false);
                     ((Button) detail.lookup("#addOperationBtn")).setDisable(false);
-                    ((TitledPane) detail.lookup("#attributesPane")).setDisable(false);
+                    ((TitledPane) detail.lookup("#classDetailPane")).setDisable(false);
+                    if (isInterface) {
+                        ((TitledPane) detail.lookup("#attributesPane")).setDisable(true);
+                        ((TitledPane) detail.lookup("#attributesPane")).setExpanded(false);
+                    }
+                    else {
+                        ((TitledPane) detail.lookup("#attributesPane")).setDisable(false);
+                    }
+                    activeObj = classDiagram.getObject(activeObjName);
                     ((TitledPane) detail.lookup("#operationsPane")).setDisable(false);
+                    orgSceneX = event.getSceneX();
+                    orgSceneY = event.getSceneY();
+                    orgTranslateX = ((TitledPane)(event.getSource())).getTranslateX();
+                    orgTranslateY = ((TitledPane)(event.getSource())).getTranslateY();
+                }
+            });
+
+            // pohyb tabulky při táhnutí myší
+            titledPane.setOnMouseDragged(new EventHandler <MouseEvent>()
+            {
+                @Override
+                public void handle(MouseEvent event) {
+                    double offsetX = event.getSceneX() - orgSceneX;
+                    double offsetY = event.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+
+                    ((TitledPane)(event.getSource())).setTranslateX(newTranslateX);
+                    ((TitledPane)(event.getSource())).setTranslateY(newTranslateY);
                 }
             });
 
@@ -105,7 +188,5 @@ public class UMLEditor extends App{
             System.out.println(classDiagram.classes.get(0).getName());
             System.out.println(classDiagram.classes.get(0).getId());
         }
-
-
     }
 }
