@@ -14,13 +14,34 @@ public class ClassDiagram extends Element {
 	}
 
 	public UMLClass createClass(String name, Integer id) {
-		UMLClass obj = new UMLClass(name, id);
-		if (this.classes.contains(obj)) {
-			return null;
-		} else {
-			this.classes.add(obj);
-			this.classifiers.add(obj);
-			return obj;
+		UMLClass obj;
+		for (int i = 0; i < this.classes.size(); i++) {
+			obj = this.classes.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				return null;
+			}
+		}
+		UMLClass newObj = new UMLClass(name, id);
+		this.classes.add(newObj);
+		this.classifiers.add(newObj);
+		return newObj;
+	}
+
+	public void changeClassName(String oldName, String newName) {
+		UMLClass objClass;
+		for (int i = 0; i < this.classes.size(); i++) {
+			objClass = this.classes.get(i);
+			if (objClass.name.compareTo(oldName) == 0) {
+				objClass.name = newName;
+			}
+		}
+
+		UMLClassifier objClassifier;
+		for (int i = 0; i < this.classifiers.size(); i++) {
+			objClassifier = this.classifiers.get(i);
+			if (objClassifier.name.compareTo(oldName) == 0) {
+				objClassifier.name = newName;
+			}
 		}
 	}
 

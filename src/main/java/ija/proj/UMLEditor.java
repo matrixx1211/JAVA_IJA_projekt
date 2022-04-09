@@ -2,20 +2,23 @@ package ija.proj;
 
 import java.io.IOException;
 
-import ija.proj.uml.ClassDiagram;
+import ija.proj.uml.UMLClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class UMLEditor extends App{
-    private String activeTable = null;
+    private String activeTableName = null;
+
     @FXML
     private Label detailText;
+    @FXML
+    private TextField className;
+    @FXML
+    private TextField newClassName;
     @FXML
     private Button addAttributeBtn;
     @FXML
@@ -30,6 +33,20 @@ public class UMLEditor extends App{
         App.setRoot("UMLshit");
     }
     @FXML
+    private void changeClassName() throws IOException {
+        //TODO: upravit věci protože mezera not gut
+        String newName = newClassName.getText();
+        classDiagram.changeClassName(activeTableName, newName);
+        ((Label) detail.lookup("#detailText")).setText("Detail of "+newName);
+        TitledPane classTable = ((TitledPane) main.lookup("#"+activeTableName));
+        classTable.setText(newName);
+        classTable.setId(newName.trim());
+        System.out.println(newName);
+        System.out.println(activeTableName);
+        activeTableName = newName;
+
+    }
+    @FXML
     private void addAttribute() throws IOException {
 
     }
@@ -39,9 +56,9 @@ public class UMLEditor extends App{
     }
     @FXML
     private void createClass() throws IOException {
-
-        classDiagram = new ClassDiagram("Diagram");
-        if (classDiagram.createClass("Class", idCounter) != null) {
+        String name = className.getText();
+        UMLClass newObj = classDiagram.createClass(name, idCounter);
+        if (newObj != null) {
             // vytvoření listu
             VBox vbox = new VBox();
 
@@ -57,17 +74,19 @@ public class UMLEditor extends App{
             vbox.getChildren().add(methods);
 
             // vytvoření tabulky Třídy
-            TitledPane titledPane = new TitledPane("Class", vbox);
-            titledPane.setId(String.valueOf(idCounter));
+            TitledPane titledPane = new TitledPane(name, vbox);
+            titledPane.setId(String.valueOf(name));
             titledPane.setPrefSize(-1, -1);
             titledPane.setLayoutX(10*idCounter);
             titledPane.setLayoutY(10*idCounter);
             titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    activeTable = titledPane.getId();
+                    activeTableName = titledPane.getId();
                     Label label = new Label("My Label");
-                    ((Label) detail.lookup("#detailText")).setText("Detail tabulky "+titledPane.getText()); //! toto mě stálo 5 hodin života
+                    ((Label) detail.lookup("#detailText")).setText("Detail of "+titledPane.getText()); //! toto mě stálo 5 hodin života
+                    ((TextField) detail.lookup("#newClassName")).setText(titledPane.getText());
+                    activeTableName = titledPane.getText();
                     ((Button) detail.lookup("#addAttributeBtn")).setDisable(false);
                     ((Button) detail.lookup("#addOperationBtn")).setDisable(false);
                     ((TitledPane) detail.lookup("#attributesPane")).setDisable(false);
@@ -80,10 +99,13 @@ public class UMLEditor extends App{
 
             // zvednutí id pro další class
             this.idCounter++;
+
+            //TODO: SMAZAT
+            System.out.println(classDiagram.getName());
+            System.out.println(classDiagram.classes.get(0).getName());
+            System.out.println(classDiagram.classes.get(0).getId());
         }
 
-        System.out.println(classDiagram.getName());
-        System.out.println(classDiagram.classes.get(0).getName());
-        System.out.println(classDiagram.classes.get(0).getId());
+
     }
 }
