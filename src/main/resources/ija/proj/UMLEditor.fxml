@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ContextMenu?>
@@ -13,6 +14,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -48,23 +50,20 @@
          <items>
             <AnchorPane maxWidth="350.0" minWidth="100.0" prefWidth="200.0">
                <children>
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Akce" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Actions" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="18.0" fx:id="x1" />
                      </font>
                   </Label>
                   <Button fx:id="createClassBtn" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#createClass" prefHeight="25.0" text="Create Class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                  <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
-                  <Button layoutX="17.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" text="Vytvoření třídy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0" />
+                  <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Add type" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" />
+                  <Button layoutX="17.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" text="Create Interface" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+                  <TextField layoutY="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" />
                </children>
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                <content>
-                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0">
-                     <children>
-                        <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Tabulky" textAlignment="CENTER" wrapText="false" />
-                     </children>
-                  </AnchorPane>
+                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0" />
                </content>
                <contextMenu>
                   <ContextMenu>
@@ -74,30 +73,88 @@
                   </ContextMenu>
                </contextMenu>
             </ScrollPane>
-            <AnchorPane fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="200.0">
+            <AnchorPane fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="350.0">
                <children>
                   <Label id="detailText" fx:id="detailText" alignment="CENTER" prefWidth="-1.0" style="&#10;" text="Detail" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="18.0" fx:id="x11" />
                      </font>
                   </Label>
-                  <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
-                    <columns>
-                      <TableColumn minWidth="30.0" prefWidth="50.0" text="accessibility" />
-                      <TableColumn minWidth="50.0" prefWidth="-1.0" text="name" />
-                        <TableColumn minWidth="30.0" prefWidth="50.0" text="type" />
-                        <TableColumn minWidth="20.0" prefWidth="30.0" text="action" />
-                    </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-                  <Button id="addAttributesBtn" fx:id="addAttributeBtn" disable="true" layoutY="491.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="491.0" />
-                  <Button id="addMethodBtn" fx:id="addMethodBtn" disable="true" layoutY="461.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="461.0" />
-                  <TextField layoutX="37.0" layoutY="230.0" />
-                  <TextField layoutX="186.0" layoutY="230.0" prefHeight="25.0" prefWidth="69.0" />
-                  <ChoiceBox layoutY="230.0" prefHeight="25.0" prefWidth="37.0" />
-                  <Button layoutX="255.0" layoutY="230.0" mnemonicParsing="false" text="Add" />
+                  <VBox layoutY="30.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                     <children>
+                        <TitledPane id="classDetailPane" fx:id="classDetailPane" animated="false" text="Class detail">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                               <padding>
+                                  <Insets top="0" right="0" left="0" bottom="0"/>
+                               </padding>
+                                 <children>
+                                    <TextField prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <Button layoutX="210.0" layoutY="10.0" mnemonicParsing="false" prefWidth="150.0" text="Button" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                        <TitledPane id="attributesPane" fx:id="attributesPane" disable="true" expanded="false" text="Attributes">
+                           <content>
+                              <AnchorPane>
+                                 <padding>
+                                    <Insets bottom="0" left="0" right="0" top="0" />
+                                 </padding>
+                                 <children>
+                                    <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columns>
+                                        <TableColumn maxWidth="50.0" minWidth="0.0" prefWidth="50.0" text="accessibility" />
+                                        <TableColumn maxWidth="150.0" minWidth="0.0" prefWidth="150.0" text="name" />
+                                          <TableColumn maxWidth="100.0" minWidth="0.0" prefWidth="100.0" text="type" />
+                                          <TableColumn maxWidth="50.0" minWidth="0.0" prefWidth="50.0" text="action" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <ChoiceBox layoutY="200.0" prefHeight="25.0" prefWidth="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="200.0" />
+                                    <TextField layoutX="37.0" layoutY="200.0" prefWidth="150.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="200.0" />
+                                    <TextField layoutX="224.0" layoutY="210.0" prefHeight="25.0" prefWidth="100.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="200.0" />
+                                    <Button id="addAttributeBtn" fx:id="addAttributeBtn" disable="true" mnemonicParsing="false" onAction="#addAttribute" prefWidth="55.0" text="Add" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="200.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </TitledPane>
+                        <TitledPane id="operationsPane" fx:id="operationsPane" disable="true" expanded="false" text="Operations">
+                           <content>
+                              <AnchorPane>
+                                 <padding>
+                                    <Insets bottom="0" left="0" right="0" top="0" />
+                                 </padding>
+                                 <children>
+                                    <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columns>
+                                          <TableColumn minWidth="30.0" prefWidth="50.0" text="accessibility" />
+                                          <TableColumn minWidth="50.0" prefWidth="-1.0" text="name" />
+                                          <TableColumn minWidth="30.0" prefWidth="50.0" text="type" />
+                                          <TableColumn minWidth="20.0" prefWidth="30.0" text="action" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                    <ChoiceBox layoutY="200.0" prefHeight="25.0" prefWidth="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="200.0" />
+                                    <TextField layoutX="37.0" layoutY="200.0" prefWidth="125.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="200.0" />
+                                    <TextField layoutX="224.0" layoutY="210.0" prefHeight="25.0" prefWidth="100.0" AnchorPane.leftAnchor="175.0" AnchorPane.topAnchor="200.0" />
+                                    <Button id="addOperationBtn" fx:id="addOperationBtn" disable="true" mnemonicParsing="false" onAction="#addOperation" prefWidth="55.0" text="Add" AnchorPane.leftAnchor="275.0" AnchorPane.topAnchor="200.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                  </VBox>
                </children>
             </AnchorPane>
          </items>

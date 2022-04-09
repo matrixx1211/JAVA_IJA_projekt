@@ -17,9 +17,9 @@ public class UMLEditor extends App{
     @FXML
     private Label detailText;
     @FXML
-    private Button addAttributesBtn;
+    private Button addAttributeBtn;
     @FXML
-    private Button addMethodBtn;
+    private Button addOperationBtn;
     @FXML
     private AnchorPane main;
     @FXML
@@ -34,7 +34,7 @@ public class UMLEditor extends App{
 
     }
     @FXML
-    private void addMethod() throws IOException {
+    private void addOperation() throws IOException {
 
     }
     @FXML
@@ -68,8 +68,10 @@ public class UMLEditor extends App{
                     activeTable = titledPane.getId();
                     Label label = new Label("My Label");
                     ((Label) detail.lookup("#detailText")).setText("Detail tabulky "+titledPane.getText()); //! toto mě stálo 5 hodin života
-                    ((Button) detail.lookup("#addAttributesBtn")).setDisable(false);
-                    ((Button) detail.lookup("#addMethodBtn")).setDisable(false);
+                    ((Button) detail.lookup("#addAttributeBtn")).setDisable(false);
+                    ((Button) detail.lookup("#addOperationBtn")).setDisable(false);
+                    ((TitledPane) detail.lookup("#attributesPane")).setDisable(false);
+                    ((TitledPane) detail.lookup("#operationsPane")).setDisable(false);
                 }
             });
 
