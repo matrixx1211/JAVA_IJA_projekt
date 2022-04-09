@@ -81,14 +81,28 @@
                   </Label>
                   <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="accessibility" />
-                      <TableColumn prefWidth="75.0" text="name" />
-                        <TableColumn prefWidth="75.0" text="type" />
-                        <TableColumn prefWidth="75.0" text="action" />
+                      <TableColumn minWidth="30.0" prefWidth="50.0" text="accessibility" />
+                      <TableColumn minWidth="50.0" prefWidth="-1.0" text="name" />
+                        <TableColumn minWidth="30.0" prefWidth="50.0" text="type" />
+                        <TableColumn minWidth="20.0" prefWidth="30.0" text="action" />
                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </TableView>
-                  <Button id="addAttributesBtn" fx:id="addAttributeBtn" disable="true" layoutX="12.0" layoutY="240.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="280.0" />
-                  <Button id="addMethodBtn" fx:id="addMethodBtn" disable="true" layoutX="14.0" layoutY="280.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="250.0" />
+                  <TableView editable="true" layoutY="247.0" prefHeight="52.0" prefWidth="350.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="240.0">
+                     <columns>
+                        <TableColumn minWidth="30.0" prefWidth="50.0" text="accessibility" />
+                        <TableColumn minWidth="50.0" prefWidth="-1.0" text="name" />
+                        <TableColumn minWidth="30.0" prefWidth="50.0" text="type" />
+                        <TableColumn minWidth="20.0" prefWidth="30.0" text="action" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <Button id="addAttributesBtn" fx:id="addAttributeBtn" disable="true" layoutY="491.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="491.0" />
+                  <Button id="addMethodBtn" fx:id="addMethodBtn" disable="true" layoutY="461.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="461.0" />
                </children>
             </AnchorPane>
          </items>
