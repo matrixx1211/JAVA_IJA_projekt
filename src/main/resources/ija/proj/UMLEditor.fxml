@@ -9,6 +9,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -42,7 +44,7 @@
       </MenuBar>
       <SplitPane dividerPositions="0.2505567928730512, 0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <items>
-            <AnchorPane maxWidth="350.0">
+            <AnchorPane maxWidth="350.0" minWidth="100.0" prefWidth="200.0">
                <children>
                   <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Akce" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
@@ -56,7 +58,7 @@
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                <content>
-                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0">
                      <children>
                         <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Tabulky" textAlignment="CENTER" wrapText="false" />
                      </children>
@@ -70,15 +72,23 @@
                   </ContextMenu>
                </contextMenu>
             </ScrollPane>
-            <AnchorPane fx:id="detail" maxWidth="350.0">
+            <AnchorPane fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="200.0">
                <children>
-                  <Label id="detailText" fx:id="detailText" alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Detail" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label id="detailText" fx:id="detailText" alignment="CENTER" prefWidth="-1.0" style="&#10;" text="Detail" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="18.0" fx:id="x11" />
                      </font>
                   </Label>
-                  <Button id="addAttributesBtn" fx:id="addAttributeBtn" disable="true" layoutX="57.0" layoutY="41.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                  <Button id="addMethodBtn" fx:id="addMethodBtn" disable="true" layoutX="67.0" layoutY="51.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" />
+                  <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="accessibility" />
+                      <TableColumn prefWidth="75.0" text="name" />
+                        <TableColumn prefWidth="75.0" text="type" />
+                        <TableColumn prefWidth="75.0" text="action" />
+                    </columns>
+                  </TableView>
+                  <Button id="addAttributesBtn" fx:id="addAttributeBtn" disable="true" layoutX="12.0" layoutY="240.0" mnemonicParsing="false" onAction="#addAttribute" text="Add attribute" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="280.0" />
+                  <Button id="addMethodBtn" fx:id="addMethodBtn" disable="true" layoutX="14.0" layoutY="280.0" mnemonicParsing="false" onAction="#addMethod" text="Add method" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="250.0" />
                </children>
             </AnchorPane>
          </items>
