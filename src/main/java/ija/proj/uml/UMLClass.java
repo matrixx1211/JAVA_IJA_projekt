@@ -22,7 +22,11 @@ public class UMLClass extends UMLClassifier {
     }
 
     public Boolean isAbstract() {
-        return isAbstract;
+        return this.isAbstract;
+    }
+
+    public Boolean isInterface() {
+        return this.isInterface;
     }
 
     public void setAbstract(Boolean isAbstract) {
@@ -30,10 +34,13 @@ public class UMLClass extends UMLClassifier {
     }
 
     public Boolean addAttribute(UMLAttribute attr) {
-        if (!this.attributes.contains(attr))
-            if (this.attributes.add(attr))
-                return true;
-        return false;
+        for (int i = 0; i < this.attributes.size(); i++) {
+            if (this.attributes.get(i).getName().compareTo(attr.getName()) == 0) {
+                return false;
+            }
+        }
+        this.attributes.add(attr);
+        return true;
     }
 
     public int getAttrPosition(UMLAttribute attr) {

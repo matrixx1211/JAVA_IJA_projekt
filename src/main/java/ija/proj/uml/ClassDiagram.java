@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ClassDiagram extends Element {
 	public List<UMLClass> classes;
-	List<UMLClassifier> classifiers;
+	public List<UMLClassifier> classifiers;
 
 	public ClassDiagram(String name) {
 		super(name);
@@ -29,37 +29,39 @@ public class ClassDiagram extends Element {
 	}
 
 
-	public void changeClassName(String oldName, String newName) {
-		UMLClass objClass;
-		//!TODO dodělat toto check 2x cyklus not gut
+	public Boolean changeClassName(String oldName, String newName) {
+		UMLClass classObj;
+		UMLClassifier classifierObj;
+
+		// kontrola jestli můžu změnit jméno
 		for (int i = 0; i < this.classes.size(); i++) {
-			objClass = this.classes.get(i);
-			if (objClass.name.compareTo(newName) == 0) {
-				return;
+			classObj = this.classes.get(i);
+			if (classObj.name.compareTo(newName) == 0) {
+				return false;
+			}
+		}
+		for (int i = 0; i < this.classifiers.size(); i++) {
+			classifierObj = this.classifiers.get(i);
+			if (classifierObj.name.compareTo(newName) == 0) {
+				return false;
 			}
 		}
 
+		// kontrola proběhla může se stát změna jména
 		for (int i = 0; i < this.classes.size(); i++) {
-			objClass = this.classes.get(i);
-			if (objClass.name.compareTo(oldName) == 0) {
-				objClass.name = newName;
+			classObj = this.classes.get(i);
+			if (classObj.name.compareTo(oldName) == 0) {
+				classObj.name = newName;
+			}
+		}
+		for (int i = 0; i < this.classifiers.size(); i++) {
+			classifierObj = this.classifiers.get(i);
+			if (classifierObj.name.compareTo(oldName) == 0) {
+				classifierObj.name = newName;
 			}
 		}
 
-		UMLClassifier objClassifier;
-		for (int i = 0; i < this.classifiers.size(); i++) {
-			objClassifier = this.classifiers.get(i);
-			if (objClassifier.name.compareTo(newName) == 0) {
-				return;
-			}
-		}
-
-		for (int i = 0; i < this.classifiers.size(); i++) {
-			objClassifier = this.classifiers.get(i);
-			if (objClassifier.name.compareTo(oldName) == 0) {
-				objClassifier.name = newName;
-			}
-		}
+		return true;
 	}
 
 	public UMLClass getObject(String name) {
