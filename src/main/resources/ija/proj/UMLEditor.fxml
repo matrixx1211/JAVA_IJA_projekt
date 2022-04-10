@@ -63,7 +63,7 @@
                   <AnchorPane layoutY="30.0">
                      <children>
                         <Label text="Create class diagram entity" textFill="#9f9f9f" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <TextField fx:id="className" promptText="Interface or Class name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
+                        <TextField fx:id="className" prefHeight="25.0" promptText="Interface or Class name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
                         <Button fx:id="createClassBtn" layoutX="175.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickedClassBtn" prefHeight="25.0" prefWidth="175.0" text="Create Class" AnchorPane.leftAnchor="175.0" AnchorPane.topAnchor="50.0" />
                         <Button fx:id="createInterfaceBtn" layoutY="30.0" mnemonicParsing="false" onAction="#clickedInterfaceBtn" prefHeight="25.0" prefWidth="175.0" text="Create Interface" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="50.0" />
                      </children>
@@ -74,7 +74,7 @@
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                <content>
-                  <AnchorPane id="Content" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0" />
+                  <AnchorPane id="main" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0" />
                </content>
                <contextMenu>
                   <ContextMenu>
@@ -85,7 +85,7 @@
                   </ContextMenu>
                </contextMenu>
             </ScrollPane>
-            <AnchorPane fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="350.0">
+            <AnchorPane id="detail" fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="350.0">
                <children>
                   <Label id="detailText" fx:id="detailText" alignment="CENTER" prefWidth="-1.0" style="&#10;" text="Detail" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
@@ -114,11 +114,11 @@
                                     <Insets bottom="0" left="0" right="0" top="0" />
                                  </padding>
                                  <children>
-                                    <VBox spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <VBox fx:id="attributesList" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <children>
                                           <HBox>
                                              <children>
-                                                <ChoiceBox fx:id="newAttributeAccess" prefHeight="25.0" prefWidth="50.0" value="#">
+                                                <ChoiceBox fx:id="newAttributeAccess" prefHeight="25.0" value="#">
                                                    <items>
                                                       <FXCollections fx:factory="observableArrayList">
                                                          <String fx:value="#" />
@@ -128,10 +128,13 @@
                                                       </FXCollections>
                                                    </items>
                                                 </ChoiceBox>
-                                                <TextField fx:id="newAttributeName" prefWidth="150.0" promptText="Name" />
-                                                <TextField fx:id="newAttributeType" prefHeight="25.0" prefWidth="100.0" promptText="Type" />
-                                                <Button id="addAttributeBtn" fx:id="addAttributeBtn" disable="true" mnemonicParsing="false" onAction="#addAttribute" prefWidth="55.0" text="Add" />
+                                                <TextField fx:id="newAttributeName" prefHeight="25.0" promptText="Name" />
+                                                <TextField fx:id="newAttributeType" prefHeight="25.0" promptText="Type" />
+                                                <Button id="addAttributeBtn" fx:id="addAttributeBtn" disable="true" mnemonicParsing="false" onAction="#addAttribute" prefHeight="25.0" text="Add" />
                                              </children>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
                                           </HBox>
                                        </children>
                                     </VBox>

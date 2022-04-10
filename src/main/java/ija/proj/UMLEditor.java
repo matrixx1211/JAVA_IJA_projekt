@@ -10,14 +10,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class UMLEditor extends App{
     private String activeObjName = null;
-    UMLClass activeObj;
+    private UMLClass activeObj;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
+    private String activeAttrName;
 
     // levá část
     @FXML private TextField className;
@@ -33,6 +35,7 @@ public class UMLEditor extends App{
     @FXML private TextField newClassName;
 
     @FXML private TitledPane attributesPane;
+    @FXML private VBox attributesList;
     @FXML private ChoiceBox newAttributeAccess;
     @FXML private TextField newAttributeName;
     @FXML private TextField newAttributeType;
@@ -94,8 +97,53 @@ public class UMLEditor extends App{
             UMLAttribute attr = new UMLAttribute(newAttributeName.getText(), classifier, access);
             if (activeObj.addAttribute(attr)){
                 VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
-                Text attribute = new Text(access + " - " + name + ":" + type);
+                Text attribute = new Text(access + " <-> " + name + ":" + type);
                 attributes.getChildren().add(attribute);
+                HBox row = new HBox();
+                row.setId((name+"Row").replaceAll("\\s+","€"));
+                // výběrový box
+                    // přistupnost
+                    VBox accessCol = new VBox();
+                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
+                    accessColChoiceBox.setItems(accessibilityList);
+                    accessColChoiceBox.setValue(access);
+                    accessCol.getChildren().add(accessColChoiceBox);
+                    row.getChildren().add(accessCol);
+                // texty
+                    // jméno
+                    VBox nameCol = new VBox();
+                    TextField nameColText = new TextField(name);
+                    nameCol.getChildren().add(nameColText);
+                    row.getChildren().add(nameCol);
+                    // typ
+                    VBox typeCol = new VBox();
+                    TextField typeColText = new TextField(type);
+                    typeCol.getChildren().add(typeColText);
+                    row.getChildren().add(typeCol);
+                // tlačítka
+                    // editace
+                    VBox editCol = new VBox();
+                    Button editColBtn = new Button("Edit");
+                    editColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            String c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0)).getSelectionModel().getSelectedItem().toString();
+                            String c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0)).getText();
+                            String c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0)).getText();
+                            //!TODO urobít zítra :), coz mozek need spánek
+                            System.out.println(c1 + " " + c2 + " " + c3);
+                        }
+                    });
+                    editCol.getChildren().add(editColBtn);
+                    row.getChildren().add(editCol);
+                    // mazání
+                    VBox removeCol = new VBox();
+                    Button removeColBtn = new Button("Remove");
+                    removeCol.getChildren().add(removeColBtn);
+                    row.getChildren().add(removeCol);
+
+                attributesList.getChildren().add(attributes.getChildren().size()-1, row);
+                System.out.println(attributesList.getChildren().size()-1);
             }
         }
     }

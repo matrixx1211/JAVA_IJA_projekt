@@ -32,6 +32,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle("UML Editor");
         stage.show();
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
     }
 
     static void setRoot(String fxml) throws IOException {
