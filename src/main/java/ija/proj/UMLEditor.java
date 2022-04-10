@@ -110,7 +110,8 @@ public class UMLEditor extends App{
     }
 
     /**
-     * Metoda, která vytváří
+     * Metoda, která vytváří třídu nebo rozhraní podle parametru isInterface.
+     * Provádí se kontroly, jestli již neexistuje objekt se stejným jménem.
      *
      * @param isInterface nastavuje příznak rozhraní
      */
