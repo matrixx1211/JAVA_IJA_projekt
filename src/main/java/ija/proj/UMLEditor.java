@@ -98,6 +98,7 @@ public class UMLEditor extends App{
             if (activeObj.addAttribute(attr)){
                 VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
                 Text attribute = new Text(access + " <-> " + name + ":" + type);
+                attribute.setId(name+"Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
                 row.setId((name+"Row").replaceAll("\\s+","€"));
@@ -105,6 +106,7 @@ public class UMLEditor extends App{
                     // přistupnost
                     VBox accessCol = new VBox();
                     ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
+                    accessColChoiceBox.setDisable(true);
                     accessColChoiceBox.setItems(accessibilityList);
                     accessColChoiceBox.setValue(access);
                     accessCol.getChildren().add(accessColChoiceBox);
@@ -113,11 +115,13 @@ public class UMLEditor extends App{
                     // jméno
                     VBox nameCol = new VBox();
                     TextField nameColText = new TextField(name);
+                    nameColText.setDisable(true);
                     nameCol.getChildren().add(nameColText);
                     row.getChildren().add(nameCol);
                     // typ
                     VBox typeCol = new VBox();
                     TextField typeColText = new TextField(type);
+                    typeColText.setDisable(true);
                     typeCol.getChildren().add(typeColText);
                     row.getChildren().add(typeCol);
                 // tlačítka
@@ -127,9 +131,29 @@ public class UMLEditor extends App{
                     editColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
-                            String c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0)).getSelectionModel().getSelectedItem().toString();
-                            String c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0)).getText();
-                            String c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0)).getText();
+                            ChoiceBox c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0));
+                            TextField c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0));
+                            TextField c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0));
+                            Button c4 = ((Button) ((VBox) row.getChildren().get(3)).getChildren().get(0));
+
+                            if (c1.isDisabled()) {
+                                // staré hodnoty
+                                String oldC1Value = c1.getSelectionModel().getSelectedItem().toString();
+                                String oldC2Value = c2.getText();
+                                String oldC3Value = c3.getText();
+
+                                // povolím úpravu hodnot + signalizace na tlačítku
+                                c1.setDisable(false);
+                                c2.setDisable(false);
+                                c3.setDisable(false);
+                                c4.setText("Save");
+
+
+                                // upravím hodnoty a dělám věci
+
+
+                            }
+
                             //!TODO urobít zítra :), coz mozek need spánek
                             System.out.println(c1 + " " + c2 + " " + c3);
                         }
@@ -139,6 +163,17 @@ public class UMLEditor extends App{
                     // mazání
                     VBox removeCol = new VBox();
                     Button removeColBtn = new Button("Remove");
+                    removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
+                            //System.out.println();
+
+                            attributesList.getChildren().remove(attributesList.lookup("#"+id));
+                            attributes.getChildren().remove(attributes.lookup("#"+name+"Attr"));
+                            activeObj.removeAttr(attr);
+                        }
+                    });
                     removeCol.getChildren().add(removeColBtn);
                     row.getChildren().add(removeCol);
 

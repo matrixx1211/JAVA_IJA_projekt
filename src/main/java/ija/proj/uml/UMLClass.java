@@ -64,6 +64,16 @@ public class UMLClass extends UMLClassifier {
         return this.id;
     }
 
+    public Boolean removeAttr(UMLAttribute attr) {
+        for (int i = 0; i < this.attributes.size(); i++) {
+            if (this.attributes.get(i) == attr) {
+                this.attributes.remove(attr);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<UMLAttribute> getAttributes() {
         return Collections.unmodifiableList(this.attributes);
     }
