@@ -14,7 +14,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 
 public class UMLEditor extends App{
@@ -50,6 +52,7 @@ public class UMLEditor extends App{
     @FXML private ChoiceBox<String> newOperationAccess;
 
     @FXML private TitledPane relationsPane;
+    @FXML private VBox relationsList;
     @FXML private ChoiceBox<String> newRelationType;
     @FXML private TextField newRelationName;
     @FXML private ChoiceBox<String> newRelationClass1;
@@ -321,11 +324,64 @@ public class UMLEditor extends App{
             return;
         }
         UMLRelation relation = classDiagram.createRelation(name, type, class1, class2, class3);
-        System.out.println(relation);
         if (relation == null){
             //TODO chyba relace jiz existuje
             return;
         }
+        HBox row = new HBox();
+        row.setId((class1+"ß"+class2+"RelRow").replaceAll("\\s+","€"));
+        System.out.println(row.getId());
+        // texty
+        // typ
+        VBox typeCol = new VBox();
+        TextField typeColText = new TextField(type);
+        typeColText.setDisable(true);
+        typeCol.getChildren().add(typeColText);
+        row.getChildren().add(typeCol);
+        // jméno
+        VBox nameCol = new VBox();
+        TextField nameColText = new TextField(name);
+        nameColText.setDisable(true);
+        nameCol.getChildren().add(nameColText);
+        row.getChildren().add(nameCol);
+        // class1
+        VBox class1Col = new VBox();
+        TextField class1ColText = new TextField(class1);
+        class1ColText.setDisable(true);
+        class1Col.getChildren().add(class1ColText);
+        row.getChildren().add(class1Col);
+        // class2
+        VBox class2Col = new VBox();
+        TextField class2ColText = new TextField(class2);
+        class2ColText.setDisable(true);
+        class2Col.getChildren().add(class2ColText);
+        row.getChildren().add(class2Col);
+        // class3
+        VBox class3Col = new VBox();
+        TextField class3ColText = new TextField(class3);
+        class3ColText.setDisable(true);
+        class3Col.getChildren().add(class3ColText);
+        row.getChildren().add(class3Col);
+        // tlačítka
+        // mazání
+        VBox removeCol = new VBox();
+        Button removeColBtn = new Button("Remove");
+        removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String id = row.getId();
+                String class1 = ((TextField)(((VBox)(row.getChildren().get(2))).getChildren().get(0))).getText();
+                String class2 = ((TextField)(((VBox)(row.getChildren().get(3))).getChildren().get(0))).getText();
+                main.getChildren().removeAll(main.lookupAll(("#"+class1+"ß"+class2+"Line").replaceAll("\\s+","€")));
+                classDiagram.relations.remove(classDiagram.findRelation(class1, class2));
+                relationsList.getChildren().remove(relationsList.lookup("#"+id));
+            }
+        });
+        removeCol.getChildren().add(removeColBtn);
+        row.getChildren().add(removeCol);
+
+        relationsList.getChildren().add(relationsList.getChildren().size()-1,row);
+
         drawRelation(relation);
     }
 
@@ -348,15 +404,79 @@ public class UMLEditor extends App{
         double h3;
         double w3;
 
-        if (!class3.isEmpty()) {
-            x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX();
-            y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY();
-        }
         if (type.compareTo("association") == 0){
             Line line1 = new Line(x1+w1/2, y1+h1/2, x2+w2/2, y1+h1/2);
             Line line2 = new Line(x2+w2/2, y1+h1/2, x2+w2/2, y2+h2/2);
-            main.getChildren().add(line1);
-            main.getChildren().add(line2);
+            line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            main.getChildren().add(0, line1);
+            main.getChildren().add(0, line2);
+            if (!class3.isEmpty()){
+                x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateX();
+                y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateY();
+                h3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
+                w3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
+                double x12 = ((x2+w2/2)+(x1+w1/2))/2;
+                Line line3 = new Line(x3+w3/2, y3+h3/2, x12, y3+h3/2);
+                Line line4 = new Line(x12, y3+h3/2, x12, y1+h1/2);
+                line3.getStrokeDashArray().addAll(25d, 10d);
+                line4.getStrokeDashArray().addAll(25d, 10d);
+                line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                line4.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                main.getChildren().add(0, line3);
+                main.getChildren().add(0, line4);
+            }
+
+        }
+        if (type.compareTo("generalization") == 0){
+            y3 = y1+h1+50;
+            Line line1 = new Line(x1+w1/2, y1+h1/2, x1+w1/2, y3);
+            Line line2 = new Line(x2+w2/2, y3, x1+w1/2, y3);
+            Line line3 = new Line(x2+w2/2, y2+h2/2, x2+w2/2, y3);
+            Polygon poly = new Polygon(x1+w1/2, y1+h1, x1+w1/2-10, y1+h1+20,x1+w1/2+10, y1+h1+20);
+            poly.setFill(Color.WHITE);
+            poly.setStroke(Color.BLACK);
+            line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            poly.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            main.getChildren().add(0, poly);
+            main.getChildren().add(0, line1);
+            main.getChildren().add(0, line2);
+            main.getChildren().add(0, line3);
+        }
+        if (type.compareTo("aggregation") == 0){
+            y3 = y1+h1+60;
+            Line line1 = new Line(x1+w1/4*3, y1+h1/2, x1+w1/4*3, y3);
+            Line line2 = new Line(x2+w2/2, y3, x1+w1/4*3, y3);
+            Line line3 = new Line(x2+w2/2, y2+h2/2, x2+w2/2, y3);
+            Polygon poly = new Polygon(x1+w1/4*3, y1+h1, x1+w1/4*3-6, y1+h1+11, x1+w1/4*3, y1+h1+22, x1+w1/4*3+6, y1+h1+11);
+            poly.setFill(Color.WHITE);
+            poly.setStroke(Color.BLACK);
+            line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            poly.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            main.getChildren().add(0, poly);
+            main.getChildren().add(0, line1);
+            main.getChildren().add(0, line2);
+            main.getChildren().add(0, line3);
+        }
+        if (type.compareTo("composition") == 0){
+            y3 = y1+h1+40;
+            Line line1 = new Line(x1+w1/4, y1+h1/2, x1+w1/4, y3);
+            Line line2 = new Line(x2+w2/2, y3, x1+w1/4, y3);
+            Line line3 = new Line(x2+w2/2, y2+h2/2, x2+w2/2, y3);
+            Polygon poly = new Polygon(x1+w1/4, y1+h1, x1+w1/4-6, y1+h1+11, x1+w1/4, y1+h1+22, x1+w1/4+6, y1+h1+11);
+            poly.setStroke(Color.BLACK);
+            line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            poly.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+            main.getChildren().add(0, poly);
+            main.getChildren().add(0, line1);
+            main.getChildren().add(0, line2);
+            main.getChildren().add(0, line3);
         }
     }
 }
