@@ -1,6 +1,7 @@
 package ija.proj;
 
 import java.io.IOException;
+import java.util.List;
 
 import ija.proj.uml.UMLAttribute;
 import ija.proj.uml.UMLClass;
@@ -291,6 +292,12 @@ public class UMLEditor extends App{
 
                         ((TitledPane)(event.getSource())).setTranslateX(newTranslateX);
                         ((TitledPane)(event.getSource())).setTranslateY(newTranslateY);
+
+                        List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
+                        for (int i = 0; i < relations.size(); i++) {
+                            main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
+                            drawRelation(relations.get(i));
+                        }
                     }
                 });
 
