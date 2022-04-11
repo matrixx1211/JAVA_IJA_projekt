@@ -115,7 +115,8 @@ public class UMLEditor extends App{
                 attribute.setId(name+"Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
-                row.setId((name+"Row").replaceAll("\\s+","€"));
+                //row.setId((name+"Row").replaceAll("\\s+","€")); //old one
+                row.setId("classAttributes");
                 // výběrový box
                     // přistupnost
                     VBox accessCol = new VBox();
@@ -249,6 +250,8 @@ public class UMLEditor extends App{
                 titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
+                        //((HBox) attributesList.lookupAll("#classAttributes")).getChildren().removeAll();
+                        //!TODO zítra
                         activeObjName = titledPane.getId();
                         Label label = new Label("My Label");
                         detailText.setText("Detail of "+titledPane.getText());

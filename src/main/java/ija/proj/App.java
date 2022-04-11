@@ -45,7 +45,7 @@ public class App extends Application {
     /**
      * Funkce nastavuje FXML soubor, který načíst.
      *
-     * @param fxml
+     * @param fxml název FXML souboru
      * @throws IOException
      */
     static void setRoot(String fxml) throws IOException {
