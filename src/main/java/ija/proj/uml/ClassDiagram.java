@@ -125,7 +125,7 @@ public class ClassDiagram extends Element {
 	public List<UMLRelation> findAllRelationsOfClass(String class1){
 		List<UMLRelation> relations = new ArrayList<>();
 		for (int i = 0; i < this.relations.size(); i++) {
-			if ((this.relations.get(i).getClass1().compareTo(class1) == 0) || (this.relations.get(i).getClass2().compareTo(class1) == 0)) {
+			if ((this.relations.get(i).getClass1().compareTo(class1) == 0) || (this.relations.get(i).getClass2().compareTo(class1) == 0) || (this.relations.get(i).getClass3().compareTo(class1) == 0)) {
 				relations.add(this.relations.get(i));
 			}
 		}
