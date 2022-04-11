@@ -5,6 +5,8 @@ import java.io.IOException;
 import ija.proj.uml.UMLAttribute;
 import ija.proj.uml.UMLClass;
 import ija.proj.uml.UMLClassifier;
+import ija.proj.uml.UMLRelation;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
 public class UMLEditor extends App{
@@ -36,7 +39,7 @@ public class UMLEditor extends App{
 
     @FXML private TitledPane attributesPane;
     @FXML private VBox attributesList;
-    @FXML private ChoiceBox newAttributeAccess;
+    @FXML private ChoiceBox<String> newAttributeAccess;
     @FXML private TextField newAttributeName;
     @FXML private TextField newAttributeType;
     @FXML private Button addAttributeBtn;
@@ -44,7 +47,14 @@ public class UMLEditor extends App{
     @FXML private TitledPane operationsPane;
     @FXML private Button addOperationBtn;
 
-    @FXML private ChoiceBox newOperationAccess;
+    @FXML private ChoiceBox<String> newOperationAccess;
+
+    @FXML private TitledPane relationsPane;
+    @FXML private ChoiceBox<String> newRelationType;
+    @FXML private TextField newRelationName;
+    @FXML private ChoiceBox<String> newRelationClass1;
+    @FXML private ChoiceBox<String> newRelationClass2;
+    @FXML private ChoiceBox<String> newRelationClass3;
 
     @FXML
     private Label leftStatusLabel;
@@ -185,6 +195,7 @@ public class UMLEditor extends App{
     @FXML private void addOperation() throws IOException {
 
     }
+
     @FXML private void clickedInterfaceBtn() throws IOException {
         createClass(true);
     }
@@ -285,7 +296,67 @@ public class UMLEditor extends App{
 
                 // zvednutí id pro další class
                 this.idCounter++;
+                //nastaveni listu pro vyber class na relaci
+                classList.add(name);
+                newRelationClass1.setItems(classList);
+                newRelationClass2.setItems(classList);
+                newRelationClass3.setItems(classList);
+                newRelationClass1.setValue("");
+                newRelationClass2.setValue("");
+                newRelationClass3.setValue("");
             }
+        }
+    }
+
+    @FXML private void addRelation() throws IOException {
+        String name = ((TextField)(relationsPane.lookup("#newRelationName"))).getText();
+        String type = ((ChoiceBox)(relationsPane.lookup("#newRelationType"))).getValue().toString();
+        String class1 = ((ChoiceBox)(relationsPane.lookup("#newRelationClass1"))).getValue().toString();
+        String class2 = ((ChoiceBox)(relationsPane.lookup("#newRelationClass2"))).getValue().toString();
+        String class3 = ((ChoiceBox)(relationsPane.lookup("#newRelationClass3"))).getValue().toString();
+        System.out.println(class1.length());
+        if (class1.isEmpty() || class2.isEmpty()){
+            System.out.println("class2");
+            //TODO chyba nezadane data
+            return;
+        }
+        UMLRelation relation = classDiagram.createRelation(name, type, class1, class2, class3);
+        System.out.println(relation);
+        if (relation == null){
+            //TODO chyba relace jiz existuje
+            return;
+        }
+        drawRelation(relation);
+    }
+
+    public void drawRelation(UMLRelation relation) {
+        String name = relation.getName();
+        String type = relation.getType();
+        String class1 = relation.getClass1();
+        String class2 = relation.getClass2();
+        String class3 = relation.getClass3();
+        double x1 = (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getTranslateX();
+        double y1 = (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getTranslateY();
+        double x2 = (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getTranslateX();
+        double y2 = (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getTranslateY();
+        double h1 = (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
+        double w1 = (main.lookup(("#"+class1.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
+        double h2 = (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
+        double w2 = (main.lookup(("#"+class2.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
+        double x3;
+        double y3;
+        double h3;
+        double w3;
+
+        if (!class3.isEmpty()) {
+            x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX();
+            y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY();
+        }
+        if (type.compareTo("association") == 0){
+            Line line1 = new Line(x1+w1/2, y1+h1/2, x2+w2/2, y1+h1/2);
+            Line line2 = new Line(x2+w2/2, y1+h1/2, x2+w2/2, y2+h2/2);
+            main.getChildren().add(line1);
+            main.getChildren().add(line2);
         }
     }
 }

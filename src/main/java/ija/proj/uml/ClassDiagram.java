@@ -6,11 +6,13 @@ import java.util.List;
 public class ClassDiagram extends Element {
 	public List<UMLClass> classes;
 	public List<UMLClassifier> classifiers;
+	public List<UMLRelation> relations;
 
 	public ClassDiagram(String name) {
 		super(name);
 		this.classes = new ArrayList<UMLClass>();
 		this.classifiers = new ArrayList<UMLClassifier>();
+		this.relations = new ArrayList<UMLRelation>();
 	}
 
 	public UMLClass createClass(String name, Integer id, Boolean isInterface) {
@@ -94,5 +96,20 @@ public class ClassDiagram extends Element {
 			}
 		}
 		return null;
+	}
+	//relations
+	public UMLRelation createRelation(String name, String type, String class1, String class2, String class3) {
+		UMLRelation obj;
+		for (int i = 0; i < this.relations.size(); i++) {
+			obj = this.relations.get(i);
+			if (obj.class1 == class1 && obj.class2 == class2) {
+				//TODO add into bottom bar "relation already exists"
+				return null;
+			}
+		}
+		obj = new UMLRelation(name, type, class1, class2, class3);
+		this.relations.add(obj);
+		return obj;
+		//TODO draw relation
 	}
 }

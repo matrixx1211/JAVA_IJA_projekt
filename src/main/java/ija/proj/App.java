@@ -24,6 +24,7 @@ public class App extends Application {
     public static ClassDiagram classDiagram;
     public Integer idCounter = 1;
     public static ObservableList<String> accessibilityList = FXCollections.observableArrayList();
+    public static ObservableList<String> classList = FXCollections.observableArrayList();
 
 
     @Override
@@ -50,6 +51,7 @@ public class App extends Application {
         accessibilityList.add("-");
         accessibilityList.add("#");
         accessibilityList.add("~");
+        classList.add("");
         launch();
     }
 
