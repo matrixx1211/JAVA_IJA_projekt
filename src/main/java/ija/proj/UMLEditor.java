@@ -329,8 +329,11 @@ public class UMLEditor extends App{
         String class3 = ((ChoiceBox)(relationsPane.lookup("#newRelationClass3"))).getValue().toString();
         System.out.println(class1.length());
         if (class1.isEmpty() || class2.isEmpty()){
-            System.out.println("class2");
             //TODO chyba nezadane data
+            return;
+        }
+        if (((class1 == class2) || (!class3.isEmpty())) && (type.compareTo("association") != 0) || (class1 == class3) || (class2 == class3)){
+            //TODO chyba zle zadana relace
             return;
         }
         UMLRelation relation = classDiagram.createRelation(name, type, class1, class2, class3);
@@ -415,28 +418,57 @@ public class UMLEditor extends App{
         double w3;
 
         if (type.compareTo("association") == 0){
-            Line line1 = new Line(x1+w1/2, y1+h1/2, x2+w2/2, y1+h1/2);
-            Line line2 = new Line(x2+w2/2, y1+h1/2, x2+w2/2, y2+h2/2);
-            line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
-            line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
-            main.getChildren().add(0, line1);
-            main.getChildren().add(0, line2);
-            if (!class3.isEmpty()){
-                x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateX();
-                y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateY();
-                h3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
-                w3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
-                double x12 = ((x2+w2/2)+(x1+w1/2))/2;
-                Line line3 = new Line(x3+w3/2, y3+h3/2, x12, y3+h3/2);
-                Line line4 = new Line(x12, y3+h3/2, x12, y1+h1/2);
-                line3.getStrokeDashArray().addAll(10d, 4d);
-                line4.getStrokeDashArray().addAll(10d, 4d);
-                line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
-                line4.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
-                main.getChildren().add(0, line3);
-                main.getChildren().add(0, line4);
+            if (class1 != class2){
+                Line line1 = new Line(x1+w1/2, y1+h1/2, x2+w2/2, y1+h1/2);
+                Line line2 = new Line(x2+w2/2, y1+h1/2, x2+w2/2, y2+h2/2);
+                line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                main.getChildren().add(0, line1);
+                main.getChildren().add(0, line2);
+                if (!class3.isEmpty()){
+                    x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateX();
+                    y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateY();
+                    h3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
+                    w3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
+                    double x12 = ((x2+w2/2)+(x1+w1/2))/2;
+                    Line line3 = new Line(x3+w3/2, y3+h3/2, x12, y3+h3/2);
+                    Line line4 = new Line(x12, y3+h3/2, x12, y1+h1/2);
+                    line3.getStrokeDashArray().addAll(10d, 4d);
+                    line4.getStrokeDashArray().addAll(10d, 4d);
+                    line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                    line4.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                    main.getChildren().add(0, line3);
+                    main.getChildren().add(0, line4);
+                }
+            } else {
+                Line line1 = new Line(x1, y1+h1/2, x1-30, y1+h1/2);
+                Line line2 = new Line(x2-30, y1+h1/2, x2-30, y2-30);
+                Line line5 = new Line(x1-30, y1-30, x2+w2/2, y1-30);
+                Line line6 = new Line(x2+w2/2, y1-30, x2+w2/2, y2+h2/2);
+                line1.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                line2.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                line5.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                line6.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                main.getChildren().add(0, line1);
+                main.getChildren().add(0, line2);
+                main.getChildren().add(0, line5);
+                main.getChildren().add(0, line6);
+                if (!class3.isEmpty()){
+                    x3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutX() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateX();
+                    y3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getLayoutY() + (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getTranslateY();
+                    h3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getHeight();
+                    w3 = (main.lookup(("#"+class3.replaceAll("\\s+","€")))).getBoundsInLocal().getWidth();
+                    double x12 = (x1-15);
+                    Line line3 = new Line(x3+w3/2, y3+h3/2, x12, y3+h3/2);
+                    Line line4 = new Line(x12, y3+h3/2, x12, y1+h1/2);
+                    line3.getStrokeDashArray().addAll(10d, 4d);
+                    line4.getStrokeDashArray().addAll(10d, 4d);
+                    line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                    line4.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
+                    main.getChildren().add(0, line3);
+                    main.getChildren().add(0, line4);
+                }
             }
-
         }
         if (type.compareTo("generalization") == 0){
             y3 = y1+h1+50;
