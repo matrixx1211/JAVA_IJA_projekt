@@ -181,7 +181,7 @@
                                     <Insets bottom="0" left="0" right="0" top="0" />
                                  </padding>
                                  <children>
-                                    <VBox fx:id="attributesList1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <VBox fx:id="relationsList" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <children>
                                           <HBox>
                                              <children>
