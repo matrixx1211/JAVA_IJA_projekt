@@ -429,8 +429,8 @@ public class UMLEditor extends App{
                 double x12 = ((x2+w2/2)+(x1+w1/2))/2;
                 Line line3 = new Line(x3+w3/2, y3+h3/2, x12, y3+h3/2);
                 Line line4 = new Line(x12, y3+h3/2, x12, y1+h1/2);
-                line3.getStrokeDashArray().addAll(25d, 10d);
-                line4.getStrokeDashArray().addAll(25d, 10d);
+                line3.getStrokeDashArray().addAll(10d, 4d);
+                line4.getStrokeDashArray().addAll(10d, 4d);
                 line3.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
                 line4.setId((class1+"ß"+class2+"Line").replaceAll("\\s+","€"));
                 main.getChildren().add(0, line3);
