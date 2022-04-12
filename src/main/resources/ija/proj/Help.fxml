@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" prefHeight="30.0" style="&#10;" text="Help for our project for IJA" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+            <TextArea editable="false" prefHeight="200.0" prefWidth="200.0" style="-fx-text-alignment: center;" text="This is SPARTA,&#10;SPARTA is JAVA,&#10;JAVA is PROJECT,&#10;PROJECT is PAIN,&#10;PAIN is LIFE,&#10;LIFE is DEATH,&#10;DEATH is END.&#10;--THE END--" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>

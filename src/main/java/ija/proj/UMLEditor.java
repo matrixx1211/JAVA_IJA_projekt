@@ -17,6 +17,9 @@ import javafx.application.Application;
 import ija.proj.uml.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -26,6 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class UMLEditor extends App {
     private String activeObjName = null;
@@ -34,6 +38,9 @@ public class UMLEditor extends App {
     double orgTranslateX, orgTranslateY;
     private String activeAttrName;
     public static final String OUTPUT_FILE = "out.json";
+
+    // celá appka
+    @FXML private VBox all;
 
     // levá část
     @FXML private TextField className;
@@ -281,10 +288,7 @@ public class UMLEditor extends App {
                 removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
-                        //System.out.println();
-
-                        attributesList.getChildren().remove(attributesList.lookup("#" + id));
+                        attributesList.getChildren().remove("#classAttributes");
                         attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
                         activeObj.removeAttr(attr);
                     }
@@ -410,8 +414,6 @@ public class UMLEditor extends App {
                     public void handle(MouseEvent event) {
                         attributesList.getChildren().removeAll(attributesList.lookupAll("#classAttributes"));
 
-                        //((HBox) attributesList.lookupAll("#classAttributes")).getChildren().removeAll();
-                        //!TODO zítra
                         activeObjName = titledPane.getId();
                         Label label = new Label("My Label");
                         detailText.setText("Detail of "+titledPane.getText());
@@ -474,10 +476,7 @@ public class UMLEditor extends App {
                             removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent event) {
-                                    String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
-                                    //System.out.println();
-
-                                    attributesList.getChildren().remove(attributesList.lookup("#" + id)); //TODO maže divný věci
+                                    attributesList.getChildren().remove(attributesList.lookup("#classAttributes")); //TODO maže divný věci
                                     attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
                                     activeObj.removeAttr(attr);
                                 }
@@ -739,6 +738,23 @@ public class UMLEditor extends App {
             main.getChildren().add(0, line1);
             main.getChildren().add(0, line2);
             main.getChildren().add(0, line3);
+        }
+    }
+
+    /**
+     * Otevře nápovědu
+     */
+    @FXML private void openHelp() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("Help.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Stage stage = new Stage();
+            stage.setTitle("Help");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+           System.out.println("Failed to create new Window." + e);
         }
     }
 }
