@@ -4,14 +4,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Třída pro operace (metody) tříd a rozhraní
+ */
 public class UMLOperation extends UMLAttribute {
+    /**
+     *List pro vsupní argumenty operace
+     */
     List<UMLAttribute> args;
 
+    /**
+     * Konstruktor pro operace
+     * @param name název operace
+     * @param type návratový typ
+     * @param accessibility modifikátor přístupu
+     */
     public UMLOperation (String name, UMLClassifier type, String accessibility) {
         super(name, type, accessibility);
         args = new ArrayList<UMLAttribute>();
     }
 
+    /**
+     * Vytvoření operace
+     * @param name jméno operace
+     * @param type návratový typ operace
+     * @param accessibility modifikátor přístupu
+     * @param args seznam vstupních argumentů
+     * @return vytvořená operace
+     */
     public static UMLOperation create(String name, UMLClassifier type, String accessibility, UMLAttribute... args) {
         UMLOperation obj = new UMLOperation(name, type, accessibility);
         
@@ -21,6 +41,11 @@ public class UMLOperation extends UMLAttribute {
         return obj;
     }
 
+    /**
+     * Přidání vstupního argumentu do operace
+     * @param arg přidávaný argument
+     * @return true pokud byl přidán, false pokud již existuje
+     */
     public boolean addArgument(UMLAttribute arg) {
         if (!this.args.contains(arg))
             if (this.args.add(arg))
@@ -28,6 +53,10 @@ public class UMLOperation extends UMLAttribute {
         return false;
     }
 
+    /**
+     * Získání listu vstupních argumentů operace
+     * @return List vstupních argumentů
+     */
     public List<UMLAttribute> getArguments() {
         return Collections.unmodifiableList(this.args);
     }

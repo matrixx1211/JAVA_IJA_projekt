@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.List;
 
 import com.google.gson.Gson;
+
 import javafx.application.Application;
 import ija.proj.uml.*;
 import javafx.event.EventHandler;
@@ -97,6 +98,7 @@ public class UMLEditor extends App {
 
     @FXML
     public void saveToFile() throws IOException {
+
         Gson gson = new Gson();
         Writer writer = new FileWriter("data/JSON.json");
         writer.write(gson.toJson(classDiagram));
@@ -109,10 +111,10 @@ public class UMLEditor extends App {
         Reader reader = new FileReader("data/JSON.json");
         classDiagram = gson.fromJson(reader, ClassDiagram.class);
         System.out.println(classDiagram.getName());
-        for (int i = 0; i < classDiagram.classes.size(); i++) {
-            //drawclass()
-        }
-
+        //for (int i = 0; i < classDiagram.classes.size(); i++) {
+            //drawclass(classDiagram.classes.get(i));
+        //}
+        //TODO Vykresleni
     }
 
     @FXML

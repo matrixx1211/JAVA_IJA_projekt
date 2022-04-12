@@ -3,11 +3,27 @@ package ija.proj.uml;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Třída pro ClassDiagram
+ */
 public class ClassDiagram extends Element {
+	/**
+	 * seznam tříd a rozhraní
+	 */
 	public List<UMLClass> classes;
+	/**
+	 * seznam classifierů
+	 */
 	public List<UMLClassifier> classifiers;
+	/**
+	 * seznam relací
+	 */
 	public List<UMLRelation> relations;
 
+	/**
+	 * Konstruktor pro ClassDiagram
+	 * @param name název Diagramu
+	 */
 	public ClassDiagram(String name) {
 		super(name);
 		this.classes = new ArrayList<UMLClass>();
@@ -15,6 +31,13 @@ public class ClassDiagram extends Element {
 		this.relations = new ArrayList<UMLRelation>();
 	}
 
+	/**
+	 * Metoda pro vytvoření Třídy/Rozhraní v ClassDiagramu
+	 * @param name název třídy
+	 * @param id počítadlo tříd
+	 * @param isInterface Rozhraní (true) / Třída (false)
+	 * @return vytvořenou třídu / rozhraní
+	 */
 	public UMLClass createClass(String name, Integer id, Boolean isInterface) {
 
 		UMLClass obj;
@@ -30,13 +53,21 @@ public class ClassDiagram extends Element {
 		return newObj;
 	}
 
-	public Boolean deleteClass(UMLClass obj) {
+	/**
+	 * mazání třídy / rozhraní
+	 * @param obj mazaná třída / rozhraní
+	 */
+	public void deleteClass(UMLClass obj) {
 		this.classes.remove(obj);
 		this.classifiers.remove(obj);
-		//this.findAllRelationsOfClass(obj.getName());
-		return true;
 	}
 
+	/**
+	 * Provede změnu názvu třídy / rozhraní
+	 * @param oldName staré jméno
+	 * @param newName nové jméno
+	 * @return true pokud se povedlo, jinak false
+	 */
 	public Boolean changeClassName(String oldName, String newName) {
 		UMLClass classObj;
 		UMLClassifier classifierObj;
@@ -72,6 +103,11 @@ public class ClassDiagram extends Element {
 		return true;
 	}
 
+	/**
+	 * Najde třídu / rozhraní podle názvu
+	 * @param name název hledaného objektu
+	 * @return hledaný objekt / null
+	 */
 	public UMLClass getObject(String name) {
 		UMLClass obj;
 		for (int i = 0; i < this.classes.size(); i++) {
@@ -83,6 +119,11 @@ public class ClassDiagram extends Element {
 		return null;
 	}
 
+	/**
+	 * Přidá nový classifier daného jména, pokud již neexistuje
+	 * @param name jméno vytvářeného classifieru
+	 * @return vytvořený classifier / null
+	 */
 	public UMLClassifier classifierForName(String name) {
 		UMLClassifier obj = findClassifier(name);
 		if (obj == null)
@@ -93,6 +134,11 @@ public class ClassDiagram extends Element {
 		return obj;
 	}
 
+	/**
+	 * Zjistí zda classifier daného jména již existuje
+	 * @param name jméno classifieru
+	 * @return nalezený classifier / null
+	 */
 	public UMLClassifier findClassifier(String name) {
 		UMLClassifier obj;
 		for (int i = 0; i < this.classifiers.size(); i++) {
@@ -105,6 +151,16 @@ public class ClassDiagram extends Element {
 	}
 
 	//relations
+
+	/**
+	 * Vytvoření relace
+	 * @param name jméno relace
+	 * @param type typ relace
+	 * @param class1 první prvek
+	 * @param class2 druhý prvek
+	 * @param class3 třetí prvek (pouze pro associaci - mezitabulka)
+	 * @return vytvořená relace
+	 */
 	public UMLRelation createRelation(String name, String type, String class1, String class2, String class3) {
 		UMLRelation obj;
 		for (int i = 0; i < this.relations.size(); i++) {
@@ -120,6 +176,12 @@ public class ClassDiagram extends Element {
 		//TODO draw relation
 	}
 
+	/**
+	 * Nalezení relace (unikátní kombinace prvních dvou prvků)
+	 * @param class1 název prvního prvku relace
+	 * @param class2 název druhého prvku relace
+	 * @return nalezená relace / null
+	 */
 	public UMLRelation findRelation(String class1, String class2){
 		for (int i = 0; i < this.relations.size(); i++) {
 			if ((this.relations.get(i).getClass1().compareTo(class1) == 0) && (this.relations.get(i).getClass2().compareTo(class2) == 0)) {
@@ -129,6 +191,11 @@ public class ClassDiagram extends Element {
 		return null;
 	}
 
+	/**
+	 * Nalezení všech relací obsahující danou třídu
+	 * @param class1 název třídy
+	 * @return seznam relací
+	 */
 	public List<UMLRelation> findAllRelationsOfClass(String class1){
 		List<UMLRelation> relations = new ArrayList<>();
 		for (int i = 0; i < this.relations.size(); i++) {
