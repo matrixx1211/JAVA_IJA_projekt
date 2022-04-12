@@ -1,8 +1,11 @@
 package ija.proj;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
+import com.google.gson.Gson;
 import ija.proj.uml.UMLAttribute;
 import ija.proj.uml.UMLClass;
 import ija.proj.uml.UMLClassifier;
@@ -84,8 +87,14 @@ public class UMLEditor extends App {
     private Label rightStatusLabel;
 
     @FXML
-    private void gotoUMLClass() throws IOException {
-        App.setRoot("UMLshit");
+    private void saveToFile() throws IOException {
+        Gson gson = new Gson();
+        Writer writer = new FileWriter("data/JSON.json");
+        gson.toJson(classDiagram, writer);
+    }
+    @FXML
+    private void openFromFile() throws IOException {
+        Gson gson = new Gson();
     }
 
     @FXML
