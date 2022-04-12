@@ -10,6 +10,8 @@ public class UMLClass extends UMLClassifier {
     public List<UMLOperation> operations;
     Integer id;
     public Boolean isInterface;
+    double x;
+    double y;
 
     public UMLClass(String name, Integer id, Boolean isInterface) {
         super(name);
@@ -19,6 +21,8 @@ public class UMLClass extends UMLClassifier {
         this.operations = new ArrayList<UMLOperation>();
         this.id = id;
         this.isInterface = isInterface;
+        this.x = 0.0;
+        this.y = 0.0;
     }
 
     public Boolean isAbstract() {
@@ -72,6 +76,11 @@ public class UMLClass extends UMLClassifier {
             }
         }
         return false;
+    }
+
+    public void setPosition(double x, double y){
+        this.x = x;
+        this.y = y;
     }
 
     public List<UMLAttribute> getAttributes() {

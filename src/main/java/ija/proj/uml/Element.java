@@ -2,7 +2,7 @@ package ija.proj.uml;
 
 import ija.proj.App;
 
-public class Element extends App {
+public class Element{
 	String name;
 
 	public Element(String name) {

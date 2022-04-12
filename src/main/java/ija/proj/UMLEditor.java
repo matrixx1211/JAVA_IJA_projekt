@@ -7,10 +7,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import javafx.application.Application;
-import ija.proj.uml.UMLAttribute;
-import ija.proj.uml.UMLClass;
-import ija.proj.uml.UMLClassifier;
-import ija.proj.uml.UMLRelation;
+import ija.proj.uml.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -29,6 +26,7 @@ public class UMLEditor extends App {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     private String activeAttrName;
+    public static final String OUTPUT_FILE = "out.json";
 
     // levá část
     @FXML private TextField className;
@@ -90,7 +88,9 @@ public class UMLEditor extends App {
     public void saveToFile() throws IOException {
         Gson gson = new Gson();
         Writer writer = new FileWriter("data/JSON.json");
-        gson.toJson(classDiagram, writer);
+        writer.write(gson.toJson(classDiagram));
+        writer.close();
+
     }
     @FXML
     private void openFromFile() throws IOException {
@@ -382,6 +382,7 @@ public class UMLEditor extends App {
                 titledPane.setPrefSize(-1, -1);
                 titledPane.setLayoutX(10*idCounter);
                 titledPane.setLayoutY(10*idCounter);
+                newObj.setPosition(10*idCounter, 10*idCounter);
                 titledPane.setCollapsible(false);
                 titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
@@ -491,6 +492,8 @@ public class UMLEditor extends App {
 
                         ((TitledPane)(event.getSource())).setTranslateX(newTranslateX);
                         ((TitledPane)(event.getSource())).setTranslateY(newTranslateY);
+
+                        activeObj.setPosition(((TitledPane)(event.getSource())).getLayoutX()+newTranslateX, ((TitledPane)(event.getSource())).getLayoutY()+newTranslateY);
 
                         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
                         for (int i = 0; i < relations.size(); i++) {
