@@ -29,6 +29,7 @@ public class UMLEditor extends App{
 
     // levá část
     @FXML private TextField className;
+    @FXML private Button deleteClassBtn;
 
     // střed
     @FXML private AnchorPane main;
@@ -48,6 +49,7 @@ public class UMLEditor extends App{
     @FXML private Button addAttributeBtn;
 
     @FXML private TitledPane operationsPane;
+    @FXML private VBox operationsList;
     @FXML private Button addOperationBtn;
 
     @FXML private ChoiceBox<String> newOperationAccess;
@@ -68,6 +70,33 @@ public class UMLEditor extends App{
     @FXML private void gotoUMLClass() throws IOException {
         App.setRoot("UMLshit");
     }
+
+    @FXML private void deleteClass() {
+        classDiagram.deleteClass(activeObj);
+        main.getChildren().remove(main.lookup(("#"+activeObjName).replaceAll("\\s+","€")));
+
+        //TODO Ládinovo hraní s relacemi
+        List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
+        for (int i = 0; i < relations.size(); i++) {
+            main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
+            relations.remove(relations.get(i));
+            relationsList.getChildren().remove(relationsList.lookup(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"RelRow").replaceAll("\\s+","€")));
+        }
+        /*for (int i = 0; i < classList.size(); i++) {
+            if (classList.)
+            classList.remove()
+        }*/
+
+        classList.remove(activeObjName);
+        newRelationClass1.setItems(classList);
+        newRelationClass2.setItems(classList);
+        newRelationClass3.setItems(classList);
+
+        deleteClassBtn.setDisable(true);
+        activeObj = null;
+        activeObjName = null;
+    }
+
     @FXML private void changeClassName() throws IOException {
         String newName = newClassName.getText();
         if (newName.isEmpty()) {
@@ -198,7 +227,10 @@ public class UMLEditor extends App{
         }
     }
     @FXML private void addOperation() throws IOException {
-
+        HBox row = new HBox();
+        Text text = new Text("Text");
+        row.getChildren().add(text);
+        operationsList.getChildren().add(row);
     }
 
     @FXML private void clickedInterfaceBtn() throws IOException {
@@ -257,6 +289,8 @@ public class UMLEditor extends App{
                         detailText.setText("Detail of "+titledPane.getText());
                         newClassName.setText(titledPane.getText());
                         activeObjName = titledPane.getText();
+
+                        deleteClassBtn.setDisable(false);
 
                         addAttributeBtn.setDisable(false);
                         addOperationBtn.setDisable(false);

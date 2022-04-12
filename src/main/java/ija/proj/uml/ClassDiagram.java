@@ -30,6 +30,12 @@ public class ClassDiagram extends Element {
 		return newObj;
 	}
 
+	public Boolean deleteClass(UMLClass obj) {
+		this.classes.remove(obj);
+		this.classifiers.remove(obj);
+		//this.findAllRelationsOfClass(obj.getName());
+		return true;
+	}
 
 	public Boolean changeClassName(String oldName, String newName) {
 		UMLClass classObj;
@@ -97,6 +103,7 @@ public class ClassDiagram extends Element {
 		}
 		return null;
 	}
+
 	//relations
 	public UMLRelation createRelation(String name, String type, String class1, String class2, String class3) {
 		UMLRelation obj;
