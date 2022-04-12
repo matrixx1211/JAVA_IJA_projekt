@@ -1,3 +1,11 @@
+/**
+ * @author Marek Bitomský - xbitom00
+ * @author Ondrěj Darmopil - xdarmo03
+ * @author Vladimír Horák - xhorak72
+ *
+ * Soubor pro implementaci Třídy Element
+ */
+
 package ija.proj.uml;
 
 import ija.proj.App;

@@ -1,3 +1,11 @@
+/**
+ * @author Marek Bitomský - xbitom00
+ * @author Ondrěj Darmopil - xdarmo03
+ * @author Vladimír Horák - xhorak72
+ *
+ * Soubor pro implementaci hlavní části programu, která spouští GUI
+ */
+
 package ija.proj;
 
 import ija.proj.uml.ClassDiagram;
