@@ -1,8 +1,6 @@
 package ija.proj;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -85,16 +83,29 @@ public class UMLEditor extends App {
     private Label rightStatusLabel;
 
     @FXML
+    public void newFile() throws IOException {
+        classDiagram = new ClassDiagram("Diagram");
+        App.setRoot("UMLEditor");
+    }
+
+    @FXML
     public void saveToFile() throws IOException {
         Gson gson = new Gson();
         Writer writer = new FileWriter("data/JSON.json");
         writer.write(gson.toJson(classDiagram));
         writer.close();
-
     }
     @FXML
     private void openFromFile() throws IOException {
         Gson gson = new Gson();
+        newFile();
+        Reader reader = new FileReader("data/JSON.json");
+        classDiagram = gson.fromJson(reader, ClassDiagram.class);
+        System.out.println(classDiagram.getName());
+        for (int i = 0; i < classDiagram.classes.size(); i++) {
+            //drawclass()
+        }
+
     }
 
     @FXML
