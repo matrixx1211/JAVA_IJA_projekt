@@ -78,8 +78,9 @@ public class UMLEditor extends App{
         //TODO Ládinovo hraní s relacemi
         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
         for (int i = 0; i < relations.size(); i++) {
+            System.out.println(i);
             main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
-            relations.remove(relations.get(i));
+            classDiagram.relations.remove(relations.get(i));
             relationsList.getChildren().remove(relationsList.lookup(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"RelRow").replaceAll("\\s+","€")));
         }
         /*for (int i = 0; i < classList.size(); i++) {
