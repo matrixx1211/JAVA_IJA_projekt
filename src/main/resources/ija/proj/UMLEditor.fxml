@@ -156,12 +156,12 @@
                                  <children>
                                     <VBox fx:id="operationsList" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <children>
-                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                          <HBox>
                                              <children>
-                                                <ChoiceBox fx:id="newOperationAccess" prefHeight="25.0" prefWidth="50.0" />
-                                                <TextField prefWidth="125.0" />
-                                                <TextField prefHeight="25.0" prefWidth="100.0" />
-                                                <Button id="addOperationBtn" fx:id="addOperationBtn" disable="true" mnemonicParsing="false" onAction="#addOperation" prefWidth="55.0" text="Add" />
+                                                <ChoiceBox fx:id="newOperationAccess" prefHeight="25.0" />
+                                                <TextField fx:id="newOperationName" prefHeight="25.0" />
+                                                <TextField fx:id="newOperationReturnType" prefHeight="25.0" />
+                                                <Button id="addOperationBtn" fx:id="addOperationBtn" disable="true" mnemonicParsing="false" onAction="#addOperation" prefHeight="25.0" text="Add" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -170,7 +170,7 @@
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                        <TitledPane id="attributesPane" fx:id="relationsPane" layoutX="10.0" layoutY="45.0" text="Relations">
+                        <TitledPane id="attributesPane" fx:id="relationsPane" disable="true" expanded="false" layoutX="10.0" layoutY="45.0" text="Relations">
                            <content>
                               <AnchorPane>
                                  <padding>
@@ -195,7 +195,7 @@
                                                 <ChoiceBox fx:id="newRelationClass1" prefHeight="25.0" value="#" />
                                                 <ChoiceBox fx:id="newRelationClass2" prefHeight="25.0" value="#" />
                                                 <ChoiceBox fx:id="newRelationClass3" prefHeight="25.0" value="#" />
-                                                <Button id="addAttributeBtn" fx:id="addRelationBtn" mnemonicParsing="false" onAction="#addRelation" prefHeight="25.0" text="Add" />
+                                                <Button id="addAttributeBtn" fx:id="addRelationBtn" disable="true" mnemonicParsing="false" onAction="#addRelation" prefHeight="25.0" text="Add" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets top="10.0" />

@@ -20,7 +20,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 
-public class UMLEditor extends App{
+public class UMLEditor extends App {
     private String activeObjName = null;
     private UMLClass activeObj;
     double orgSceneX, orgSceneY;
@@ -42,195 +42,280 @@ public class UMLEditor extends App{
     @FXML private TextField newClassName;
 
     @FXML private TitledPane attributesPane;
-    @FXML private VBox attributesList;
-    @FXML private ChoiceBox<String> newAttributeAccess;
-    @FXML private TextField newAttributeName;
-    @FXML private TextField newAttributeType;
-    @FXML private Button addAttributeBtn;
+    @FXML
+    private VBox attributesList;
+    @FXML
+    private ChoiceBox<String> newAttributeAccess;
+    @FXML
+    private TextField newAttributeName;
+    @FXML
+    private TextField newAttributeType;
+    @FXML
+    private Button addAttributeBtn;
 
-    @FXML private TitledPane operationsPane;
-    @FXML private VBox operationsList;
-    @FXML private Button addOperationBtn;
-
-    @FXML private ChoiceBox<String> newOperationAccess;
-
-    @FXML private TitledPane relationsPane;
-    @FXML private VBox relationsList;
-    @FXML private ChoiceBox<String> newRelationType;
-    @FXML private TextField newRelationName;
-    @FXML private ChoiceBox<String> newRelationClass1;
-    @FXML private ChoiceBox<String> newRelationClass2;
-    @FXML private ChoiceBox<String> newRelationClass3;
+    @FXML
+    private TitledPane operationsPane;
+    @FXML
+    private VBox operationsList;
+    @FXML ChoiceBox<String> newOperationAccess;
+    @FXML TextField newOperationName;
+    @FXML TextField newOperationReturnType;
+    @FXML
+    private Button addOperationBtn;
+    @FXML
+    private TitledPane relationsPane;
+    @FXML
+    private VBox relationsList;
+    @FXML
+    private ChoiceBox<String> newRelationType;
+    @FXML
+    private TextField newRelationName;
+    @FXML
+    private ChoiceBox<String> newRelationClass1;
+    @FXML
+    private ChoiceBox<String> newRelationClass2;
+    @FXML
+    private ChoiceBox<String> newRelationClass3;
+    @FXML private Button addRelationBtn;
 
     @FXML
     private Label leftStatusLabel;
     @FXML
     private Label rightStatusLabel;
 
-    @FXML private void gotoUMLClass() throws IOException {
+    @FXML
+    private void gotoUMLClass() throws IOException {
         App.setRoot("UMLshit");
     }
 
-    @FXML private void deleteClass() {
+    @FXML
+    private void deleteClass() {
         classDiagram.deleteClass(activeObj);
-        main.getChildren().remove(main.lookup(("#"+activeObjName).replaceAll("\\s+","€")));
 
-        //TODO Ládinovo hraní s relacemi
+        main.getChildren().remove(main.lookup(("#" + activeObjName).replaceAll("\\s+", "€")));
+
         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
         for (int i = 0; i < relations.size(); i++) {
-            main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
+            main.getChildren().removeAll(main.lookupAll(("#" + relations.get(i).getClass1() + "ß" + relations.get(i).getClass2() + "Line").replaceAll("\\s+", "€")));
             classDiagram.relations.remove(relations.get(i));
-            relationsList.getChildren().remove(relationsList.lookup(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"RelRow").replaceAll("\\s+","€")));
+            relationsList.getChildren().remove(relationsList.lookup(("#" + relations.get(i).getClass1() + "ß" + relations.get(i).getClass2() + "RelRow").replaceAll("\\s+", "€")));
         }
-        /*for (int i = 0; i < classList.size(); i++) {
-            if (classList.)
-            classList.remove()
-        }*/
-
         classList.remove(activeObjName);
+
         newRelationClass1.setItems(classList);
         newRelationClass2.setItems(classList);
         newRelationClass3.setItems(classList);
 
+        detailText.setText("Detail");
+
+        addAttributeBtn.setDisable(true);
+        addOperationBtn.setDisable(true);
+        addRelationBtn.setDisable(true);
+
+        classDetailPane.setDisable(true);
+        classDetailPane.setExpanded(false);
+
+        attributesPane.setDisable(true);
+        attributesPane.setExpanded(false);
+
+        operationsPane.setDisable(true);
+        operationsPane.setExpanded(false);
+
+        relationsPane.setDisable(true);
+        relationsPane.setExpanded(false);
+
         deleteClassBtn.setDisable(true);
+
         activeObj = null;
         activeObjName = null;
     }
 
-    @FXML private void changeClassName() throws IOException {
+    @FXML
+    private void changeClassName() throws IOException {
         String newName = newClassName.getText();
         if (newName.isEmpty()) {
             newName = " ";
         }
         if (classDiagram.changeClassName(activeObjName, newName) == true) {
-            detailText.setText("Detail of "+newName);
-            TitledPane classTable = ((TitledPane) main.lookup("#"+ activeObjName.replaceAll("\\s+","€")));
+            detailText.setText("Detail of " + newName);
+            TitledPane classTable = ((TitledPane) main.lookup("#" + activeObjName.replaceAll("\\s+", "€")));
             classTable.setText(newName);
-            classTable.setId(newName.replaceAll("\\s+","€"));
+            classTable.setId(newName.replaceAll("\\s+", "€"));
 
             // změny ID pro attributes a operations
             if (!activeObj.isInterface()) {
-                VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
-                attributes.setId((newName+"Attributes").replaceAll("\\s+","€"));
+                VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+                attributes.setId((newName + "Attributes").replaceAll("\\s+", "€"));
             }
 
-            VBox operations = ((VBox) main.lookup(("#"+activeObjName+"Operations").replaceAll("\\s+","€")));
-            operations.setId((newName+"Operations").replaceAll("\\s+","€"));
+            VBox operations = ((VBox) main.lookup(("#" + activeObjName + "Operations").replaceAll("\\s+", "€")));
+            operations.setId((newName + "Operations").replaceAll("\\s+", "€"));
 
             activeObjName = newName;
         } else {
-            leftStatusLabel.setText("Name \""+newName+"\" already exists!");
+            leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
         }
         newClassName.setText(activeObjName);
     }
 
-    @FXML private void addAttribute() throws IOException {
+    @FXML
+    private void addAttribute() throws IOException {
         String access = newAttributeAccess.getSelectionModel().getSelectedItem().toString();
         String name = newAttributeName.getText();
         String type = newAttributeType.getText();
         if (name.isEmpty() || type.isEmpty()) {
             leftStatusLabel.setText("Attribute name or type not entered.");
-        }
-        else {
+        } else {
             UMLClassifier classifier = classDiagram.findClassifier(type);
-            if (classifier == null){
+            if (classifier == null) {
                 classifier = new UMLClassifier(type, true);
                 classDiagram.classifiers.add(classifier);
             }
             UMLAttribute attr = new UMLAttribute(newAttributeName.getText(), classifier, access);
-            if (activeObj.addAttribute(attr)){
-                VBox attributes = ((VBox) main.lookup(("#"+activeObjName+"Attributes").replaceAll("\\s+","€")));
+            if (activeObj.addAttribute(attr)) {
+                VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
                 Text attribute = new Text(access + " <-> " + name + ":" + type);
-                attribute.setId(name+"Attr");
+                attribute.setId(name + "Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
                 //row.setId((name+"Row").replaceAll("\\s+","€")); //old one
                 row.setId("classAttributes");
                 // výběrový box
-                    // přistupnost
-                    VBox accessCol = new VBox();
-                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
-                    accessColChoiceBox.setDisable(true);
-                    accessColChoiceBox.setItems(accessibilityList);
-                    accessColChoiceBox.setValue(access);
-                    accessCol.getChildren().add(accessColChoiceBox);
-                    row.getChildren().add(accessCol);
+                // přistupnost
+                VBox accessCol = new VBox();
+                ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
+                accessColChoiceBox.setDisable(true);
+                accessColChoiceBox.setItems(accessibilityList);
+                accessColChoiceBox.setValue("+");
+                accessColChoiceBox.setValue(access);
+                accessCol.getChildren().add(accessColChoiceBox);
+                row.getChildren().add(accessCol);
                 // texty
-                    // jméno
-                    VBox nameCol = new VBox();
-                    TextField nameColText = new TextField(name);
-                    nameColText.setDisable(true);
-                    nameCol.getChildren().add(nameColText);
-                    row.getChildren().add(nameCol);
-                    // typ
-                    VBox typeCol = new VBox();
-                    TextField typeColText = new TextField(type);
-                    typeColText.setDisable(true);
-                    typeCol.getChildren().add(typeColText);
-                    row.getChildren().add(typeCol);
+                // jméno
+                VBox nameCol = new VBox();
+                TextField nameColText = new TextField(name);
+                nameColText.setDisable(true);
+                nameCol.getChildren().add(nameColText);
+                row.getChildren().add(nameCol);
+                // typ
+                VBox typeCol = new VBox();
+                TextField typeColText = new TextField(type);
+                typeColText.setDisable(true);
+                typeCol.getChildren().add(typeColText);
+                row.getChildren().add(typeCol);
                 // tlačítka
-                    // editace
-                    VBox editCol = new VBox();
-                    Button editColBtn = new Button("Edit");
-                    editColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            ChoiceBox c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0));
-                            TextField c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0));
-                            TextField c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0));
-                            Button c4 = ((Button) ((VBox) row.getChildren().get(3)).getChildren().get(0));
+                // editace
+                VBox editCol = new VBox();
+                Button editColBtn = new Button("Edit");
+                editColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        ChoiceBox c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0));
+                        TextField c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0));
+                        TextField c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0));
+                        Button c4 = ((Button) ((VBox) row.getChildren().get(3)).getChildren().get(0));
 
-                            if (c1.isDisabled()) {
-                                // staré hodnoty
-                                String oldC1Value = c1.getSelectionModel().getSelectedItem().toString();
-                                String oldC2Value = c2.getText();
-                                String oldC3Value = c3.getText();
+                        if (c1.isDisabled()) {
+                            // staré hodnoty
+                            String oldC1Value = c1.getSelectionModel().getSelectedItem().toString();
+                            String oldC2Value = c2.getText();
+                            String oldC3Value = c3.getText();
 
-                                // povolím úpravu hodnot + signalizace na tlačítku
-                                c1.setDisable(false);
-                                c2.setDisable(false);
-                                c3.setDisable(false);
-                                c4.setText("Save");
-
-
-                                // upravím hodnoty a dělám věci
+                            // povolím úpravu hodnot + signalizace na tlačítku
+                            c1.setDisable(false);
+                            c2.setDisable(false);
+                            c3.setDisable(false);
+                            c4.setText("Save");
 
 
-                            }
+                            // upravím hodnoty a dělám věci
 
-                            //!TODO urobít zítra :), coz mozek need spánek
-                            System.out.println(c1 + " " + c2 + " " + c3);
+
                         }
-                    });
-                    editCol.getChildren().add(editColBtn);
-                    row.getChildren().add(editCol);
-                    // mazání
-                    VBox removeCol = new VBox();
-                    Button removeColBtn = new Button("Remove");
-                    removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
-                            //System.out.println();
 
-                            attributesList.getChildren().remove(attributesList.lookup("#"+id));
-                            attributes.getChildren().remove(attributes.lookup("#"+name+"Attr"));
-                            activeObj.removeAttr(attr);
-                        }
-                    });
-                    removeCol.getChildren().add(removeColBtn);
-                    row.getChildren().add(removeCol);
+                        //!TODO urobít zítra :), coz mozek need spánek
+                        System.out.println(c1 + " " + c2 + " " + c3);
+                    }
+                });
+                editCol.getChildren().add(editColBtn);
+                row.getChildren().add(editCol);
+                // mazání
+                VBox removeCol = new VBox();
+                Button removeColBtn = new Button("Remove");
+                removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
+                        //System.out.println();
 
-                attributesList.getChildren().add(attributes.getChildren().size()-1, row);
-                System.out.println(attributesList.getChildren().size()-1);
+                        attributesList.getChildren().remove(attributesList.lookup("#" + id));
+                        attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
+                        activeObj.removeAttr(attr);
+                    }
+                });
+                removeCol.getChildren().add(removeColBtn);
+                row.getChildren().add(removeCol);
+
+                attributesList.getChildren().add(attributes.getChildren().size() - 1, row);
+                System.out.println(attributesList.getChildren().size() - 1);
             }
         }
     }
+
     @FXML private void addOperation() throws IOException {
-        HBox row = new HBox();
-        Text text = new Text("Text");
-        row.getChildren().add(text);
-        operationsList.getChildren().add(row);
+        // vytvoření komponent
+        VBox operationsCol = new VBox();
+            HBox detailRow = new HBox();
+                VBox accessCol = new VBox();
+                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
+                VBox nameCol = new VBox();
+                    TextField nameColText = new TextField(newOperationName.getText());
+                VBox returnTypeCol = new VBox();
+                    TextField returnTypeColText = new TextField(newOperationReturnType.getText());
+                VBox deleteCol = new VBox();
+                    Button deleteColBtn = new Button("Delete");
+            //TODO toto bude jinde
+            HBox operationsRow = new HBox();
+                VBox operationsNameCol = new VBox();
+                    TextField operationName = new TextField("Test name");
+                VBox operationsTypeCol = new VBox();
+                    TextField operationType = new TextField("Test type");
+            HBox addRow = new HBox();
+                VBox addOperationNameCol = new VBox();
+                    TextField addOperationNameColName = new TextField();
+                VBox addOperationTypeCol = new VBox();
+                    TextField addOperationTypeColType = new TextField();
+                VBox addOperationBtnCol = new VBox();
+                    Button addOperationBtn = new Button("Add");
+
+        // přidání komponent do struktury
+        operationsCol.getChildren().add(detailRow);
+            detailRow.getChildren().add(accessCol);
+                accessCol.getChildren().add(accessColChoiceBox);
+            detailRow.getChildren().add(nameCol);
+                nameCol.getChildren().add(nameColText);
+            detailRow.getChildren().add(returnTypeCol);
+                returnTypeCol.getChildren().add(returnTypeColText);
+            detailRow.getChildren().add(deleteCol);
+                deleteCol.getChildren().add(deleteColBtn);
+        operationsCol.getChildren().add(operationsRow);
+            operationsRow.getChildren().add(operationsNameCol);
+                operationsNameCol.getChildren().add(operationName);
+            operationsRow.getChildren().add(operationsTypeCol);
+                operationsTypeCol.getChildren().add(operationType);
+        operationsCol.getChildren().add(addRow);
+            addRow.getChildren().add(addOperationNameCol);
+                addOperationNameCol.getChildren().add(addOperationNameColName);
+            addRow.getChildren().add(addOperationTypeCol);
+                addOperationTypeCol.getChildren().add(addOperationTypeColType);
+            addRow.getChildren().add(addOperationBtnCol);
+                addOperationBtnCol.getChildren().add(addOperationBtn);
+
+        // nastavení dat
+        accessColChoiceBox.setItems(accessibilityList);
+        accessColChoiceBox.setValue("+");
+
+        operationsList.getChildren().add(0, operationsCol);
     }
 
     @FXML private void clickedInterfaceBtn() throws IOException {
@@ -248,6 +333,10 @@ public class UMLEditor extends App{
      */
     private void createClass(Boolean isInterface) {
         String name = className.getText();
+        newAttributeAccess.setItems(accessibilityList);
+        newAttributeAccess.setValue("+");
+        newOperationAccess.setItems(accessibilityList);
+        newOperationAccess.setValue("+");
         if (name.isEmpty())
         {
             leftStatusLabel.setText("No name entered!");
@@ -294,6 +383,7 @@ public class UMLEditor extends App{
 
                         addAttributeBtn.setDisable(false);
                         addOperationBtn.setDisable(false);
+                        addRelationBtn.setDisable(false);
 
                         classDetailPane.setDisable(false);
                         classDetailPane.setExpanded(true);
@@ -309,6 +399,9 @@ public class UMLEditor extends App{
 
                         operationsPane.setDisable(false);
                         operationsPane.setExpanded(true);
+
+                        relationsPane.setDisable(false);
+                        relationsPane.setExpanded(true);
 
                         orgSceneX = event.getSceneX();
                         orgSceneY = event.getSceneY();
