@@ -41,6 +41,7 @@
     </dependencies>
 
     <build>
+        <directory>build</directory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -60,7 +61,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>ija.proj.java_ija_project/ija.proj.HelloApplication</mainClass>
+                            <mainClass>ija.proj.java_ija_project/ija.proj.App</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
