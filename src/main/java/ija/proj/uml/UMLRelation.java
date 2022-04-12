@@ -1,11 +1,34 @@
 package ija.proj.uml;
 
+/**
+ * Třída obsahující informace k relacím
+ */
 public class UMLRelation extends Element {
+	/**
+	 * typ relace
+	 */
 	String type;
+	/**
+	 * první člen relace
+	 */
 	String class1;
+	/**
+	 * druhý člen relace
+	 */
 	String class2;
+	/**
+	 * třetí člen relace (pouze u asociace - mezitabulka)
+	 */
 	String class3;
 
+	/**
+	 * Konstruktor pro relace
+	 * @param name jméno relace
+	 * @param type typ relace
+	 * @param class1 první člen relace
+	 * @param class2 druhý člen relace
+	 * @param class3 třetí člen relace (pouze u asociace - mezitabulka)
+	 */
 	public UMLRelation(String name,String type,String class1, String class2, String class3) {
 		super(name);
 		this.type = type;
@@ -14,18 +37,34 @@ public class UMLRelation extends Element {
 		this.class3 = class3;
 	}
 
+	/**
+	 * metoda getType
+	 * @return typ relace
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * metoda getClass1
+	 * @return název prvního člena relace
+	 */
 	public String getClass1() {
 		return class1;
 	}
 
+	/**
+	 * metoda getClass2
+	 * @return název druhého člena relace
+	 */
 	public String getClass2() {
 		return class2;
 	}
 
+	/**
+	 * metoda getClass3
+	 * @return název třetího člena relace
+	 */
 	public String getClass3() {
 		return class3;
 	}
