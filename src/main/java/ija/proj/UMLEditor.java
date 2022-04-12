@@ -6,11 +6,11 @@ import java.io.Writer;
 import java.util.List;
 
 import com.google.gson.Gson;
+import javafx.application.Application;
 import ija.proj.uml.UMLAttribute;
 import ija.proj.uml.UMLClass;
 import ija.proj.uml.UMLClassifier;
 import ija.proj.uml.UMLRelation;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -87,7 +87,7 @@ public class UMLEditor extends App {
     private Label rightStatusLabel;
 
     @FXML
-    private void saveToFile() throws IOException {
+    public void saveToFile() throws IOException {
         Gson gson = new Gson();
         Writer writer = new FileWriter("data/JSON.json");
         gson.toJson(classDiagram, writer);
@@ -101,8 +101,6 @@ public class UMLEditor extends App {
     private void deleteClass() {
         classDiagram.deleteClass(activeObj);
 
-        main.getChildren().remove(main.lookup(("#" + activeObjName).replaceAll("\\s+", "€")));
-
         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
         for (int i = 0; i < relations.size(); i++) {
             main.getChildren().removeAll(main.lookupAll(("#" + relations.get(i).getClass1() + "ß" + relations.get(i).getClass2() + "Line").replaceAll("\\s+", "€")));
@@ -111,10 +109,18 @@ public class UMLEditor extends App {
         }
         classList.remove(activeObjName);
 
+        // odstranění záznamů atributů v detailu a v entitách
+        VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+        attributesList.getChildren().removeAll(attributesList.lookup("#classAttributes"));
+        attributes.getChildren().removeAll();
+        main.getChildren().remove(main.lookup(("#" + activeObjName).replaceAll("\\s+", "€")));
+
+        // nový položky v listu tříd
         newRelationClass1.setItems(classList);
         newRelationClass2.setItems(classList);
         newRelationClass3.setItems(classList);
 
+        // obnovení detailu vpravo
         detailText.setText("Detail");
 
         addAttributeBtn.setDisable(true);
@@ -135,6 +141,7 @@ public class UMLEditor extends App {
 
         deleteClassBtn.setDisable(true);
 
+        // obnovení proměnných
         activeObj = null;
         activeObjName = null;
     }
@@ -184,10 +191,10 @@ public class UMLEditor extends App {
             if (activeObj.addAttribute(attr)) {
                 VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
                 Text attribute = new Text(access + " <-> " + name + ":" + type);
+                System.out.println(name);
                 attribute.setId(name + "Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
-                //row.setId((name+"Row").replaceAll("\\s+","€")); //old one
                 row.setId("classAttributes");
                 // výběrový box
                 // přistupnost
@@ -195,7 +202,6 @@ public class UMLEditor extends App {
                 ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
                 accessColChoiceBox.setDisable(true);
                 accessColChoiceBox.setItems(accessibilityList);
-                accessColChoiceBox.setValue("+");
                 accessColChoiceBox.setValue(access);
                 accessCol.getChildren().add(accessColChoiceBox);
                 row.getChildren().add(accessCol);
@@ -380,6 +386,8 @@ public class UMLEditor extends App {
                 titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
+                        attributesList.getChildren().removeAll(attributesList.lookupAll("#classAttributes"));
+
                         //((HBox) attributesList.lookupAll("#classAttributes")).getChildren().removeAll();
                         //!TODO zítra
                         activeObjName = titledPane.getId();
@@ -405,6 +413,58 @@ public class UMLEditor extends App {
                             attributesPane.setExpanded(true);
                         }
                         activeObj = classDiagram.getObject(activeObjName);
+
+                        for (int i = 0; i < activeObj.attributes.size(); i++) {
+                            VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+                            UMLAttribute attr = activeObj.attributes.get(i);
+
+                            String access = attr.getAccessibility();
+                            String name = attr.getName();
+                            String type = attr.getType().getName();
+                            HBox row = new HBox();
+                            row.setId("classAttributes");
+                            // výběrový box
+                            // přistupnost
+                            VBox accessCol = new VBox();
+                            ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
+                            accessColChoiceBox.setDisable(true);
+                            accessColChoiceBox.setItems(accessibilityList);
+                            accessColChoiceBox.setValue(access);
+                            accessCol.getChildren().add(accessColChoiceBox);
+                            row.getChildren().add(accessCol);
+                            // texty
+                            // jméno
+                            VBox nameCol = new VBox();
+                            TextField nameColText = new TextField(name);
+                            nameColText.setDisable(true);
+                            nameCol.getChildren().add(nameColText);
+                            row.getChildren().add(nameCol);
+                            // typ
+                            VBox typeCol = new VBox();
+                            TextField typeColText = new TextField(type);
+                            typeColText.setDisable(true);
+                            typeCol.getChildren().add(typeColText);
+                            row.getChildren().add(typeCol);
+                            // tlačítka
+                            // mazání
+                            VBox removeCol = new VBox();
+                            Button removeColBtn = new Button("Remove");
+                            removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent event) {
+                                    String id = row.getId(); //((HBox)((VBox) ((Button) event.getSource()).getParent()).getParent()).getId();
+                                    //System.out.println();
+
+                                    attributesList.getChildren().remove(attributesList.lookup("#" + id)); //TODO maže divný věci
+                                    attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
+                                    activeObj.removeAttr(attr);
+                                }
+                            });
+                            removeCol.getChildren().add(removeColBtn);
+                            row.getChildren().add(removeCol);
+
+                            attributesList.getChildren().add(attributesList.getChildren().size() - 1, row);
+                        }
 
                         operationsPane.setDisable(false);
                         operationsPane.setExpanded(true);

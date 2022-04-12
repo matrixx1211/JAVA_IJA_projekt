@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class UMLClass extends UMLClassifier {
-    Boolean isAbstract;
-    List<UMLAttribute> attributes;
-    List<UMLOperation> operations;
+    public Boolean isAbstract;
+    public List<UMLAttribute> attributes;
+    public List<UMLOperation> operations;
     Integer id;
-    Boolean isInterface;
+    public Boolean isInterface;
 
     public UMLClass(String name, Integer id, Boolean isInterface) {
         super(name);
