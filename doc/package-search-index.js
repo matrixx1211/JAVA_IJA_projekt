@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"ija.proj","l":"ija.proj"},{"m":"ija.proj","l":"ija.proj.uml"}]
