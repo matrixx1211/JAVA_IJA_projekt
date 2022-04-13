@@ -114,7 +114,7 @@
                                  <children>
                                     <VBox fx:id="attributesList" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <children>
-                                          <HBox>
+                                          <HBox fx:id="attributeListAddRow">
                                              <children>
                                                 <ChoiceBox fx:id="newAttributeAccess" prefHeight="25.0" value="#">
                                                    <items>
