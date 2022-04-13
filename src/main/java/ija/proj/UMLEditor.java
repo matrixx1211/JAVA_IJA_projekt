@@ -100,35 +100,67 @@ public class UMLEditor extends App {
     @FXML
     private Label rightStatusLabel;
 
+    /**
+     * Ukončí program
+     */
+    @FXML public void quit() {
+        System.exit(0);
+    }
+
+    /**
+     * Vytvoří nový soubor a vše co nebylo uloženo se vymaže
+     *
+     * @throws IOException chyba při načítaní fxml
+     */
     @FXML
     public void newFile() throws IOException {
         classDiagram = new ClassDiagram("Diagram");
         App.setRoot("UMLEditor");
     }
 
+    /**
+     * Uloží data z classDiagramu do JSON souboru
+     */
     @FXML
-    public void saveToFile() throws IOException {
+    public void saveToFile() {
+        try {
 
         Gson gson = new Gson();
-        Writer writer = new FileWriter("data/JSON.json");
+        Writer writer = new FileWriter(System.getProperty("user.dir")+"/../data/JSON.json");
         writer.write(gson.toJson(classDiagram));
         writer.close();
+        } catch (Exception e){
+            leftStatusLabel.setText(e.toString());
+        }
+
     }
+
+    /**
+     * Otevře JSON soubor s daty a uloží je do tříd resp. classDiagramu
+     */
     @FXML
-    private void openFromFile() throws IOException {
-        Gson gson = new Gson();
-        newFile();
-        Reader reader = new FileReader("data/JSON.json");
-        classDiagram = gson.fromJson(reader, ClassDiagram.class);
-        System.out.println(classDiagram.getName());
+    private void openFromFile() {
+        try {
+            Gson gson = new Gson();
+            newFile();
+            Reader reader = new FileReader(System.getProperty("user.dir")+"/../data/JSON.json");
+            classDiagram = gson.fromJson(reader, ClassDiagram.class);
+            System.out.println(classDiagram.getName());
+        } catch (Exception e){
+            leftStatusLabel.setText(e.toString());
+        }
+
         //for (int i = 0; i < classDiagram.classes.size(); i++) {
             //drawclass(classDiagram.classes.get(i));
         //}
         //TODO Vykresleni
     }
 
+    /**
+     * Vymaže třídu/rozhraní všude
+     */
     @FXML
-    private void deleteClass() {
+    public void deleteClass() {
         classDiagram.deleteClass(activeObj);
 
         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
@@ -176,13 +208,16 @@ public class UMLEditor extends App {
         activeObjName = null;
     }
 
+    /**
+     * Změní jméno třídy/rozhraní všude při kliknutí na tlačítko change v kartě class detail
+     */
     @FXML
-    private void changeClassName() throws IOException {
+    public void changeClassName() {
         String newName = newClassName.getText();
         if (newName.isEmpty()) {
             newName = " ";
         }
-        if (classDiagram.changeClassName(activeObjName, newName) == true) {
+        if (classDiagram.changeClassName(activeObjName, newName)) {
             detailText.setText("Detail of " + newName);
             TitledPane classTable = ((TitledPane) main.lookup("#" + activeObjName.replaceAll("\\s+", "€")));
             classTable.setText(newName);
@@ -204,8 +239,11 @@ public class UMLEditor extends App {
         newClassName.setText(activeObjName);
     }
 
+    /**
+     * Přidá atribut třídě/rozhraní všude při kliknutí na tlačítko add v kartě attributes
+     */
     @FXML
-    private void addAttribute() throws IOException {
+    public void addAttribute() {
         String access = newAttributeAccess.getSelectionModel().getSelectedItem().toString();
         String name = newAttributeName.getText();
         String type = newAttributeType.getText();
@@ -304,7 +342,10 @@ public class UMLEditor extends App {
         }
     }
 
-    @FXML private void addOperation() throws IOException {
+    /**
+     * Přidá operaci třídě/rozhraní všude při kliknutí na tlačítko add v kartě opperations
+     */
+    @FXML public void addOperation() {
         // vytvoření komponent
         VBox operationsCol = new VBox();
             HBox detailRow = new HBox();
@@ -369,10 +410,10 @@ public class UMLEditor extends App {
         operationsList.getChildren().add(0, operationsCol);
     }
 
-    @FXML private void clickedInterfaceBtn() throws IOException {
+    @FXML private void clickedInterfaceBtn()  {
         createClass(true);
     }
-    @FXML private void clickedClassBtn() throws IOException {
+    @FXML private void clickedClassBtn() {
         createClass(false);
     }
 
@@ -382,7 +423,7 @@ public class UMLEditor extends App {
      *
      * @param isInterface nastavuje příznak rozhraní
      */
-    private void createClass(Boolean isInterface) {
+    public void createClass(Boolean isInterface) {
         String name = className.getText();
         newAttributeAccess.setItems(accessibilityList);
         newAttributeAccess.setValue("+");
@@ -550,7 +591,10 @@ public class UMLEditor extends App {
         }
     }
 
-    @FXML private void addRelation() throws IOException {
+    /**
+     * Přidá relaci mezi třídami/rozhraními při kliknutí na tlačítko add v kartě relations
+     */
+    @FXML public void addRelation() {
         String name = ((TextField)(relationsPane.lookup("#newRelationName"))).getText();
         String type = ((ChoiceBox)(relationsPane.lookup("#newRelationType"))).getValue().toString();
         String class1 = ((ChoiceBox)(relationsPane.lookup("#newRelationClass1"))).getValue().toString();
@@ -627,6 +671,11 @@ public class UMLEditor extends App {
         drawRelation(relation);
     }
 
+    /**
+     * Vykreslí relaci podle nastaveného typu
+     *
+     * @param relation instance třídy relace obsahují data potřebné k propojení
+     */
     public void drawRelation(UMLRelation relation) {
         String name = relation.getName();
         String type = relation.getType();
