@@ -25,7 +25,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
               <transformers>
                 <transformer>
                   <mainClass>ija.proj.Main</mainClass>
@@ -33,9 +33,17 @@
               </transformers>
               <finalName>ija-app</finalName>
               <outputDirectory>dest/</outputDirectory>
+              <outputFile>dest/ija-app.jar</outputFile>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <outputDirectory>doc</outputDirectory>
+        </configuration>
       </plugin>
     </plugins>
   </build>

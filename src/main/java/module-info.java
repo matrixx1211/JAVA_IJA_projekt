@@ -5,8 +5,6 @@ module ija.proj {
     requires com.google.gson;
 
 
-    opens ija.proj to javafx.fxml, com.google.gson;
-    opens ija.proj.uml to javafx.fxml, com.google.gson;
+    opens ija.proj to javafx.fxml;
     exports ija.proj;
-    exports ija.proj.uml;
 }
