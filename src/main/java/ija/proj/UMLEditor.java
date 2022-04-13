@@ -60,6 +60,8 @@ public class UMLEditor extends App {
     @FXML
     private VBox attributesList;
     @FXML
+    private HBox attributesListAddRow;
+    @FXML
     private ChoiceBox<String> newAttributeAccess;
     @FXML
     private TextField newAttributeName;
@@ -223,7 +225,7 @@ public class UMLEditor extends App {
                 attribute.setId(name + "Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
-                row.setId("classAttributes");
+                row.setId((name+"Row").replaceAll("\\s+","€"));
                 // výběrový box
                 // přistupnost
                 VBox accessCol = new VBox();
@@ -288,7 +290,7 @@ public class UMLEditor extends App {
                 removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        attributesList.getChildren().remove("#classAttributes");
+                        attributesList.getChildren().remove(attributesList.lookup("#"+(name+"Row").replaceAll("\\s+","€")));
                         attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
                         activeObj.removeAttr(attr);
                     }
@@ -421,8 +423,7 @@ public class UMLEditor extends App {
                 titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        attributesList.getChildren().removeAll(attributesList.lookupAll("#classAttributes"));
-
+                        attributesList.getChildren().remove(0, attributesList.getChildren().size()-1);
                         activeObjName = titledPane.getId();
                         Label label = new Label("My Label");
                         detailText.setText("Detail of "+titledPane.getText());
@@ -455,7 +456,7 @@ public class UMLEditor extends App {
                             String name = attr.getName();
                             String type = attr.getType().getName();
                             HBox row = new HBox();
-                            row.setId("classAttributes");
+                            row.setId((name+"Row").replaceAll("\\s+","€"));
                             // výběrový box
                             // přistupnost
                             VBox accessCol = new VBox();
@@ -485,7 +486,7 @@ public class UMLEditor extends App {
                             removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent event) {
-                                    attributesList.getChildren().remove(attributesList.lookup("#classAttributes")); //TODO maže divný věci
+                                    attributesList.getChildren().remove(attributesList.lookup("#"+(name+"Row").replaceAll("\\s+","€")));
                                     attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
                                     activeObj.removeAttr(attr);
                                 }
@@ -753,7 +754,7 @@ public class UMLEditor extends App {
     /**
      * Otevře nápovědu
      */
-    @FXML private void openHelp() {
+    @FXML public void openHelp() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("Help.fxml"));
