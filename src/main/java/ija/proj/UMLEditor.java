@@ -317,9 +317,7 @@ public class UMLEditor extends App {
             //TODO toto bude jinde
             HBox operationsRow = new HBox();
                 VBox operationsNameCol = new VBox();
-                    TextField operationName = new TextField("Test name");
                 VBox operationsTypeCol = new VBox();
-                    TextField operationType = new TextField("Test type");
             HBox addRow = new HBox();
                 VBox addOperationNameCol = new VBox();
                     TextField addOperationNameColName = new TextField();
@@ -340,9 +338,9 @@ public class UMLEditor extends App {
                 deleteCol.getChildren().add(deleteColBtn);
         operationsCol.getChildren().add(operationsRow);
             operationsRow.getChildren().add(operationsNameCol);
-                operationsNameCol.getChildren().add(operationName);
+
             operationsRow.getChildren().add(operationsTypeCol);
-                operationsTypeCol.getChildren().add(operationType);
+
         operationsCol.getChildren().add(addRow);
             addRow.getChildren().add(addOperationNameCol);
                 addOperationNameCol.getChildren().add(addOperationNameColName);
@@ -351,6 +349,17 @@ public class UMLEditor extends App {
             addRow.getChildren().add(addOperationBtnCol);
                 addOperationBtnCol.getChildren().add(addOperationBtn);
 
+        // TODO: 13.04.2022 Ládine prosím tě :)
+        addOperationBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("Děláš něco?");
+                System.out.println(addOperationNameColName.getText());
+                TextField operationName = new TextField(addOperationNameColName.getText()); //toto
+                TextField operationType = new TextField(addOperationTypeColType.getText()); //toto
+                operationsNameCol.getChildren().add(operationName);
+                operationsTypeCol.getChildren().add(operationType);
+            }});
         // nastavení dat
         accessColChoiceBox.setItems(accessibilityList);
         accessColChoiceBox.setValue("+");

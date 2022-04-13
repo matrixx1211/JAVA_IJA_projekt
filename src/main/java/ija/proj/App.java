@@ -48,6 +48,12 @@ public class App extends Application {
         stage.setTitle("UML Editor");
         stage.show();
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+        Scene scene = new Scene(loadFXML("Help") , 600, 400);
+        Stage helpStage = new Stage();
+        helpStage.setTitle("Help");
+        helpStage.setScene(scene);
+        helpStage.show();
     }
 
     /**
