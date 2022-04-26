@@ -160,6 +160,14 @@ public class UMLClass extends UMLClassifier {
         this.y = y;
     }
 
+    public double getPositionX(){
+        return this.x;
+    }
+
+    public double getPositionY(){
+        return this.y;
+    }
+
     /**
      * Získá nemodifikovatelný seznam attributů
      * @return seznam attributů

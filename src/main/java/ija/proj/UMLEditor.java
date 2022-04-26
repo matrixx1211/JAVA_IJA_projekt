@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import javafx.application.Application;
 import ija.proj.uml.*;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -124,15 +125,13 @@ public class UMLEditor extends App {
     @FXML
     public void saveToFile() {
         try {
-
-        Gson gson = new Gson();
-        Writer writer = new FileWriter(System.getProperty("user.dir")+"/../data/JSON.json");
-        writer.write(gson.toJson(classDiagram));
-        writer.close();
-        } catch (Exception e){
-            leftStatusLabel.setText(e.toString());
-        }
-
+            Gson gson = new Gson();
+            Writer writer = new FileWriter("./data/JSON.json");
+            writer.write(gson.toJson(classDiagram));
+            writer.close();
+            } catch (Exception e){
+                leftStatusLabel.setText(e.toString());
+            }
     }
 
     /**
@@ -141,19 +140,188 @@ public class UMLEditor extends App {
     @FXML
     private void openFromFile() {
         try {
+            main.getChildren().removeAll(main.getChildren());
+            relationsList.getChildren().remove(0, relationsList.getChildren().size()-1);
             Gson gson = new Gson();
-            newFile();
-            Reader reader = new FileReader(System.getProperty("user.dir")+"/../data/JSON.json");
+            Reader reader = new FileReader("./data/JSON.json");
             classDiagram = gson.fromJson(reader, ClassDiagram.class);
             System.out.println(classDiagram.getName());
+            classList.removeAll(classList);
+            for (int i = 0; i < classDiagram.classes.size(); i++) {
+                drawClass(classDiagram.classes.get(i));
+                //nastaveni listu pro vyber class na relaci
+                classList.add(classDiagram.classes.get(i).getName());
+            }
+            Platform.runLater(() -> {
+                        for (int i = 0; i < classDiagram.relations.size(); i++) {
+                            createRelation(classDiagram.relations.get(i));
+                            System.out.println("ey");
+                        }
+                    });
+            newRelationClass1.setItems(classList);
+            newRelationClass2.setItems(classList);
+            newRelationClass3.setItems(classList);
+            newRelationClass1.setValue("");
+            newRelationClass2.setValue("");
+            newRelationClass3.setValue("");
         } catch (Exception e){
             leftStatusLabel.setText(e.toString());
         }
+    }
 
-        //for (int i = 0; i < classDiagram.classes.size(); i++) {
-            //drawclass(classDiagram.classes.get(i));
-        //}
-        //TODO Vykresleni
+    public void drawClass(UMLClass newclass) {
+        //mazani stare
+        main.getChildren().remove(main.lookup(("#" + newclass.getName()).replaceAll("\\s+", "€")));
+        //vytvoreni nove
+
+        VBox vbox = new VBox();
+        if (!newclass.isInterface()) {
+            // atributy
+            VBox attributes = new VBox();
+            vbox.getChildren().add(attributes);
+            attributes.setId((newclass.getName()+"Attributes").replaceAll("\\s+","€"));
+            for (int i = 0; i < newclass.attributes.size(); i++) {
+                UMLAttribute attr = newclass.attributes.get(i);
+                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType());
+                attributes.getChildren().add(attribute);
+            }
+            // separátor
+            vbox.getChildren().add(new Separator());
+        }
+
+        // metody
+        VBox operations = new VBox();
+        vbox.getChildren().add(operations);
+        operations.setId((newclass.getName()+"Operations").replaceAll("\\s+","€"));
+        for (int i = 0; i < newclass.operations.size(); i++) {
+            UMLOperation op = newclass.operations.get(i);
+            Text operation = new Text(op.getAccessibility() + " <-> " + op.getName() + ":" + op.getType());
+            operations.getChildren().add(operation);
+        }
+
+        // vytvoření tabulky Třídy
+        TitledPane titledPane = new TitledPane(newclass.getName(), vbox);
+        titledPane.setId(newclass.getName().replaceAll("\\s+","€"));
+        titledPane.setPrefSize(-1, -1);
+        titledPane.setLayoutX(newclass.getPositionX());
+        titledPane.setLayoutY(newclass.getPositionY());
+        titledPane.setCollapsible(false);
+        titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                attributesList.getChildren().remove(0, attributesList.getChildren().size()-1);
+                activeObjName = titledPane.getId();
+                Label label = new Label("My Label");
+                detailText.setText("Detail of "+titledPane.getText());
+                newClassName.setText(titledPane.getText());
+                activeObjName = titledPane.getText();
+
+                deleteClassBtn.setDisable(false);
+
+                addAttributeBtn.setDisable(false);
+                addOperationBtn.setDisable(false);
+                addRelationBtn.setDisable(false);
+
+                classDetailPane.setDisable(false);
+                classDetailPane.setExpanded(true);
+                if (newclass.isInterface()) {
+                    attributesPane.setDisable(true);
+                    attributesPane.setExpanded(false);
+                }
+                else {
+                    attributesPane.setDisable(false);
+                    attributesPane.setExpanded(true);
+                }
+                activeObj = classDiagram.getObject(activeObjName);
+
+                for (int i = 0; i < activeObj.attributes.size(); i++) {
+                    VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+                    UMLAttribute attr = activeObj.attributes.get(i);
+
+                    String access = attr.getAccessibility();
+                    String name = attr.getName();
+                    String type = attr.getType().getName();
+                    HBox row = new HBox();
+                    row.setId((name+"Row").replaceAll("\\s+","€"));
+                    // výběrový box
+                    // přistupnost
+                    VBox accessCol = new VBox();
+                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
+                    accessColChoiceBox.setDisable(true);
+                    accessColChoiceBox.setItems(accessibilityList);
+                    accessColChoiceBox.setValue(access);
+                    accessCol.getChildren().add(accessColChoiceBox);
+                    row.getChildren().add(accessCol);
+                    // texty
+                    // jméno
+                    VBox nameCol = new VBox();
+                    TextField nameColText = new TextField(name);
+                    nameColText.setDisable(true);
+                    nameCol.getChildren().add(nameColText);
+                    row.getChildren().add(nameCol);
+                    // typ
+                    VBox typeCol = new VBox();
+                    TextField typeColText = new TextField(type);
+                    typeColText.setDisable(true);
+                    typeCol.getChildren().add(typeColText);
+                    row.getChildren().add(typeCol);
+                    // tlačítka
+                    // mazání
+                    VBox removeCol = new VBox();
+                    Button removeColBtn = new Button("Remove");
+                    removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            attributesList.getChildren().remove(attributesList.lookup("#"+(name+"Row").replaceAll("\\s+","€")));
+                            attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
+                            activeObj.removeAttr(attr);
+                        }
+                    });
+                    removeCol.getChildren().add(removeColBtn);
+                    row.getChildren().add(removeCol);
+
+                    attributesList.getChildren().add(attributesList.getChildren().size() - 1, row);
+                }
+
+                operationsPane.setDisable(false);
+                operationsPane.setExpanded(true);
+
+                relationsPane.setDisable(false);
+                relationsPane.setExpanded(true);
+
+                orgSceneX = event.getSceneX();
+                orgSceneY = event.getSceneY();
+                orgTranslateX = ((TitledPane)(event.getSource())).getTranslateX();
+                orgTranslateY = ((TitledPane)(event.getSource())).getTranslateY();
+            }
+        });
+
+        // pohyb tabulky při táhnutí myší
+        titledPane.setOnMouseDragged(new EventHandler <MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent event) {
+                double offsetX = event.getSceneX() - orgSceneX;
+                double offsetY = event.getSceneY() - orgSceneY;
+                double newTranslateX = orgTranslateX + offsetX;
+                double newTranslateY = orgTranslateY + offsetY;
+
+                ((TitledPane)(event.getSource())).setTranslateX(newTranslateX);
+                ((TitledPane)(event.getSource())).setTranslateY(newTranslateY);
+
+                activeObj.setPosition(((TitledPane)(event.getSource())).getLayoutX()+newTranslateX, ((TitledPane)(event.getSource())).getLayoutY()+newTranslateY);
+
+                List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
+                for (int i = 0; i < relations.size(); i++) {
+                    main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
+                    drawRelation(relations.get(i));
+                }
+            }
+        });
+
+        // vložení panu do mainu
+        System.out.println(titledPane.getLayoutX() + " "+ titledPane.getTranslateX() + " " + newclass.getPositionX());
+        main.getChildren().add(titledPane);
     }
 
     /**
@@ -435,147 +603,9 @@ public class UMLEditor extends App {
         } else {
             UMLClass newObj = classDiagram.createClass(name, idCounter, isInterface);
             if (newObj != null) {
-                // vytvoření listu
-                VBox vbox = new VBox();
-
-                if (!isInterface) {
-                    // atributy
-                    VBox attributes = new VBox();
-                    vbox.getChildren().add(attributes);
-                    attributes.setId((name+"Attributes").replaceAll("\\s+","€"));
-
-                    // separátor
-                    vbox.getChildren().add(new Separator());
-                }
-
-                // metody
-                VBox operations = new VBox();
-                vbox.getChildren().add(operations);
-                operations.setId((name+"Operations").replaceAll("\\s+","€"));
-
-                // vytvoření tabulky Třídy
-                TitledPane titledPane = new TitledPane(name, vbox);
-                titledPane.setId(name.replaceAll("\\s+","€"));
-                titledPane.setPrefSize(-1, -1);
-                titledPane.setLayoutX(10*idCounter);
-                titledPane.setLayoutY(10*idCounter);
                 newObj.setPosition(10*idCounter, 10*idCounter);
-                titledPane.setCollapsible(false);
-                titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        attributesList.getChildren().remove(0, attributesList.getChildren().size()-1);
-                        activeObjName = titledPane.getId();
-                        Label label = new Label("My Label");
-                        detailText.setText("Detail of "+titledPane.getText());
-                        newClassName.setText(titledPane.getText());
-                        activeObjName = titledPane.getText();
-
-                        deleteClassBtn.setDisable(false);
-
-                        addAttributeBtn.setDisable(false);
-                        addOperationBtn.setDisable(false);
-                        addRelationBtn.setDisable(false);
-
-                        classDetailPane.setDisable(false);
-                        classDetailPane.setExpanded(true);
-                        if (isInterface) {
-                            attributesPane.setDisable(true);
-                            attributesPane.setExpanded(false);
-                        }
-                        else {
-                            attributesPane.setDisable(false);
-                            attributesPane.setExpanded(true);
-                        }
-                        activeObj = classDiagram.getObject(activeObjName);
-
-                        for (int i = 0; i < activeObj.attributes.size(); i++) {
-                            VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
-                            UMLAttribute attr = activeObj.attributes.get(i);
-
-                            String access = attr.getAccessibility();
-                            String name = attr.getName();
-                            String type = attr.getType().getName();
-                            HBox row = new HBox();
-                            row.setId((name+"Row").replaceAll("\\s+","€"));
-                            // výběrový box
-                            // přistupnost
-                            VBox accessCol = new VBox();
-                            ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
-                            accessColChoiceBox.setDisable(true);
-                            accessColChoiceBox.setItems(accessibilityList);
-                            accessColChoiceBox.setValue(access);
-                            accessCol.getChildren().add(accessColChoiceBox);
-                            row.getChildren().add(accessCol);
-                            // texty
-                            // jméno
-                            VBox nameCol = new VBox();
-                            TextField nameColText = new TextField(name);
-                            nameColText.setDisable(true);
-                            nameCol.getChildren().add(nameColText);
-                            row.getChildren().add(nameCol);
-                            // typ
-                            VBox typeCol = new VBox();
-                            TextField typeColText = new TextField(type);
-                            typeColText.setDisable(true);
-                            typeCol.getChildren().add(typeColText);
-                            row.getChildren().add(typeCol);
-                            // tlačítka
-                            // mazání
-                            VBox removeCol = new VBox();
-                            Button removeColBtn = new Button("Remove");
-                            removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent event) {
-                                    attributesList.getChildren().remove(attributesList.lookup("#"+(name+"Row").replaceAll("\\s+","€")));
-                                    attributes.getChildren().remove(attributes.lookup("#" + name + "Attr"));
-                                    activeObj.removeAttr(attr);
-                                }
-                            });
-                            removeCol.getChildren().add(removeColBtn);
-                            row.getChildren().add(removeCol);
-
-                            attributesList.getChildren().add(attributesList.getChildren().size() - 1, row);
-                        }
-
-                        operationsPane.setDisable(false);
-                        operationsPane.setExpanded(true);
-
-                        relationsPane.setDisable(false);
-                        relationsPane.setExpanded(true);
-
-                        orgSceneX = event.getSceneX();
-                        orgSceneY = event.getSceneY();
-                        orgTranslateX = ((TitledPane)(event.getSource())).getTranslateX();
-                        orgTranslateY = ((TitledPane)(event.getSource())).getTranslateY();
-                    }
-                });
-
-                // pohyb tabulky při táhnutí myší
-                titledPane.setOnMouseDragged(new EventHandler <MouseEvent>()
-                {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        double offsetX = event.getSceneX() - orgSceneX;
-                        double offsetY = event.getSceneY() - orgSceneY;
-                        double newTranslateX = orgTranslateX + offsetX;
-                        double newTranslateY = orgTranslateY + offsetY;
-
-                        ((TitledPane)(event.getSource())).setTranslateX(newTranslateX);
-                        ((TitledPane)(event.getSource())).setTranslateY(newTranslateY);
-
-                        activeObj.setPosition(((TitledPane)(event.getSource())).getLayoutX()+newTranslateX, ((TitledPane)(event.getSource())).getLayoutY()+newTranslateY);
-
-                        List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
-                        for (int i = 0; i < relations.size(); i++) {
-                            main.getChildren().removeAll(main.lookupAll(("#"+relations.get(i).getClass1()+"ß"+relations.get(i).getClass2()+"Line").replaceAll("\\s+","€")));
-                            drawRelation(relations.get(i));
-                        }
-                    }
-                });
-
-                // vložení panu do mainu
-                main.getChildren().add(titledPane);
+                // vytvoření listu
+                drawClass(newObj);
 
                 // zvednutí id pro další class
                 this.idCounter++;
@@ -614,37 +644,41 @@ public class UMLEditor extends App {
             //TODO chyba relace jiz existuje
             return;
         }
+        createRelation(relation);
+    }
+
+    public void createRelation(UMLRelation relation) {
         HBox row = new HBox();
-        row.setId((class1+"ß"+class2+"RelRow").replaceAll("\\s+","€"));
+        row.setId((relation.getClass1()+"ß"+relation.getClass2()+"RelRow").replaceAll("\\s+","€"));
         System.out.println(row.getId());
         // texty
         // typ
         VBox typeCol = new VBox();
-        TextField typeColText = new TextField(type);
+        TextField typeColText = new TextField(relation.getType());
         typeColText.setDisable(true);
         typeCol.getChildren().add(typeColText);
         row.getChildren().add(typeCol);
         // jméno
         VBox nameCol = new VBox();
-        TextField nameColText = new TextField(name);
+        TextField nameColText = new TextField(relation.getName());
         nameColText.setDisable(true);
         nameCol.getChildren().add(nameColText);
         row.getChildren().add(nameCol);
         // class1
         VBox class1Col = new VBox();
-        TextField class1ColText = new TextField(class1);
+        TextField class1ColText = new TextField(relation.getClass1());
         class1ColText.setDisable(true);
         class1Col.getChildren().add(class1ColText);
         row.getChildren().add(class1Col);
         // class2
         VBox class2Col = new VBox();
-        TextField class2ColText = new TextField(class2);
+        TextField class2ColText = new TextField(relation.getClass2());
         class2ColText.setDisable(true);
         class2Col.getChildren().add(class2ColText);
         row.getChildren().add(class2Col);
         // class3
         VBox class3Col = new VBox();
-        TextField class3ColText = new TextField(class3);
+        TextField class3ColText = new TextField(relation.getClass3());
         class3ColText.setDisable(true);
         class3Col.getChildren().add(class3ColText);
         row.getChildren().add(class3Col);
@@ -694,6 +728,8 @@ public class UMLEditor extends App {
         double y3;
         double h3;
         double w3;
+
+        System.out.println(w1);
 
         if (type.compareTo("association") == 0){
             if (class1 != class2){

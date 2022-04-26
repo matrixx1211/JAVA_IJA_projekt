@@ -40,13 +40,15 @@ public class App extends Application {
      */
     public static ObservableList<String> classList = FXCollections.observableArrayList();
 
+    public static Stage newstage;
 
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("UMLEditor"));
-        stage.setScene(scene);
-        stage.setTitle("UML Editor");
-        stage.show();
+        newstage = stage;
+        newstage.setScene(scene);
+        newstage.setTitle("UML Editor");
+        newstage.show();
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         Scene scene = new Scene(loadFXML("Help") , 600, 400);
@@ -66,7 +68,7 @@ public class App extends Application {
         scene.setRoot(loadFXML(fxml));
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
+    public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }

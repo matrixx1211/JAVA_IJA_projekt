@@ -173,7 +173,7 @@ public class ClassDiagram extends Element {
 		UMLRelation obj;
 		for (int i = 0; i < this.relations.size(); i++) {
 			obj = this.relations.get(i);
-			if ((obj.class1 == class1 && obj.class2 == class2) || (obj.class1 == class2 && obj.class2 == class1)) {
+			if ((obj.class1.compareTo(class1) == 0 && obj.class2.compareTo(class2) == 0) || (obj.class1.compareTo(class2) == 0 && obj.class2.compareTo(class1) == 0)) {
 				//TODO add into bottom bar "relation already exists"
 				return null;
 			}
