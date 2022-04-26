@@ -40,15 +40,12 @@ public class App extends Application {
      */
     public static ObservableList<String> classList = FXCollections.observableArrayList();
 
-    public static Stage newstage;
-
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("UMLEditor"));
-        newstage = stage;
-        newstage.setScene(scene);
-        newstage.setTitle("UML Editor");
-        newstage.show();
+        stage.setScene(scene);
+        stage.setTitle("UML Editor");
+        stage.show();
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         Scene scene = new Scene(loadFXML("Help") , 600, 400);
