@@ -141,6 +141,20 @@ public class UMLEditor extends App {
     private void openFromFile() {
         try {
             main.getChildren().removeAll(main.getChildren());
+
+            detailText.setText("Detail");
+
+            deleteClassBtn.setDisable(true);
+
+            classDetailPane.setDisable(true);
+            classDetailPane.setExpanded(false);
+            attributesPane.setDisable(true);
+            attributesPane.setExpanded(false);
+            operationsPane.setDisable(true);
+            operationsPane.setExpanded(false);
+            relationsPane.setDisable(false);
+            relationsPane.setExpanded(true);
+
             relationsList.getChildren().remove(0, relationsList.getChildren().size()-1);
             Gson gson = new Gson();
             Reader reader = new FileReader("./data/JSON.json");
@@ -155,7 +169,6 @@ public class UMLEditor extends App {
             Platform.runLater(() -> {
                         for (int i = 0; i < classDiagram.relations.size(); i++) {
                             createRelation(classDiagram.relations.get(i));
-                            System.out.println("ey");
                         }
                     });
             newRelationClass1.setItems(classList);
