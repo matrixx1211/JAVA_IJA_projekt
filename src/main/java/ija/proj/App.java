@@ -40,9 +40,12 @@ public class App extends Application {
      */
     public static ObservableList<String> classList = FXCollections.observableArrayList();
 
+    public Stage stage;
+
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("UMLEditor"));
+        this.stage = stage;
         stage.setScene(scene);
         stage.setTitle("UML Editor");
         stage.show();
@@ -52,7 +55,7 @@ public class App extends Application {
         Stage helpStage = new Stage();
         helpStage.setTitle("Help");
         helpStage.setScene(scene);
-        helpStage.show();
+        //helpStage.show(); //FIXME odkomentovat v poslední fázi
     }
 
     /**
