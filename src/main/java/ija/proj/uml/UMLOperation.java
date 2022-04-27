@@ -55,10 +55,13 @@ public class UMLOperation extends UMLAttribute {
      * @return true pokud byl přidán, false pokud již existuje
      */
     public boolean addArgument(UMLAttribute arg) {
-        if (!this.args.contains(arg))
-            if (this.args.add(arg))
-                return true;
-        return false;
+        for (int i = 0; i < this.args.size(); i++) {
+            if (this.args.get(i).getName().compareTo(arg.getName()) == 0) {
+                return false;
+            }
+        }
+        this.args.add(arg);
+        return true;
     }
 
     /**

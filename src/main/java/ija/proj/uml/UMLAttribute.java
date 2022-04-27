@@ -54,6 +54,6 @@ public class UMLAttribute extends Element {
      * @return řetězec název:typ
      */
     public String toString() {
-        return String.format("%s:%s", this.name, this.type);
+        return String.format("%s:%s", this.name, this.type.getName());
     }
 }

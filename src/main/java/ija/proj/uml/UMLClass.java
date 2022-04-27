@@ -151,6 +151,36 @@ public class UMLClass extends UMLClassifier {
     }
 
     /**
+     * Přidá operaci do seznamu operací
+     * @param op operace
+     * @return true (pokud se povedlo), false (již existuje)
+     */
+    public Boolean addOperation(UMLOperation op) {
+        for (int i = 0; i < this.operations.size(); i++) {
+            if (this.operations.get(i).getName().compareTo(op.getName()) == 0) {
+                return false;
+            }
+        }
+        this.operations.add(op);
+        return true;
+    }
+
+    /**
+     * Provede smazání operace ze seznamu
+     * @param op mazaná operace
+     * @return true (pokud se povedlo), false (pokud nebyla operace nalezena)
+     */
+    public Boolean removeOperation(UMLOperation op) {
+        for (int i = 0; i < this.operations.size(); i++) {
+            if (this.operations.get(i) == op) {
+                this.operations.remove(op);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Nastaví X a Y souřadnice třídy / rozhraní
      * @param x X souřadnice
      * @param y Y souřadnice

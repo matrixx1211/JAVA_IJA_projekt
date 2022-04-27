@@ -208,7 +208,12 @@ public class UMLEditor extends App {
         operations.setId((newclass.getName()+"Operations").replaceAll("\\s+","€"));
         for (int i = 0; i < newclass.operations.size(); i++) {
             UMLOperation op = newclass.operations.get(i);
-            Text operation = new Text(op.getAccessibility() + " <-> " + op.getName() + ":" + op.getType());
+            String args = "";
+            if (op.getArguments().size() != 0)
+                args = (op.getArguments().get(0).toString());
+            for (int j = 1; j < op.getArguments().size(); j++)
+                args = (args + ", " + op.getArguments().get(j).toString());
+            Text operation = new Text(op.getAccessibility() + " <-> " + op.getName() + "(" + args + "):" + op.getType().getName());
             operations.getChildren().add(operation);
         }
 
@@ -223,6 +228,11 @@ public class UMLEditor extends App {
             @Override
             public void handle(MouseEvent event) {
                 attributesList.getChildren().remove(0, attributesList.getChildren().size()-1);
+                operationsList.getChildren().remove(0, operationsList.getChildren().size()-1);
+
+                for (int i = 0; i < newclass.operations.size(); i++) {
+                    detailOperationFill(newclass.operations.get(i));
+                }
                 activeObjName = titledPane.getId();
                 Label label = new Label("My Label");
                 detailText.setText("Detail of "+titledPane.getText());
@@ -333,8 +343,9 @@ public class UMLEditor extends App {
         });
 
         // vložení panu do mainu
-        System.out.println(titledPane.getLayoutX() + " "+ titledPane.getTranslateX() + " " + newclass.getPositionX());
         main.getChildren().add(titledPane);
+        System.out.println(titledPane.getWidth());
+
     }
 
     /**
@@ -527,60 +538,78 @@ public class UMLEditor extends App {
      * Přidá operaci třídě/rozhraní všude při kliknutí na tlačítko add v kartě opperations
      */
     @FXML public void addOperation() {
+        String name = newOperationName.getText();
+        UMLOperation operation = new UMLOperation(name, UMLClassifier.forName(newOperationReturnType.getText()) , newOperationAccess.getValue());
+        if (! activeObj.addOperation(operation))
+        {
+            //TODO chyba operace jiz existuje
+            return;
+        }
+
+        detailOperationFill(operation);
+
+        drawClass(activeObj);
+    }
+
+    public void detailOperationFill(UMLOperation operation){
         // vytvoření komponent
         VBox operationsCol = new VBox();
-            HBox detailRow = new HBox();
-                VBox accessCol = new VBox();
-                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
-                VBox nameCol = new VBox();
-                    TextField nameColText = new TextField(newOperationName.getText());
-                VBox returnTypeCol = new VBox();
-                    TextField returnTypeColText = new TextField(newOperationReturnType.getText());
-                VBox deleteCol = new VBox();
-                    Button deleteColBtn = new Button("Delete");
-            //TODO toto bude jinde
-            HBox operationsRow = new HBox();
-                VBox operationsNameCol = new VBox();
-                VBox operationsTypeCol = new VBox();
-            HBox addRow = new HBox();
-                VBox addOperationNameCol = new VBox();
-                    TextField addOperationNameColName = new TextField();
-                VBox addOperationTypeCol = new VBox();
-                    TextField addOperationTypeColType = new TextField();
-                VBox addOperationBtnCol = new VBox();
-                    Button addOperationBtn = new Button("Add");
+        HBox detailRow = new HBox();
+        VBox accessCol = new VBox();
+        ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
+        VBox nameCol = new VBox();
+        TextField nameColText = new TextField(operation.getName());
+        VBox returnTypeCol = new VBox();
+        TextField returnTypeColText = new TextField(operation.getType().getName());
+        VBox deleteCol = new VBox();
+        Button deleteColBtn = new Button("Delete");
+        //TODO toto bude jinde
+        HBox operationsRow = new HBox();
+        VBox operationsNameCol = new VBox();
+        VBox operationsTypeCol = new VBox();
+        HBox addRow = new HBox();
+        VBox addOperationNameCol = new VBox();
+        TextField addOperationNameColName = new TextField();
+        VBox addOperationTypeCol = new VBox();
+        TextField addOperationTypeColType = new TextField();
+        VBox addOperationBtnCol = new VBox();
+        Button addOperationBtn = new Button("Add");
 
         // přidání komponent do struktury
         operationsCol.getChildren().add(detailRow);
-            detailRow.getChildren().add(accessCol);
-                accessCol.getChildren().add(accessColChoiceBox);
-            detailRow.getChildren().add(nameCol);
-                nameCol.getChildren().add(nameColText);
-            detailRow.getChildren().add(returnTypeCol);
-                returnTypeCol.getChildren().add(returnTypeColText);
-            detailRow.getChildren().add(deleteCol);
-                deleteCol.getChildren().add(deleteColBtn);
+        detailRow.getChildren().add(accessCol);
+        accessCol.getChildren().add(accessColChoiceBox);
+        detailRow.getChildren().add(nameCol);
+        nameCol.getChildren().add(nameColText);
+        detailRow.getChildren().add(returnTypeCol);
+        returnTypeCol.getChildren().add(returnTypeColText);
+        detailRow.getChildren().add(deleteCol);
+        deleteCol.getChildren().add(deleteColBtn);
         operationsCol.getChildren().add(operationsRow);
-            operationsRow.getChildren().add(operationsNameCol);
+        operationsRow.getChildren().add(operationsNameCol);
 
-            operationsRow.getChildren().add(operationsTypeCol);
+        operationsRow.getChildren().add(operationsTypeCol);
 
         operationsCol.getChildren().add(addRow);
-            addRow.getChildren().add(addOperationNameCol);
-                addOperationNameCol.getChildren().add(addOperationNameColName);
-            addRow.getChildren().add(addOperationTypeCol);
-                addOperationTypeCol.getChildren().add(addOperationTypeColType);
-            addRow.getChildren().add(addOperationBtnCol);
-                addOperationBtnCol.getChildren().add(addOperationBtn);
+        addRow.getChildren().add(addOperationNameCol);
+        addOperationNameCol.getChildren().add(addOperationNameColName);
+        addRow.getChildren().add(addOperationTypeCol);
+        addOperationTypeCol.getChildren().add(addOperationTypeColType);
+        addRow.getChildren().add(addOperationBtnCol);
+        addOperationBtnCol.getChildren().add(addOperationBtn);
 
-        // TODO: 13.04.2022 Ládine prosím tě :)
         addOperationBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Děláš něco?");
+                UMLAttribute arg = new UMLAttribute(addOperationNameColName.getText(), UMLClassifier.forName(addOperationTypeColType.getText()), "");
+                if (! operation.addArgument(arg)){
+                    //TODO Chyba arg jiz existuje
+                    return;
+                }
+                drawClass(activeObj);
                 System.out.println(addOperationNameColName.getText());
-                TextField operationName = new TextField(addOperationNameColName.getText()); //toto
-                TextField operationType = new TextField(addOperationTypeColType.getText()); //toto
+                TextField operationName = new TextField(addOperationNameColName.getText());
+                TextField operationType = new TextField(addOperationTypeColType.getText());
                 operationsNameCol.getChildren().add(operationName);
                 operationsTypeCol.getChildren().add(operationType);
             }});
@@ -589,6 +618,14 @@ public class UMLEditor extends App {
         accessColChoiceBox.setValue("+");
 
         operationsList.getChildren().add(0, operationsCol);
+
+        // naplneni argumentu v detailu pokud jsou
+        for (int i = 0; i < operation.getArguments().size(); i++) {
+            TextField operationName = new TextField(operation.getArguments().get(i).getName());
+            TextField operationType = new TextField(operation.getArguments().get(i).getType().getName());
+            operationsNameCol.getChildren().add(operationName);
+            operationsTypeCol.getChildren().add(operationType);
+        }
     }
 
     @FXML private void clickedInterfaceBtn()  {
