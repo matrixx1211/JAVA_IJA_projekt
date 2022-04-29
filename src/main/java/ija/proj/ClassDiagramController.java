@@ -1018,4 +1018,16 @@ public class ClassDiagramController extends App {
         else
             leftStatusLabel.setText("diagram se nepodarilo smazat");
     }
+    @FXML
+    public void clickedCreateCommDiag() {
+
+    }
+    @FXML
+    public void clickedOpenCommDiag() {
+
+    }
+    @FXML
+    public void  clickedDeleteCommDiag() {
+
+    }
 }

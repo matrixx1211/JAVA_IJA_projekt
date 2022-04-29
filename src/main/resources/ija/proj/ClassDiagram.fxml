@@ -79,6 +79,17 @@
                         <Label layoutY="78.0" text="Open or Remove sequence diagram" textFill="#9f9f9f" />
                      </children>
                   </AnchorPane>
+                  <AnchorPane layoutY="343.0" prefHeight="155.0" prefWidth="350.0">
+                     <children>
+                        <Label layoutY="6.0" text="Create communication diagram" textFill="#9f9f9f" />
+                        <TextField fx:id="commDiagName" layoutY="23.0" prefHeight="25.0" prefWidth="350.0" promptText="Communication diagram name" />
+                        <Button fx:id="createCommDiag" layoutY="53.0" mnemonicParsing="false" onAction="#clickedCreateCommDiag" prefHeight="25.0" prefWidth="350.0" text="Create Communication Diagram" />
+                        <ChoiceBox fx:id="commDiagChoiceBox" layoutY="95.0" prefHeight="25.0" prefWidth="350.0" />
+                        <Label layoutY="78.0" text="Open or Remove communication diagram" textFill="#9f9f9f" />
+                        <Button fx:id="openCommDiag" layoutY="129.0" mnemonicParsing="false" onAction="#clickedOpenCommDiag" prefHeight="25.0" prefWidth="175.0" text="Open diagram" />
+                        <Button fx:id="deleteCommDiag" layoutX="175.0" layoutY="129.0" mnemonicParsing="false" onAction="#clickedDeleteCommDiag" prefHeight="25.0" prefWidth="175.0" text="Delete Diagram" />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
