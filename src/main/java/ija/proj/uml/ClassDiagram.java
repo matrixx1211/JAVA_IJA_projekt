@@ -27,16 +27,22 @@ public class ClassDiagram extends Element {
 	 * seznam relací
 	 */
 	public List<UMLRelation> relations;
+	/**
+	 * seznam sekvenčních diagramů
+	 */
+	public List<SequenceDiagram> sequenceDiagrams;
 
 	/**
 	 * Konstruktor pro ClassDiagram
 	 * @param name název Diagramu
 	 */
+
 	public ClassDiagram(String name) {
 		super(name);
 		this.classes = new ArrayList<UMLClass>();
 		this.classifiers = new ArrayList<UMLClassifier>();
 		this.relations = new ArrayList<UMLRelation>();
+		this.sequenceDiagrams = new ArrayList<SequenceDiagram>();
 	}
 
 	/**
@@ -213,4 +219,40 @@ public class ClassDiagram extends Element {
 		}
 		return relations;
 	}
+
+	/**
+	 * Metoda pro vytvoření Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return vytvořený digram
+	 */
+	public SequenceDiagram createSeqDiagram(String name) {
+		SequenceDiagram obj;
+		for (int i = 0; i < this.sequenceDiagrams.size(); i++) {
+			obj = this.sequenceDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				return null;
+			}
+		}
+		SequenceDiagram newObj = new SequenceDiagram(name);
+		this.sequenceDiagrams.add(newObj);
+		return newObj;
+	}
+
+	/**
+	 * Metoda pro smazání Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return true pokud se povedlo, jinak false
+	 */
+	public Boolean deleteSeqDiagram(String name) {
+		SequenceDiagram obj;
+		for (int i = 0; i < this.sequenceDiagrams.size(); i++) {
+			obj = this.sequenceDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				this.sequenceDiagrams.remove(obj);
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

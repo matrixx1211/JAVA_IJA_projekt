@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class SequenceDiagram extends Element {
     ArrayList<UMLClass> classList;
     ArrayList<UMLMessage> messageList;
+    Boolean opened;
 
     public SequenceDiagram(String name) {
         super(name);
         this.classList = new ArrayList<>();
         this.messageList = new ArrayList<>();
+        this.opened = false;
     }
 
     public void addClass(UMLClass existingClass) {

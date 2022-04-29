@@ -68,6 +68,17 @@
                   <TextField layoutY="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" />
                   <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Add type" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" />
                   <Button fx:id="deleteClassBtn" disable="true" layoutY="130.0" mnemonicParsing="false" onAction="#deleteClass" text="Delete active class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+                  <AnchorPane layoutY="173.0">
+                     <children>
+                        <Label text="Create sequence diagram" textFill="#9f9f9f" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextField fx:id="seqDiagName" prefHeight="25.0" promptText="Sequence diagram name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
+                        <Button fx:id="deleteSeqDiag" layoutX="175.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickedDeleteSeqDiag" prefHeight="25.0" prefWidth="175.0" text="Delete Diagram" AnchorPane.leftAnchor="175.0" AnchorPane.topAnchor="130.0" />
+                        <Button fx:id="openSeqDiag" layoutY="30.0" mnemonicParsing="false" onAction="#clickedOpenSeqDiag" prefHeight="25.0" prefWidth="175.0" text="Open Diagram" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="130.0" />
+                        <Button fx:id="createSeqDiag" layoutY="50.0" mnemonicParsing="false" onAction="#clickedCreateSeqDiag" prefHeight="25.0" prefWidth="350.0" text="Create Sequence Diagram" />
+                        <ChoiceBox fx:id="seqDiagChoice" layoutY="95.0" prefHeight="25.0" prefWidth="350.0" />
+                        <Label layoutY="78.0" text="Open or Remove sequence diagram" textFill="#9f9f9f" />
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">

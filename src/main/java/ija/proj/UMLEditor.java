@@ -16,6 +16,8 @@ import com.google.gson.Gson;
 import javafx.application.Application;
 import ija.proj.uml.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -957,5 +959,67 @@ public class UMLEditor extends App {
         } catch (IOException e) {
             System.out.println("Failed to create new Window." + e);
         }
+    }
+    /* ========= SEKCE PRO SEQ DIAGRAM ========*/
+
+    @FXML private TextField seqDiagName;
+    @FXML private ChoiceBox<String> seqDiagChoice;
+    @FXML private Button createSeqDiag;
+    @FXML private Button openSeqDiag;
+    @FXML private Button removeSeqDiag;
+    public static ObservableList<String> seqDiagList = FXCollections.observableArrayList();
+
+    /**
+     * Vytvoří sekvenční diagram
+     */
+    @FXML
+    public void clickedCreateSeqDiag() {
+        SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(seqDiagName.getText());
+        if (newSeqDiag == null) {
+            leftStatusLabel.setText("diagram jiz existuje");
+            return;
+        }
+        seqDiagList.add(newSeqDiag.getName());
+        seqDiagChoice.setItems(seqDiagList);
+    }
+
+    /**
+     * Otevře sekvenční diagram
+     */
+    @FXML
+    public void clickedOpenSeqDiag() {
+
+        if (seqDiagChoice.getValue() == null) {
+            leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        try {
+            Scene seqScene = new Scene(App.loadFXML("SequenceDiagram"));
+            Stage seqStage = new Stage();
+            seqStage.setTitle(seqDiagChoice.getValue());
+            seqStage.setScene(seqScene);
+            
+            seqStage.show();
+        }
+        catch (Exception e) {
+            leftStatusLabel.setText(e.toString());
+        }
+    }
+    /**
+     * Otevře sekvenční diagram
+     */
+    @FXML
+    public void clickedDeleteSeqDiag() {
+        if (seqDiagChoice.getValue() == null) {
+            leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        String name = seqDiagChoice.getValue();
+        if (classDiagram.deleteSeqDiagram(name)) {
+            seqDiagList.remove(name);
+            seqDiagChoice.setItems(seqDiagList);
+        }
+        else
+            leftStatusLabel.setText("diagram se nepodarilo smazat");
     }
 }
