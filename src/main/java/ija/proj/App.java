@@ -44,7 +44,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("UMLEditor"));
+        scene = new Scene(loadFXML("ClassDiagram"));
         this.stage = stage;
         stage.setScene(scene);
         stage.setTitle("UML Editor");
