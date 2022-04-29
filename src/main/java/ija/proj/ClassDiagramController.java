@@ -13,16 +13,13 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import javafx.application.Application;
 import ija.proj.uml.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -36,7 +33,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class UMLEditor extends App {
+public class ClassDiagramController extends App {
     private String activeObjName = null;
     private UMLClass activeObj;
     double orgSceneX, orgSceneY;
@@ -998,7 +995,6 @@ public class UMLEditor extends App {
             Stage seqStage = new Stage();
             seqStage.setTitle(seqDiagChoice.getValue());
             seqStage.setScene(seqScene);
-            
             seqStage.show();
         }
         catch (Exception e) {

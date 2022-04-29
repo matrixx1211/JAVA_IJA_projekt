@@ -16,7 +16,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.UMLEditor">
+<VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.SequenceDiagramController">
    <children>
       <SplitPane dividerPositions="0.2505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <items>
@@ -24,14 +24,6 @@
                <content>
                   <AnchorPane id="main" fx:id="main" minHeight="-1.0" minWidth="-1.0" prefHeight="1500.0" prefWidth="1500.0" />
                </content>
-               <contextMenu>
-                  <ContextMenu>
-                    <items>
-                      <MenuItem fx:id="createClassContextBtn" mnemonicParsing="false" onAction="#clickedClassBtn" text="Create Class" />
-                        <MenuItem fx:id="createInterfaceContextBtn" mnemonicParsing="false" onAction="#clickedInterfaceBtn" text="Create Interface" />
-                    </items>
-                  </ContextMenu>
-               </contextMenu>
             </ScrollPane>
             <AnchorPane id="detail" fx:id="detail" maxWidth="350.0" minWidth="100.0" prefWidth="350.0">
                <children>
