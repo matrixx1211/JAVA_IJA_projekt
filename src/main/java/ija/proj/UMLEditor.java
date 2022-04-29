@@ -187,6 +187,11 @@ public class UMLEditor extends App {
                 relationsPane.setDisable(false);
                 relationsPane.setExpanded(true);
 
+                newAttributeAccess.setItems(accessibilityList);
+                newAttributeAccess.setValue("+");
+                newOperationAccess.setItems(accessibilityList);
+                newOperationAccess.setValue("+");
+
                 relationsList.getChildren().remove(0, relationsList.getChildren().size() - 1);
                 Gson gson = new Gson();
                 Reader reader = new FileReader(filePath);
@@ -646,6 +651,18 @@ public class UMLEditor extends App {
                 operationsTypeCol.getChildren().add(operationType);
             }
         });
+
+        deleteColBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (! activeObj.removeOperation(operation)){
+                    //TODO Chyba arg jiz existuje
+                    return;
+                }
+                drawClass(activeObj);
+                operationsList.getChildren().remove(operationsCol);
+            }
+        });
         // nastavení dat
         accessColChoiceBox.setItems(accessibilityList);
         accessColChoiceBox.setValue("+");
@@ -659,6 +676,8 @@ public class UMLEditor extends App {
             operationsNameCol.getChildren().add(operationName);
             operationsTypeCol.getChildren().add(operationType);
         }
+
+
     }
 
     @FXML
