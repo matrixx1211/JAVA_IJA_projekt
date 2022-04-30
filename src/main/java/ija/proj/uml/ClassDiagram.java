@@ -255,4 +255,20 @@ public class ClassDiagram extends Element {
 		return false;
 	}
 
+	/**
+	 * Metoda pro nalezeni Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return SequenceDiagram, nebo NULL
+	 */
+	public SequenceDiagram findSeqDiagram(String name) {
+		SequenceDiagram obj;
+		for (int i = 0; i < this.sequenceDiagrams.size(); i++) {
+			obj = this.sequenceDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				return obj;
+			}
+		}
+		return null;
+	}
+
 }

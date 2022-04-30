@@ -430,7 +430,10 @@ public class ClassDiagramController extends App {
         relationsPane.setExpanded(false);
 
         deleteClassBtn.setDisable(true);
-
+        //odstraneni ze seq diagramu
+        for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+            classDiagram.sequenceDiagrams.get(i).removeClassFromList(activeObjName);
+        }
         // obnovení proměnných
         activeObj = null;
         activeObjName = null;
@@ -459,6 +462,11 @@ public class ClassDiagramController extends App {
 
             VBox operations = ((VBox) main.lookup(("#" + activeObjName + "Operations").replaceAll("\\s+", "€")));
             operations.setId((newName + "Operations").replaceAll("\\s+", "€"));
+
+            //provazani se seq diagramem
+            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+                classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName ,newName);
+            }
 
             activeObjName = newName;
         } else {
@@ -720,6 +728,11 @@ public class ClassDiagramController extends App {
                 newRelationClass1.setValue("");
                 newRelationClass2.setValue("");
                 newRelationClass3.setValue("");
+
+                //provazani se seq diagramem
+                for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+                    classDiagram.sequenceDiagrams.get(i).addClassToList(name);
+                }
             }
         }
     }
@@ -965,6 +978,7 @@ public class ClassDiagramController extends App {
     @FXML private Button openSeqDiag;
     @FXML private Button removeSeqDiag;
     public static ObservableList<String> seqDiagList = FXCollections.observableArrayList();
+    public static String title;
 
     /**
      * Vytvoří sekvenční diagram
@@ -985,7 +999,7 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void clickedOpenSeqDiag() {
-
+        title = seqDiagChoice.getValue();
         if (seqDiagChoice.getValue() == null) {
             leftStatusLabel.setText("diagram neni vybran");
             return;
@@ -993,8 +1007,10 @@ public class ClassDiagramController extends App {
         try {
             Scene seqScene = new Scene(App.loadFXML("SequenceDiagram"));
             Stage seqStage = new Stage();
+
             seqStage.setTitle(seqDiagChoice.getValue());
             seqStage.setScene(seqScene);
+
             seqStage.show();
         }
         catch (Exception e) {
@@ -1002,7 +1018,7 @@ public class ClassDiagramController extends App {
         }
     }
     /**
-     * Otevře sekvenční diagram
+     * Smaže sekvenční diagram
      */
     @FXML
     public void clickedDeleteSeqDiag() {
