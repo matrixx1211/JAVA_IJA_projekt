@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import com.google.gson.GsonBuilder;
 import ija.proj.uml.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -144,8 +145,17 @@ public class ClassDiagramController extends App {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             String filePath = file.getPath();
+
+            //ulozeni dat z observable listů do arraylistu pro GSON
+            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
+                classDiagram.sequenceDiagrams.get(i).backupObservable();
+            }
+
+            //GSON
             try {
-                Gson gson = new Gson();
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
                 Writer writer = new FileWriter(filePath);
                 writer.write(gson.toJson(classDiagram));
                 writer.close();
@@ -213,6 +223,14 @@ public class ClassDiagramController extends App {
                 newRelationClass1.setValue("");
                 newRelationClass2.setValue("");
                 newRelationClass3.setValue("");
+                seqDiagList.removeAll(seqDiagList);
+
+                //vraceni dat do observable listů z arraylistu pro GSON
+                for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
+                    classDiagram.sequenceDiagrams.get(i).restoreObservable();
+                    seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
+                }
+                seqDiagChoice.setItems(seqDiagList);
             } catch (Exception e) {
                 leftStatusLabel.setText(e.toString());
             }
@@ -985,13 +1003,15 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void clickedCreateSeqDiag() {
-        SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(seqDiagName.getText());
-        if (newSeqDiag == null) {
-            leftStatusLabel.setText("diagram jiz existuje");
-            return;
+        if (seqDiagName.getText() != null) {
+            SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(seqDiagName.getText());
+            if (newSeqDiag == null) {
+                leftStatusLabel.setText("diagram jiz existuje");
+                return;
+            }
+            seqDiagList.add(newSeqDiag.getName());
+            seqDiagChoice.setItems(seqDiagList);
         }
-        seqDiagList.add(newSeqDiag.getName());
-        seqDiagChoice.setItems(seqDiagList);
     }
 
     /**

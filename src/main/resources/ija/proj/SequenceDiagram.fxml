@@ -16,7 +16,7 @@
 
 <VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.SequenceDiagramController">
    <children>
-      <SplitPane dividerPositions="0.2505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <items>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
                <content>
@@ -40,36 +40,44 @@
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                                        <children>
                                           <ChoiceBox fx:id="classNewChoice" prefWidth="150.0" />
-                                          <Button fx:id="classAddBtn" mnemonicParsing="false" onAction="#classAddBtnClicked" text="Add" />
+                                          <Button fx:id="classAddBtn" mnemonicParsing="false" onAction="#classAddBtnClicked" prefWidth="40.0" text="Add" />
                                        </children>
                                     </HBox>
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                                        <children>
                                           <ChoiceBox fx:id="classChoice" prefWidth="150.0" />
-                                          <Button fx:id="classDelBtn" mnemonicParsing="false" onAction="#classDelBtnClicked" text="Del" />
+                                          <Button fx:id="classDelBtn" mnemonicParsing="false" onAction="#classDelBtnClicked" prefWidth="40.0" text="Del" />
                                        </children>
                                     </HBox>
                                  </children>
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                        <TitledPane id="classDetailPane" fx:id="messagesPane" disable="true" text="Messages">
+                        <TitledPane id="classDetailPane" fx:id="messagesPane" text="Messages">
                            <content>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <AnchorPane prefHeight="300.0" prefWidth="348.0">
                                  <children>
-                                    <Label text="Class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <Label layoutX="10.0" layoutY="10.0" text="Classes" />
+                                    <Label layoutX="10.0" layoutY="166.0" text="Message Operation" />
+                                    <Label layoutX="10.0" layoutY="103.0" text="Message Type" />
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                                        <children>
-                                          <ChoiceBox prefWidth="150.0" />
-                                          <Button mnemonicParsing="false" text="Button" />
+                                          <ChoiceBox fx:id="msgClass1Choice" prefWidth="150.0" />
                                        </children>
                                     </HBox>
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                                        <children>
-                                          <ChoiceBox prefWidth="150.0" />
-                                          <Button mnemonicParsing="false" text="Button" />
+                                          <ChoiceBox fx:id="msgClass2Choice" prefWidth="150.0" />
                                        </children>
                                     </HBox>
+                                    <HBox layoutX="9.0" layoutY="131.0" spacing="10.0">
+                                       <children>
+                                          <ChoiceBox fx:id="msgTypeChoice" prefWidth="150.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox layoutX="9.0" layoutY="248.0" spacing="10.0" />
+                                    <Button fx:id="msgAddBtn" layoutX="12.0" layoutY="236.0" mnemonicParsing="false" onAction="#msgAddBtnClicked" prefHeight="25.0" prefWidth="148.0" text="Add" />
+                                    <ChoiceBox fx:id="msgOperationChoice" layoutX="11.0" layoutY="193.0" prefWidth="150.0" />
                                  </children>
                               </AnchorPane>
                            </content>

@@ -1,17 +1,42 @@
 package ija.proj.uml;
 
 public class UMLMessage extends Element {
-    Character type;
-    UMLClass class1;
-    UMLClass class2;
-    UMLOperation operation;
+    String type;
+    String class1;
+    String class2;
+    String operation;
+    double height;
 
-    public UMLMessage(String name, UMLClass class1, UMLClass class2, Character type, UMLOperation operation) {
+    public UMLMessage(String name, String class1, String class2, String type, String operation) {
         super(name);
         this.type = type;
         this.class1 = class1;
         this.class2 = class2;
         this.operation = operation;
+        this.height = 100;
     }
 
+    public String getClass1(){
+        return class1;
+    }
+
+    public String getClass2(){
+        return class2;
+    }
+
+    public String getType(){
+        return type;
+    }
+
+    public String getOperation(){
+        return operation;
+    }
+
+    public double getHeight(){
+        return height;
+    }
+
+    public void setHeight(double height){
+        this.height = height;
+    }
 }
