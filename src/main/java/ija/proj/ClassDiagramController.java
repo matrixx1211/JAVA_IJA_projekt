@@ -9,6 +9,7 @@
 package ija.proj;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -146,11 +147,6 @@ public class ClassDiagramController extends App {
         if (file != null) {
             String filePath = file.getPath();
 
-            //ulozeni dat z observable listů do arraylistu pro GSON
-            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
-                classDiagram.sequenceDiagrams.get(i).backupObservable();
-            }
-
             //GSON
             try {
                 Gson gson = new GsonBuilder()
@@ -184,6 +180,7 @@ public class ClassDiagramController extends App {
                 main.getChildren().removeAll(main.getChildren());
 
                 detailText.setText("Detail");
+                System.out.println("1");
 
                 deleteClassBtn.setDisable(true);
 
@@ -195,18 +192,24 @@ public class ClassDiagramController extends App {
                 operationsPane.setExpanded(false);
                 relationsPane.setDisable(false);
                 relationsPane.setExpanded(true);
-
+                System.out.println("2");
                 newAttributeAccess.setItems(accessibilityList);
                 newAttributeAccess.setValue("+");
                 newOperationAccess.setItems(accessibilityList);
                 newOperationAccess.setValue("+");
-
                 relationsList.getChildren().remove(0, relationsList.getChildren().size() - 1);
-                Gson gson = new Gson();
+                System.out.println("3");
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
+
                 Reader reader = new FileReader(filePath);
+                System.out.println("31");
                 classDiagram = gson.fromJson(reader, ClassDiagram.class);
+                System.out.println("32");
                 System.out.println(classDiagram.getName());
                 classList.removeAll(classList);
+                System.out.println("4");
                 for (int i = 0; i < classDiagram.classes.size(); i++) {
                     drawClass(classDiagram.classes.get(i));
                     //nastaveni listu pro vyber class na relaci
@@ -225,9 +228,7 @@ public class ClassDiagramController extends App {
                 newRelationClass3.setValue("");
                 seqDiagList.removeAll(seqDiagList);
 
-                //vraceni dat do observable listů z arraylistu pro GSON
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
-                    classDiagram.sequenceDiagrams.get(i).restoreObservable();
                     seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
                 }
                 seqDiagChoice.setItems(seqDiagList);

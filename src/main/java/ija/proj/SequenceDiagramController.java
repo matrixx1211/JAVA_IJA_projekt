@@ -30,8 +30,6 @@ public class SequenceDiagramController {
     double orgTranslateX, orgTranslateY;
     double orgHeight;
 
-    ObservableList<String> combinedList;
-
     @FXML
     AnchorPane main;
 
@@ -55,17 +53,25 @@ public class SequenceDiagramController {
     @FXML
     Button msgAddBtn;
 
-
+    ObservableList<String> classUsedList = FXCollections.observableArrayList();
+    ObservableList<String> classNotUsedList = FXCollections.observableArrayList();
+    ObservableList<String> class1List = FXCollections.observableArrayList();
+    ObservableList<String> class2List = FXCollections.observableArrayList();
+    ObservableList<String> operationList = FXCollections.observableArrayList();
     SequenceDiagram seqDiag;
 
     public void initialize(){
         seqDiag = ClassDiagramController.classDiagram.findSeqDiagram(ClassDiagramController.title);
-        System.out.println(seqDiag.getName());
-        System.out.println(seqDiag.getSeqDiagClassList());
-        System.out.println(seqDiag.getSeqDiagAllClassList());
-        System.out.println(seqDiag.getMsgCounter());
-        classNewChoice.setItems(seqDiag.getSeqDiagAllClassList());
-        classChoice.setItems(seqDiag.getSeqDiagClassList());
+        classNotUsedList.addAll(seqDiag.getSeqDiagAllClassList());
+        classUsedList.addAll(seqDiag.getSeqDiagClassList());
+        class1List.addAll(classUsedList);
+        class1List.addAll(seqDiag.getInstancesList());
+        class2List.addAll(class1List);
+
+        classNewChoice.setItems(classNotUsedList);
+        classChoice.setItems(classUsedList);
+        msgClass1Choice.setItems(class1List);
+        msgClass2Choice.setItems(class2List);
         ObservableList<String> msgTypeList = FXCollections.observableArrayList();
         msgTypeList.add("Message");
         msgTypeList.add("Return");
@@ -73,13 +79,25 @@ public class SequenceDiagramController {
         msgTypeList.add("Rem Instance");
         msgTypeChoice.setItems(msgTypeList);
         msgTypeChoice.setValue("Message");
-        msgClass1Choice.setItems(seqDiag.getSeqDiagClassList());
-        msgClass2Choice.setItems(seqDiag.getSeqDiagClassList());
+        msgOperationChoice.setItems(operationList);
+        //naplneni operaci podle Class2
         msgClass2Choice.setOnAction(event -> {
             if (msgClass2Choice.getValue() != null && msgTypeChoice.getValue() != "New Instance" && msgTypeChoice.getValue() != "Return"){
                 msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
-                UMLClass class2 = ClassDiagramController.classDiagram.getObject(msgClass2Choice.getValue());
-                if (seqDiag.getSeqDiagClassList().contains(class2.getName())) {
+                UMLClass class2 = null;
+                String[] split;
+                String string = "";
+                if (seqDiag.getSeqDiagClassList().contains(msgClass2Choice.getValue()))
+                    class2 = ClassDiagramController.classDiagram.getObject(msgClass2Choice.getValue());
+                else if (seqDiag.getInstancesList().contains(msgClass2Choice.getValue())) {
+                    split = msgClass2Choice.getValue().split(" ", 0);
+                    if (split.length >= 4)
+                    string = split[3];
+                    for (int i = 4; i < split.length; i++)
+                        string = (string + " " + split[i]);
+                    class2 = ClassDiagramController.classDiagram.getObject(string);
+                }
+                if (seqDiag.getSeqDiagClassList().contains(class2.getName()) || seqDiag.getInstancesList().contains(class2.getName())) {
                     for (int i = 0; i < class2.operations.size(); i++) {
                         msgOperationChoice.getItems().add(class2.operations.get(i).getName());
                     }
@@ -90,25 +108,32 @@ public class SequenceDiagramController {
             if (msgTypeChoice.getValue() != null) {
                 String class2 = msgClass2Choice.getValue();
                 if (msgTypeChoice.getValue() == "New Instance") {
-                    combinedList = FXCollections.observableArrayList();
-                    combinedList.addAll(seqDiag.getSeqDiagClassList());
-                    combinedList.addAll(seqDiag.getSeqDiagAllClassList());
-                    msgClass2Choice.setItems(combinedList);
-                    msgClass2Choice.setValue(class2);
+                    msgClass2Choice.getItems().removeAll(msgClass2Choice.getItems());
+                    msgClass2Choice.getItems().addAll(seqDiag.getSeqDiagClassList());
+                    msgClass2Choice.getItems().addAll(seqDiag.getSeqDiagAllClassList());
+                    if (msgClass2Choice.getItems().contains(class2))
+                        msgClass2Choice.setValue(class2);
                     msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                     msgOperationChoice.getItems().add("Create Instance");
                     msgOperationChoice.setValue("Create Instance");
                 }
                 else if (msgTypeChoice.getValue() == "Rem Instance") {
-                    msgClass2Choice.setItems(seqDiag.getInstancesList());
+                    msgClass2Choice.getItems().removeAll(msgClass2Choice.getItems());
+                    msgClass2Choice.getItems().addAll(seqDiag.getInstancesList());
+                    if (msgClass2Choice.getItems().contains(class2))
+                        msgClass2Choice.setValue(class2);
                     msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                     msgOperationChoice.getItems().add("Remove Instance");
                     msgOperationChoice.setValue("Remove Instance");
                 }
                 else {
-                    msgClass2Choice.setItems(seqDiag.getSeqDiagClassList());
+                    msgClass2Choice.getItems().removeAll(msgClass2Choice.getItems());
+                    msgClass2Choice.getItems().addAll(seqDiag.getSeqDiagClassList());
+                    msgClass2Choice.getItems().addAll(seqDiag.getInstancesList());
+
                     msgClass2Choice.setValue(null);
-                    msgClass2Choice.setValue(class2);
+                    if (msgClass2Choice.getItems().contains(class2))
+                        msgClass2Choice.setValue(class2);
                     if (msgTypeChoice.getValue() == "Return") {
                         msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                         msgOperationChoice.getItems().add("Return");
@@ -136,12 +161,14 @@ public class SequenceDiagramController {
             String name = classNewChoice.getValue();
             seqDiag.getSeqDiagAllClassList().remove(name);
             seqDiag.getSeqDiagClassList().add(name);
+            classUsedList.add(name);
+            classNotUsedList.remove(name);
             seqDiag.addClassPosX(0);
-            classNewChoice.setItems(seqDiag.getSeqDiagAllClassList());
-            classChoice.setItems(seqDiag.getSeqDiagClassList());
-            msgClass1Choice.setItems(seqDiag.getSeqDiagClassList());
-            msgClass2Choice.setItems(seqDiag.getSeqDiagClassList());
-
+            //update vyvolanim eventu pri zmene typu
+            String type = msgTypeChoice.getValue();
+            msgTypeChoice.setValue("Message");
+            msgTypeChoice.setValue("null");
+            msgTypeChoice.setValue(type);
             drawClass(name);
         }
     }
@@ -193,6 +220,9 @@ public class SequenceDiagramController {
     }
 
     public void drawInstance(String name, double Y) {
+        //pro prekresleni mazani stare
+        main.getChildren().removeAll(main.lookupAll("#" + name.replaceAll("\\s+", "€")));
+        main.getChildren().removeAll(main.lookupAll("#" + name.replaceAll("\\s+", "€") + "Line"));
         //vytvoreni grafickeho elementu
         TextField textField = new TextField(name);
         textField.setAlignment(Pos.CENTER);
@@ -203,11 +233,10 @@ public class SequenceDiagramController {
         textField.setEditable(false);
         textField.setId(name.replaceAll("\\s+", "€"));
 
-        Line line = new Line(50, Y, 50,1500);
+        Line line = new Line(50, Y+5, 50,1500);
         line.setTranslateX(seqDiag.getInstancePosX(name));
         line.getStrokeDashArray().addAll(10d, 4d);
         line.setId(name.replaceAll("\\s+", "€") + "Line");
-
         //horizontalni drag
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -235,6 +264,7 @@ public class SequenceDiagramController {
             }
         });
         main.getChildren().add(line);
+
         main.getChildren().add(textField);
     }
 
@@ -244,8 +274,13 @@ public class SequenceDiagramController {
             String name = classChoice.getValue();
             seqDiag.getSeqDiagClassList().remove(name);
             seqDiag.getSeqDiagAllClassList().add(name);
-            classNewChoice.setItems(seqDiag.getSeqDiagAllClassList());
-            classChoice.setItems(seqDiag.getSeqDiagClassList());
+            classUsedList.remove(name);
+            classNotUsedList.add(name);
+            //update vyvolanim eventu pri zmene typu
+            String type = msgTypeChoice.getValue();
+            msgTypeChoice.setValue("Message");
+            msgTypeChoice.setValue("null");
+            msgTypeChoice.setValue(type);
 
             //mazani graficke reprezentace
             main.getChildren().remove(main.lookup("#" + name.replaceAll("\\s+", "€")));
@@ -256,7 +291,14 @@ public class SequenceDiagramController {
     public void msgAddBtnClicked() {
         if (msgClass2Choice.getValue() != null && msgClass1Choice.getValue() != null && msgTypeChoice.getValue() != null && msgOperationChoice.getValue() != null){
             String name = ("msg" + seqDiag.getMsgCounter());
-            UMLMessage message = seqDiag.createMessage(name, msgClass1Choice.getValue(), msgClass2Choice.getValue(), msgTypeChoice.getValue(), msgOperationChoice.getValue());
+            System.out.println(name);
+            UMLMessage message;
+            if (msgTypeChoice.getValue().compareTo("New Instance") != 0)
+                message = seqDiag.createMessage(name, msgClass1Choice.getValue(), msgClass2Choice.getValue(), msgTypeChoice.getValue(), msgOperationChoice.getValue());
+            else {
+                message = seqDiag.createMessage(name, msgClass1Choice.getValue(),   "Instance " + seqDiag.getInstaceCounter() + " of " + msgClass2Choice.getValue(), msgTypeChoice.getValue(), msgOperationChoice.getValue());
+                seqDiag.incInstanceCounter();
+            }
             seqDiag.incMsgCounter();
             drawMessage(message);
         }
@@ -267,83 +309,103 @@ public class SequenceDiagramController {
         main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
         //vykresleni message, return, Rem Instance
         Line line;
-        if (message.getType().compareTo("New Instance") != 0){
-            line = new Line(main.lookup("#" + message.getClass1() + "Line").getTranslateX()+50, message.getHeight(), main.lookup("#" + message.getClass2() + "Line").getTranslateX()+50, message.getHeight());
-            Text text = new Text(message.getOperation());
-            text.setLayoutY(message.getHeight() - 2);
-            text.setLayoutX((main.lookup("#" + message.getClass1() + "Line").getTranslateX() + main.lookup("#" + message.getClass2() + "Line").getTranslateX() + 100 - text.getBoundsInLocal().getWidth())/2);
-            line.setId(message.getName()+"line");
-            text.setId(message.getName()+"line");
-
-            //dragovani
-            line.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    orgSceneY = event.getSceneY();
-                    orgTranslateY = ((Line) (event.getSource())).getTranslateY();
-                    orgHeight = message.getHeight();
-                }
-            });
-            line.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    double offsetY = event.getSceneY() - orgSceneY;
-                    double newTranslateY = orgTranslateY + offsetY;
-
-                    ((Line) (event.getSource())).setTranslateY(newTranslateY);
-                    line.setTranslateY(newTranslateY);
-                    text.setTranslateY(newTranslateY);
-                    message.setHeight(newTranslateY + orgHeight);
-                }
-            });
-            text.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    orgSceneY = event.getSceneY();
-                    orgTranslateY = ((Text) (event.getSource())).getTranslateY();
-                    orgHeight = message.getHeight();
-                }
-            });
-            text.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    double offsetY = event.getSceneY() - orgSceneY;
-                    double newTranslateY = orgTranslateY + offsetY;
-
-                    ((Text) (event.getSource())).setTranslateY(newTranslateY);
-                    line.setTranslateY(newTranslateY);
-                    text.setTranslateY(newTranslateY);
-                    message.setHeight(newTranslateY + orgHeight);
-                }
-            });
-            //mazani
-            text.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.SECONDARY){
-                    seqDiag.getMsgList().remove(message);
-                    main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
-                }
-            });
-
-            main.getChildren().add(line);
-            main.getChildren().add(text);
-        }
-        else {
-            seqDiag.getInstancesList().add(message.getClass2());
-            seqDiag.addInstancePosX(seqDiag.getClassPosX(message.getClass1()));
-            drawClass("Instance of " + message.getClass2());
-            if (seqDiag.getInstancePosX(message.getClass1()) < seqDiag.getClassPosX(message.getClass2()))
-                line = new Line(main.lookup("#" + message.getClass1() + "Line").getTranslateX()+50, message.getHeight(), main.lookup("#" + message.getClass2() + "Line").getTranslateX(), message.getHeight());
+        if (message.getType().compareTo("New Instance") != 0)
+            line = new Line(main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX()+50, message.getHeight(), main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX()+50, message.getHeight());
+        else{
+            //pokud neexistuje - nakresli instanci
+            if (main.lookupAll("#" + message.getClass2().replaceAll("\\s+", "€")).isEmpty()){
+                seqDiag.getInstancesList().add(message.getClass2());
+                seqDiag.addInstancePosX(seqDiag.getClassPosX(message.getClass1()) + 200);
+                drawInstance(message.getClass2(), message.getHeight()-5);
+            }
+            if (seqDiag.getClassPosX(message.getClass1()) < seqDiag.getInstancePosX(message.getClass2()))
+                line = new Line(main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX() + 50, message.getHeight(), main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX(), message.getHeight());
             else
-                line = new Line(main.lookup("#" + message.getClass1() + "Line").getTranslateX()+50, message.getHeight(), main.lookup("#" + message.getClass2() + "Line").getTranslateX()+100, message.getHeight());
+                line = new Line(main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX() + 50, message.getHeight(), main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX() + 100, message.getHeight());
         }
+        Text text = new Text(message.getOperation());
+        text.setLayoutY(message.getHeight() - 2);
+        text.setLayoutX((main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX() + main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX() + 100 - text.getBoundsInLocal().getWidth())/2);
+        line.setId(message.getName()+"line");
+        text.setId(message.getName()+"line");
         //sipka
         Polygon poly;
-        if (seqDiag.getClassPosX(message.getClass1()) < seqDiag.getClassPosX(message.getClass2()))
-            poly = new Polygon(line.getStartX(), line.getStartY(), line.getStartX()+10, line.getStartY()+5, line.getStartX()+10, line.getStartY()-5);
+        if (seqDiag.getClassPosX(message.getClass1()) > seqDiag.getClassPosX(message.getClass2()))
+            poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()+10, line.getEndY()+5, line.getEndX()+10, line.getEndY()-5);
         else
-            poly = new Polygon(line.getStartX(), line.getStartY(), line.getStartX()-10, line.getStartY()+5, line.getStartX()-10, line.getStartY()-5);
+            poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()-10, line.getEndY()+5, line.getEndX()-10, line.getEndY()-5);
         poly.setId(message.getName()+"line");
         main.getChildren().add(poly);
+
+        //dragovani
+        line.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                orgSceneY = event.getSceneY();
+                orgTranslateY = ((Line) (event.getSource())).getTranslateY();
+                orgHeight = message.getHeight();
+            }
+        });
+        line.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double offsetY = event.getSceneY() - orgSceneY;
+                double newTranslateY = orgTranslateY + offsetY;
+
+                ((Line) (event.getSource())).setTranslateY(newTranslateY);
+                line.setTranslateY(newTranslateY);
+                text.setTranslateY(newTranslateY);
+                poly.setTranslateY(newTranslateY);
+                message.setHeight(orgHeight + offsetY);
+
+                if (message.getType().compareTo("New Instance") == 0){
+                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(newTranslateY);
+                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").setTranslateY(newTranslateY);
+                }
+            }
+        });
+        text.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                orgSceneY = event.getSceneY();
+                orgTranslateY = ((Text) (event.getSource())).getTranslateY();
+                orgHeight = message.getHeight();
+            }
+        });
+        text.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double offsetY = event.getSceneY() - orgSceneY;
+                double newTranslateY = orgTranslateY + offsetY;
+
+                ((Text) (event.getSource())).setTranslateY(newTranslateY);
+                line.setTranslateY(newTranslateY);
+                text.setTranslateY(newTranslateY);
+                poly.setTranslateY(newTranslateY);
+                message.setHeight(orgHeight + offsetY);
+
+                if (message.getType().compareTo("New Instance") == 0){
+                    drawInstance(message.getClass2(), message.getHeight());
+                    System.out.println(message.getHeight());
+                    //main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(message.getHeight());
+                    //main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").setTranslateY(message.getHeight());
+                }
+            }
+        });
+        //mazani
+        text.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY){
+                seqDiag.getMsgList().remove(message);
+                main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
+                if (message.getType().compareTo("New Instance") == 0){
+                    main.getChildren().remove(main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")));
+                    main.getChildren().remove(main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line"));
+                }
+            }
+        });
+
+        main.getChildren().add(line);
+        main.getChildren().add(text);
     }
 
 

@@ -2,7 +2,6 @@ package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
@@ -10,34 +9,30 @@ public class SequenceDiagram extends Element {
     ArrayList<UMLClass> classList;
     ArrayList<UMLMessage> messageList;
     Boolean opened;
-    ObservableList<String> seqDiagAllClassList;
-    ObservableList<String> seqDiagClassList;
-    ObservableList<String> instancesList;
-    //3 arraylisty pro ulozeni ObservableList do gson
-    ArrayList<String> GSONseqDiagAllClassList;
-    ArrayList<String> GSONseqDiagClassList;
-    ArrayList<String> GSONinstancesList;
+    ArrayList<String> seqDiagAllClassList;
+    ArrayList<String> seqDiagClassList;
+    ArrayList<String> instancesList;
     ArrayList<Double> classPosXList;
     ArrayList<Double> instancePosXList;
-    int msgcounter;
+    int messageCounter;
+    int instanceCounter;
+
 
     public SequenceDiagram(String name) {
         super(name);
         this.classList = new ArrayList<>();
         this.messageList = new ArrayList<>();
         this.opened = false;
-        this.seqDiagAllClassList = FXCollections.observableArrayList();
-        this.seqDiagClassList = FXCollections.observableArrayList();
-        this.instancesList = FXCollections.observableArrayList();
-        this.GSONseqDiagAllClassList = new ArrayList<>();
-        this.GSONseqDiagClassList = new ArrayList<>();
-        this.GSONinstancesList = new ArrayList<>();
+        this.seqDiagAllClassList = new ArrayList<>();
+        this.seqDiagClassList = new ArrayList<>();
+        this.instancesList = new ArrayList<>();
         this.classPosXList = new ArrayList<>();
         this.instancePosXList = new ArrayList<>();
         for (int i = 0; i < ClassDiagramController.classDiagram.classes.size(); i++) {
             this.seqDiagAllClassList.add(ClassDiagramController.classDiagram.classes.get(i).getName());
         }
-        this.msgcounter = 0;
+        this.messageCounter = 0;
+        this.instanceCounter = 0;
     }
 
     public ArrayList<UMLMessage> getMsgList() {
@@ -45,11 +40,19 @@ public class SequenceDiagram extends Element {
     }
 
     public int getMsgCounter() {
-        return msgcounter;
+        return messageCounter;
     }
 
     public void incMsgCounter() {
-        msgcounter++;
+        messageCounter++;
+    }
+
+    public int getInstaceCounter() {
+        return instanceCounter;
+    }
+
+    public void incInstanceCounter() {
+        instanceCounter++;
     }
 
     public UMLMessage createMessage(String name, String class1, String class2, String type, String operation) {
@@ -58,15 +61,15 @@ public class SequenceDiagram extends Element {
         return message;
     }
 
-    public ObservableList<String> getSeqDiagAllClassList() {
+    public ArrayList<String> getSeqDiagAllClassList() {
         return seqDiagAllClassList;
     }
 
-    public ObservableList<String> getSeqDiagClassList() {
+    public ArrayList<String> getSeqDiagClassList() {
         return seqDiagClassList;
     }
 
-    public ObservableList<String> getInstancesList() {
+    public ArrayList<String> getInstancesList() {
         return instancesList;
     }
 
@@ -100,7 +103,11 @@ public class SequenceDiagram extends Element {
     }
 
     public double getClassPosX(String class1){
-        return classPosXList.get(seqDiagClassList.indexOf(class1));
+        if (seqDiagClassList.contains(class1))
+            return classPosXList.get(seqDiagClassList.indexOf(class1));
+        else if (instancesList.contains(class1))
+            return getInstancePosX(class1);
+        return 0;
     }
 
     public void changeClassPosX(String class1, double x){
@@ -116,39 +123,15 @@ public class SequenceDiagram extends Element {
     }
 
     public double getInstancePosX(String class1){
-        return instancePosXList.get(seqDiagClassList.indexOf(class1));
+        return instancePosXList.get(instancesList.indexOf(class1));
     }
 
     public void changeInstancePosX(String class1, double x){
-        instancePosXList.set(seqDiagClassList.indexOf(class1), x);
+        instancePosXList.set(instancesList.indexOf(class1), x);
     }
 
     public void removeInstancePosX(String class1){
-        instancePosXList.remove(seqDiagClassList.indexOf(class1));
-    }
-
-    public void backupObservable(){
-        GSONseqDiagAllClassList.clear();
-        GSONseqDiagClassList.clear();
-        GSONinstancesList.clear();
-        for (int i = 0; i < seqDiagAllClassList.size(); i++)
-            GSONseqDiagAllClassList.add(seqDiagAllClassList.get(i));
-        for (int i = 0; i < seqDiagClassList.size(); i++)
-            GSONseqDiagClassList.add(seqDiagClassList.get(i));
-        for (int i = 0; i < instancesList.size(); i++)
-            GSONinstancesList.add(instancesList.get(i));
-    }
-
-    public void restoreObservable(){
-        seqDiagAllClassList = FXCollections.observableArrayList();
-        seqDiagClassList = FXCollections.observableArrayList();
-        instancesList = FXCollections.observableArrayList();
-        for (int i = 0; i < GSONseqDiagAllClassList.size(); i++)
-            seqDiagAllClassList.add(GSONseqDiagAllClassList.get(i));
-        for (int i = 0; i < GSONseqDiagClassList.size(); i++)
-            seqDiagClassList.add(GSONseqDiagClassList.get(i));
-        for (int i = 0; i < GSONinstancesList.size(); i++)
-            instancesList.add(GSONinstancesList.get(i));
+        instancePosXList.remove(instancesList.indexOf(class1));
     }
 
 }
