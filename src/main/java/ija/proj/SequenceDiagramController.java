@@ -16,6 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
@@ -82,7 +83,7 @@ public class SequenceDiagramController {
         msgOperationChoice.setItems(operationList);
         //naplneni operaci podle Class2
         msgClass2Choice.setOnAction(event -> {
-            if (msgClass2Choice.getValue() != null && msgTypeChoice.getValue() != "New Instance" && msgTypeChoice.getValue() != "Return"){
+            if (msgClass2Choice.getValue() != null && msgTypeChoice.getValue().compareTo("Message") == 0){
                 msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                 UMLClass class2 = null;
                 String[] split;
@@ -97,10 +98,8 @@ public class SequenceDiagramController {
                         string = (string + " " + split[i]);
                     class2 = ClassDiagramController.classDiagram.getObject(string);
                 }
-                if (seqDiag.getSeqDiagClassList().contains(class2.getName()) || seqDiag.getInstancesList().contains(class2.getName())) {
-                    for (int i = 0; i < class2.operations.size(); i++) {
-                        msgOperationChoice.getItems().add(class2.operations.get(i).getName());
-                    }
+                for (int i = 0; i < class2.operations.size(); i++) {
+                    msgOperationChoice.getItems().add(class2.operations.get(i).getName());
                 }
             }
         });
@@ -272,6 +271,23 @@ public class SequenceDiagramController {
     public void classDelBtnClicked() {
         if (classChoice.getValue() != null){
             String name = classChoice.getValue();
+
+            //mazani zprav dane class
+            for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
+                if (seqDiag.getMsgList().get(i).getClass1().compareTo(name) == 0 || seqDiag.getMsgList().get(i).getClass2().compareTo(name) == 0) {
+                    main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName() + "line"));
+                    if (seqDiag.getMsgList().get(i).getType().compareTo("New Instance") == 0){
+                        deleteInstance(seqDiag.getMsgList().get(i).getClass2());
+                        seqDiag.getMsgList().remove(i);
+                        i = 0; //reset counteru, deleteInstance mohl zmenit seqDiag.getMsgList().size()
+                    }
+                    else {
+                        seqDiag.getMsgList().remove(i);
+                        i--; //index se posunul smazanim prvku
+                    }
+                }
+            }
+
             seqDiag.getSeqDiagClassList().remove(name);
             seqDiag.getSeqDiagAllClassList().add(name);
             classUsedList.remove(name);
@@ -283,8 +299,43 @@ public class SequenceDiagramController {
             msgTypeChoice.setValue(type);
 
             //mazani graficke reprezentace
-            main.getChildren().remove(main.lookup("#" + name.replaceAll("\\s+", "€")));
+            eraseClass(name);
         }
+    }
+
+    public void eraseClass(String class1){
+        main.getChildren().remove(main.lookup("#" + class1));
+        main.getChildren().remove(main.lookup("#" + class1 + "Line"));
+    }
+
+    public void deleteInstance(String instance){
+        //mazani zprav dane class
+        for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
+            if (seqDiag.getMsgList().get(i).getClass1().compareTo(instance) == 0 || seqDiag.getMsgList().get(i).getClass2().compareTo(instance) == 0) {
+                main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName() + "line"));
+                if (seqDiag.getMsgList().get(i).getType().compareTo("New Instance") == 0){
+                    deleteInstance(seqDiag.getMsgList().get(i).getClass2());
+                    seqDiag.getMsgList().remove(i);
+                    i = 0; //reset counteru, deleteInstance mohl zmenit seqDiag.getMsgList().size()
+                }
+                else {
+                    seqDiag.getMsgList().remove(i);
+                    i--; //index se posunul smazanim prvku
+                }
+            }
+        }
+
+        seqDiag.getSeqDiagClassList().remove(instance);
+        classUsedList.remove(instance);
+        //update class 2 vyvolanim eventu pri zmene typu
+        String type = msgTypeChoice.getValue();
+        msgTypeChoice.setValue("Message");
+        msgTypeChoice.setValue("null");
+        msgTypeChoice.setValue(type);
+
+        class1List.remove(instance);
+        //mazani graficke reprezentace
+        eraseClass(instance);
     }
 
     @FXML
@@ -300,6 +351,7 @@ public class SequenceDiagramController {
                 seqDiag.incInstanceCounter();
             }
             seqDiag.incMsgCounter();
+
             drawMessage(message);
         }
     }
@@ -315,6 +367,7 @@ public class SequenceDiagramController {
             //pokud neexistuje - nakresli instanci
             if (main.lookupAll("#" + message.getClass2().replaceAll("\\s+", "€")).isEmpty()){
                 seqDiag.getInstancesList().add(message.getClass2());
+                class1List.add(message.getClass2());
                 seqDiag.addInstancePosX(seqDiag.getClassPosX(message.getClass1()) + 200);
                 drawInstance(message.getClass2(), message.getHeight()-5);
             }
@@ -337,6 +390,15 @@ public class SequenceDiagramController {
         poly.setId(message.getName()+"line");
         main.getChildren().add(poly);
 
+        //pripad mazani instance - zkrat caru z instance
+        if (message.getType().compareTo("Rem Instance") == 0) {
+            ((Line) main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setEndY(message.getHeight());
+            //nastaveni barvy pri spatnem otocenim cary
+            if (((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getStartY() > ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getEndY())
+                ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.RED);
+            else
+                ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
+        }
         //dragovani
         line.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -359,8 +421,24 @@ public class SequenceDiagramController {
                 message.setHeight(orgHeight + offsetY);
 
                 if (message.getType().compareTo("New Instance") == 0){
-                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(newTranslateY);
-                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").setTranslateY(newTranslateY);
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStartY(message.getHeight());
+                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(message.getHeight());
+                    //main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").setTranslateY(message.getHeight());
+                    //nastaveni barvy pri spatnem otocenim cary
+                    if (((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getStartY() > ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getEndY())
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.RED);
+                    else
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
+                }
+
+                //pripad mazani instance - zkrat caru z instance
+                if (message.getType().compareTo("Rem Instance") == 0) {
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setEndY(message.getHeight());
+                    //nastaveni barvy pri spatnem otocenim cary
+                    if (((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getStartY() > ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getEndY())
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.RED);
+                    else
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
                 }
             }
         });
@@ -385,10 +463,23 @@ public class SequenceDiagramController {
                 message.setHeight(orgHeight + offsetY);
 
                 if (message.getType().compareTo("New Instance") == 0){
-                    drawInstance(message.getClass2(), message.getHeight());
-                    System.out.println(message.getHeight());
-                    //main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(message.getHeight());
-                    //main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").setTranslateY(message.getHeight());
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStartY(message.getHeight());
+                    main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")).setTranslateY(message.getHeight());
+                    //nastaveni barvy pri spatnem otocenim cary
+                    if (((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getStartY() > ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getEndY())
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.RED);
+                    else
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
+                }
+
+                //pripad mazani instance - zkrat caru z instance
+                if (message.getType().compareTo("Rem Instance") == 0) {
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setEndY(message.getHeight());
+                    //nastaveni barvy pri spatnem otocenim cary
+                    if (((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getStartY() > ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).getEndY())
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.RED);
+                    else
+                        ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
                 }
             }
         });
@@ -398,8 +489,11 @@ public class SequenceDiagramController {
                 seqDiag.getMsgList().remove(message);
                 main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
                 if (message.getType().compareTo("New Instance") == 0){
-                    main.getChildren().remove(main.lookup("#" + message.getClass2().replaceAll("\\s+", "€")));
-                    main.getChildren().remove(main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line"));
+                    deleteInstance(message.getClass2());
+                }
+                if (message.getType().compareTo("Rem Instance") == 0){
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setEndY(1500);
+                    ((Line)main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line")).setStroke(Color.BLACK);
                 }
             }
         });
