@@ -116,6 +116,7 @@ public class SequenceDiagramController {
                 }
             }
         });
+        //nastaveni class 2 listu a operaci podle vybraneho typu
         msgTypeChoice.setOnAction(event -> {
             if (msgTypeChoice.getValue() != null) {
                 String class2 = msgClass2Choice.getValue();
@@ -157,7 +158,6 @@ public class SequenceDiagramController {
 
         //nacteni
         //objekty
-        System.out.println(seqDiag.getSeqDiagClassList());
         for (int i = 0; i < seqDiag.getSeqDiagClassList().size(); i++){
             drawClass(seqDiag.getSeqDiagClassList().get(i));
         }
@@ -185,7 +185,7 @@ public class SequenceDiagramController {
             //update vyvolanim eventu pri zmene typu
             String type = msgTypeChoice.getValue();
             msgTypeChoice.setValue("Asynch");
-            msgTypeChoice.setValue("null");
+            msgTypeChoice.setValue(null);
             msgTypeChoice.setValue(type);
             drawClass(name);
         }
@@ -200,7 +200,6 @@ public class SequenceDiagramController {
         textField.setPrefWidth(100);
         textField.setEditable(false);
         textField.setId(name.replaceAll("\\s+", "€"));
-        System.out.println(textField.getId());
 
         Line line = new Line(50, 40, 50,1500);
         line.setTranslateX(seqDiag.getClassPosX(name));
@@ -414,7 +413,7 @@ public class SequenceDiagramController {
     public void drawMessage(UMLMessage message){
         //pro pripad prekreslovani
         main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€") + "line"));
-        //vykresleni message, return, Rem Instance
+        //vykresleni
         Line line;
         if (message.getType().compareTo("New Instance") != 0)
             line = new Line(main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX()+50, message.getHeight(), main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX()+50, message.getHeight());

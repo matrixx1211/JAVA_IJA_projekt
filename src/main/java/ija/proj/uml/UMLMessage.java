@@ -6,6 +6,7 @@ public class UMLMessage extends Element {
     String class2;
     String operation;
     double height;
+    String order;
 
     public UMLMessage(String name, String class1, String class2, String type, String operation) {
         super(name);
@@ -14,6 +15,7 @@ public class UMLMessage extends Element {
         this.class2 = class2;
         this.operation = operation;
         this.height = 100;
+        this.order = "1";
     }
 
     public String getClass1(){
@@ -38,5 +40,13 @@ public class UMLMessage extends Element {
 
     public void setHeight(double height){
         this.height = height;
+    }
+
+    public String getOrder(){
+        return order;
+    }
+
+    public void setOrder(String order){
+        this.order = order;
     }
 }

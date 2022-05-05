@@ -67,7 +67,7 @@
                                     </HBox>
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                                        <children>
-                                          <ChoiceBox fx:id="UserChoice" prefWidth="150.0" />
+                                          <ChoiceBox fx:id="userChoice" prefWidth="150.0" />
                                           <Button fx:id="userDelBtn" mnemonicParsing="false" onAction="#userDelBtnClicked" prefWidth="40.0" text="Del" />
                                        </children>
                                     </HBox>
@@ -99,27 +99,31 @@
                            <content>
                               <AnchorPane prefHeight="280.0" prefWidth="348.0">
                                  <children>
+                                    <TextField fx:id="msgOrder" layoutX="10.0" layoutY="211.0" />
                                     <Label layoutX="10.0" layoutY="10.0" text="Classes" />
-                                    <Label layoutX="10.0" layoutY="166.0" text="Message Operation" />
-                                    <Label layoutX="10.0" layoutY="103.0" text="Message Type" />
-                                    <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                                    <Label layoutX="9.0" layoutY="148.0" text="Message Operation" AnchorPane.topAnchor="130.0" />
+                                    <Label layoutX="10.0" layoutY="93.0" text="Message Type" AnchorPane.topAnchor="80.0" />
+                                    <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
                                        <children>
                                           <ChoiceBox fx:id="msgClass1Choice" prefWidth="150.0" />
                                        </children>
                                     </HBox>
-                                    <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+                                    <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                                        <children>
                                           <ChoiceBox fx:id="msgClass2Choice" prefWidth="150.0" />
                                        </children>
                                     </HBox>
-                                    <HBox layoutX="9.0" layoutY="131.0" spacing="10.0">
+                                    <HBox layoutX="9.0" layoutY="131.0" spacing="10.0" AnchorPane.topAnchor="100.0">
                                        <children>
                                           <ChoiceBox fx:id="msgTypeChoice" prefWidth="150.0" />
                                        </children>
                                     </HBox>
-                                    <HBox layoutX="9.0" layoutY="248.0" spacing="10.0" />
-                                    <Button fx:id="msgAddBtn" layoutX="12.0" layoutY="236.0" mnemonicParsing="false" onAction="#msgAddBtnClicked" prefHeight="25.0" prefWidth="148.0" text="Add" />
-                                    <ChoiceBox fx:id="msgOperationChoice" layoutX="11.0" layoutY="193.0" prefWidth="150.0" />
+                                    <HBox layoutX="9.0" layoutY="248.0" spacing="10.0" AnchorPane.topAnchor="150.0">
+                                       <children>
+                                          <ChoiceBox fx:id="msgOperationChoice" prefWidth="150.0" />
+                                       </children></HBox>
+                                    <Button fx:id="msgAddBtn" layoutX="10.0" layoutY="242.0" mnemonicParsing="false" onAction="#msgAddBtnClicked" prefHeight="25.0" prefWidth="148.0" text="Add" />
+                                    <Label layoutX="9.0" layoutY="199.6" prefHeight="17.0" prefWidth="99.0" text="Message Order" AnchorPane.topAnchor="180.0" />
                                  </children>
                               </AnchorPane>
                            </content>
