@@ -8,10 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -19,11 +16,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class SequenceDiagramController {
@@ -33,6 +33,8 @@ public class SequenceDiagramController {
 
     @FXML
     AnchorPane main;
+    @FXML
+    Label leftStatusLabel;
 
     @FXML
     ChoiceBox<String> classNewChoice;
@@ -54,11 +56,20 @@ public class SequenceDiagramController {
     @FXML
     Button msgAddBtn;
 
+    @FXML
+    ChoiceBox<String> actClassChoice;
+    @FXML
+    TextField actLen;
+    @FXML
+    Button actAddBtn;
+
     ObservableList<String> classUsedList = FXCollections.observableArrayList();
     ObservableList<String> classNotUsedList = FXCollections.observableArrayList();
     ObservableList<String> class1List = FXCollections.observableArrayList();
     ObservableList<String> class2List = FXCollections.observableArrayList();
     ObservableList<String> operationList = FXCollections.observableArrayList();
+    ObservableList<String> msgTypeList = FXCollections.observableArrayList();
+    ObservableList<String> actClassList = FXCollections.observableArrayList();
     SequenceDiagram seqDiag;
 
     public void initialize(){
@@ -68,22 +79,24 @@ public class SequenceDiagramController {
         class1List.addAll(classUsedList);
         class1List.addAll(seqDiag.getInstancesList());
         class2List.addAll(class1List);
+        actClassList.addAll(class1List);
 
         classNewChoice.setItems(classNotUsedList);
         classChoice.setItems(classUsedList);
         msgClass1Choice.setItems(class1List);
         msgClass2Choice.setItems(class2List);
-        ObservableList<String> msgTypeList = FXCollections.observableArrayList();
-        msgTypeList.add("Message");
+        msgTypeList.add("Asynch");
+        msgTypeList.add("Synch");
         msgTypeList.add("Return");
         msgTypeList.add("New Instance");
         msgTypeList.add("Rem Instance");
         msgTypeChoice.setItems(msgTypeList);
-        msgTypeChoice.setValue("Message");
+        msgTypeChoice.setValue("Asynch");
         msgOperationChoice.setItems(operationList);
+        actClassChoice.setItems(actClassList);
         //naplneni operaci podle Class2
         msgClass2Choice.setOnAction(event -> {
-            if (msgClass2Choice.getValue() != null && msgTypeChoice.getValue().compareTo("Message") == 0){
+            if (msgClass2Choice.getValue() != null && (msgTypeChoice.getValue().compareTo("Asynch") == 0 || msgTypeChoice.getValue().compareTo("Synch") == 0)){
                 msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                 UMLClass class2 = null;
                 String[] split;
@@ -152,6 +165,10 @@ public class SequenceDiagramController {
         for (int i = 0; i < seqDiag.getMsgList().size(); i++){
             drawMessage(seqDiag.getMsgList().get(i));
         }
+        //aktivace
+        for (int i = 0; i < seqDiag.getActList().size(); i++){
+            drawActivation(seqDiag.getActList().get(i));
+        }
     }
 
     @FXML
@@ -162,10 +179,12 @@ public class SequenceDiagramController {
             seqDiag.getSeqDiagClassList().add(name);
             classUsedList.add(name);
             classNotUsedList.remove(name);
+            class1List.add(name);
+            actClassList.add(name);
             seqDiag.addClassPosX(0);
             //update vyvolanim eventu pri zmene typu
             String type = msgTypeChoice.getValue();
-            msgTypeChoice.setValue("Message");
+            msgTypeChoice.setValue("Asynch");
             msgTypeChoice.setValue("null");
             msgTypeChoice.setValue(type);
             drawClass(name);
@@ -210,6 +229,13 @@ public class SequenceDiagramController {
                 for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
                     if (name.compareTo(seqDiag.getMsgList().get(i).getClass1()) == 0 || name.compareTo(seqDiag.getMsgList().get(i).getClass2()) == 0){
                         drawMessage(seqDiag.getMsgList().get(i));
+                    }
+                }
+
+                //prekresleni aktivaci
+                for (int i = 0; i < seqDiag.getActList().size(); i++) {
+                    if (name.compareTo(seqDiag.getActList().get(i).getClass1()) == 0){
+                        drawActivation(seqDiag.getActList().get(i));
                     }
                 }
             }
@@ -260,6 +286,13 @@ public class SequenceDiagramController {
                         drawMessage(seqDiag.getMsgList().get(i));
                     }
                 }
+
+                //prekresleni aktivaci
+                for (int i = 0; i < seqDiag.getActList().size(); i++) {
+                    if (name.compareTo(seqDiag.getActList().get(i).getClass1()) == 0){
+                        drawActivation(seqDiag.getActList().get(i));
+                    }
+                }
             }
         });
         main.getChildren().add(line);
@@ -275,7 +308,7 @@ public class SequenceDiagramController {
             //mazani zprav dane class
             for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
                 if (seqDiag.getMsgList().get(i).getClass1().compareTo(name) == 0 || seqDiag.getMsgList().get(i).getClass2().compareTo(name) == 0) {
-                    main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName() + "line"));
+                    main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName().replaceAll("\\s+", "€") + "line"));
                     if (seqDiag.getMsgList().get(i).getType().compareTo("New Instance") == 0){
                         deleteInstance(seqDiag.getMsgList().get(i).getClass2());
                         seqDiag.getMsgList().remove(i);
@@ -288,13 +321,24 @@ public class SequenceDiagramController {
                 }
             }
 
+            //mazani aktivaci na dane class
+            for (int i = 0; i < seqDiag.getActList().size(); i++) {
+                if (seqDiag.getActList().get(i).getClass1().compareTo(name) == 0) {
+                    deleteActivation(seqDiag.getActList().get(i));
+                    i--; //index se posunul smazanim prvku
+                }
+            }
+
             seqDiag.getSeqDiagClassList().remove(name);
             seqDiag.getSeqDiagAllClassList().add(name);
             classUsedList.remove(name);
             classNotUsedList.add(name);
+            class1List.remove(name);
+            actClassList.remove(name);
+            seqDiag.removeClassPosX(name);
             //update vyvolanim eventu pri zmene typu
             String type = msgTypeChoice.getValue();
-            msgTypeChoice.setValue("Message");
+            msgTypeChoice.setValue("Asynch");
             msgTypeChoice.setValue("null");
             msgTypeChoice.setValue(type);
 
@@ -304,15 +348,15 @@ public class SequenceDiagramController {
     }
 
     public void eraseClass(String class1){
-        main.getChildren().remove(main.lookup("#" + class1));
-        main.getChildren().remove(main.lookup("#" + class1 + "Line"));
+        main.getChildren().remove(main.lookup("#" + class1.replaceAll("\\s+", "€")));
+        main.getChildren().remove(main.lookup("#" + class1.replaceAll("\\s+", "€") + "Line"));
     }
 
     public void deleteInstance(String instance){
         //mazani zprav dane class
         for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
             if (seqDiag.getMsgList().get(i).getClass1().compareTo(instance) == 0 || seqDiag.getMsgList().get(i).getClass2().compareTo(instance) == 0) {
-                main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName() + "line"));
+                main.getChildren().removeAll(main.lookupAll("#" + seqDiag.getMsgList().get(i).getName().replaceAll("\\s+", "€") + "line"));
                 if (seqDiag.getMsgList().get(i).getType().compareTo("New Instance") == 0){
                     deleteInstance(seqDiag.getMsgList().get(i).getClass2());
                     seqDiag.getMsgList().remove(i);
@@ -324,16 +368,27 @@ public class SequenceDiagramController {
                 }
             }
         }
+        //mazani aktivaci na dane class
+        for (int i = 0; i < seqDiag.getActList().size(); i++) {
+            if (seqDiag.getActList().get(i).getClass1().compareTo(instance) == 0) {
+                //prekresleni aktivaci
+                deleteActivation(seqDiag.getActList().get(i));
+                i--; //index se posunul smazanim prvku
+            }
+        }
 
-        seqDiag.getSeqDiagClassList().remove(instance);
+        seqDiag.removeInstancePosX(instance);
+        seqDiag.getInstancesList().remove(instance);
+
         classUsedList.remove(instance);
+        class1List.remove(instance);
+        actClassList.remove(instance);
+
         //update class 2 vyvolanim eventu pri zmene typu
         String type = msgTypeChoice.getValue();
-        msgTypeChoice.setValue("Message");
+        msgTypeChoice.setValue("Asynch");
         msgTypeChoice.setValue("null");
         msgTypeChoice.setValue(type);
-
-        class1List.remove(instance);
         //mazani graficke reprezentace
         eraseClass(instance);
     }
@@ -358,7 +413,7 @@ public class SequenceDiagramController {
 
     public void drawMessage(UMLMessage message){
         //pro pripad prekreslovani
-        main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
+        main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€") + "line"));
         //vykresleni message, return, Rem Instance
         Line line;
         if (message.getType().compareTo("New Instance") != 0)
@@ -366,9 +421,12 @@ public class SequenceDiagramController {
         else{
             //pokud neexistuje - nakresli instanci
             if (main.lookupAll("#" + message.getClass2().replaceAll("\\s+", "€")).isEmpty()){
-                seqDiag.getInstancesList().add(message.getClass2());
-                class1List.add(message.getClass2());
-                seqDiag.addInstancePosX(seqDiag.getClassPosX(message.getClass1()) + 200);
+                if (! seqDiag.getInstancesList().contains(message.getClass2())) {
+                    seqDiag.getInstancesList().add(message.getClass2());
+                    class1List.add(message.getClass2());
+                    actClassList.add(message.getClass2());
+                    seqDiag.addInstancePosX(seqDiag.getClassPosX(message.getClass1()) + 200);
+                }
                 drawInstance(message.getClass2(), message.getHeight()-5);
             }
             if (seqDiag.getClassPosX(message.getClass1()) < seqDiag.getInstancePosX(message.getClass2()))
@@ -383,12 +441,22 @@ public class SequenceDiagramController {
         text.setId(message.getName()+"line");
         //sipka
         Polygon poly;
-        if (seqDiag.getClassPosX(message.getClass1()) > seqDiag.getClassPosX(message.getClass2()))
-            poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()+10, line.getEndY()+5, line.getEndX()+10, line.getEndY()-5);
-        else
-            poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()-10, line.getEndY()+5, line.getEndX()-10, line.getEndY()-5);
-        poly.setId(message.getName()+"line");
-        main.getChildren().add(poly);
+        if (message.getType().compareTo("Synch") == 0){
+            if (seqDiag.getClassPosX(message.getClass1()) > seqDiag.getClassPosX(message.getClass2()))
+                poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()+10, line.getEndY()+5, line.getEndX()+10, line.getEndY()-5);
+            else
+                poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()-10, line.getEndY()+5, line.getEndX()-10, line.getEndY()-5);
+            poly.setId(message.getName()+"line");
+            main.getChildren().add(poly);
+        }
+        else {
+            if (seqDiag.getClassPosX(message.getClass1()) > seqDiag.getClassPosX(message.getClass2()))
+                poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()+10, line.getEndY()+5, line.getEndX()+12, line.getEndY()+5, line.getEndX()+2, line.getEndY(), line.getEndX()+12, line.getEndY()-5, line.getEndX()+10, line.getEndY()-5);
+            else
+                poly = new Polygon(line.getEndX(), line.getEndY(), line.getEndX()-10, line.getEndY()+5, line.getEndX()-12, line.getEndY()+5, line.getEndX()-2, line.getEndY(), line.getEndX()-12, line.getEndY()-5, line.getEndX()-10, line.getEndY()-5);
+            poly.setId(message.getName()+"line");
+            main.getChildren().add(poly);
+        }
 
         //pripad mazani instance - zkrat caru z instance
         if (message.getType().compareTo("Rem Instance") == 0) {
@@ -487,7 +555,7 @@ public class SequenceDiagramController {
         text.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
                 seqDiag.getMsgList().remove(message);
-                main.getChildren().removeAll(main.lookupAll("#" + message.getName() + "line"));
+                main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€") + "line"));
                 if (message.getType().compareTo("New Instance") == 0){
                     deleteInstance(message.getClass2());
                 }
@@ -497,14 +565,71 @@ public class SequenceDiagramController {
                 }
             }
         });
+        //carovana cara u return
+        if (message.getType().compareTo("Return") == 0)
+            line.getStrokeDashArray().addAll(4d, 4d);
 
         main.getChildren().add(line);
         main.getChildren().add(text);
     }
 
 
-    public void synch(){
+    public void actAddBtnClicked(){
+        double len;
+        if (actClassChoice.getValue() != null){
+            try {
+                len = Double.parseDouble(actLen.getText());
+            }
+            catch (NumberFormatException e) {
+                leftStatusLabel.setText("Not a number in Activation length");
+                return;
+            }
+            Line line = (Line)main.lookup("#" + actClassChoice.getValue().replaceAll("\\s+", "€") + "Line");
+            UMLActivation activation = seqDiag.createActivation("act" + seqDiag.getActivationCounter(), actClassChoice.getValue(),line.getStartY()+20 , len);
+            drawActivation(activation);
+        }
+    }
+    public void drawActivation(UMLActivation activation){
+        main.getChildren().removeAll(main.lookupAll("#" + activation.getName()));
+        Rectangle rectangle = new Rectangle(50-4, 80, 8, activation.getLen());
 
+        rectangle.setTranslateX(seqDiag.getClassPosX(activation.getClass1()));
+        rectangle.setTranslateY(activation.getPosY());
+        rectangle.setFill(Color.WHITE);
+        rectangle.setStroke(Color.BLACK);
+        rectangle.setId(activation.getName());
+
+        rectangle.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                orgSceneY = event.getSceneY();
+                orgTranslateY = ((Rectangle) (event.getSource())).getTranslateY();
+            }
+        });
+        rectangle.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double offsetY = event.getSceneY() - orgSceneY;
+                double newTranslateY = orgTranslateY + offsetY;
+
+                ((Rectangle) (event.getSource())).setTranslateY(newTranslateY);
+                rectangle.setTranslateY(newTranslateY);
+                activation.setPosY(rectangle.getTranslateY());
+            }
+        });
+        //mazani
+        rectangle.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY){
+                deleteActivation(activation);
+            }
+        });
+
+        main.getChildren().add(rectangle);
+    }
+
+    public void deleteActivation(UMLActivation activation){
+        seqDiag.getActList().remove(activation);
+        main.getChildren().removeAll(main.lookupAll("#" + activation.getName()));
     }
 
 }

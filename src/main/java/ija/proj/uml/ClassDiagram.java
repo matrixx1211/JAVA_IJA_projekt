@@ -31,18 +31,22 @@ public class ClassDiagram extends Element {
 	 * seznam sekvenčních diagramů
 	 */
 	public List<SequenceDiagram> sequenceDiagrams;
+	/**
+	 * seznam komunikačních diagramů
+	 */
+	public List<CommunicationDiagram> communicationDiagrams;
 
 	/**
 	 * Konstruktor pro ClassDiagram
 	 * @param name název Diagramu
 	 */
-
 	public ClassDiagram(String name) {
 		super(name);
 		this.classes = new ArrayList<UMLClass>();
 		this.classifiers = new ArrayList<UMLClassifier>();
 		this.relations = new ArrayList<UMLRelation>();
 		this.sequenceDiagrams = new ArrayList<SequenceDiagram>();
+		this.communicationDiagrams = new ArrayList<CommunicationDiagram>();
 	}
 
 	/**
@@ -264,6 +268,57 @@ public class ClassDiagram extends Element {
 		SequenceDiagram obj;
 		for (int i = 0; i < this.sequenceDiagrams.size(); i++) {
 			obj = this.sequenceDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				return obj;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Metoda pro vytvoření Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return vytvořený digram
+	 */
+	public CommunicationDiagram createCommDiagram(String name) {
+		CommunicationDiagram obj;
+		for (int i = 0; i < this.communicationDiagrams.size(); i++) {
+			obj = this.communicationDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				return null;
+			}
+		}
+		CommunicationDiagram newObj = new CommunicationDiagram(name);
+		this.communicationDiagrams.add(newObj);
+		return newObj;
+	}
+
+	/**
+	 * Metoda pro smazání Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return true pokud se povedlo, jinak false
+	 */
+	public Boolean deleteCommDiagram(String name) {
+		CommunicationDiagram obj;
+		for (int i = 0; i < this.communicationDiagrams.size(); i++) {
+			obj = this.communicationDiagrams.get(i);
+			if (obj.name.compareTo(name) == 0) {
+				this.communicationDiagrams.remove(obj);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Metoda pro nalezeni Sekvenčního diagramu
+	 * @param name název diagramu
+	 * @return SequenceDiagram, nebo NULL
+	 */
+	public CommunicationDiagram findCommDiagram(String name) {
+		CommunicationDiagram obj;
+		for (int i = 0; i < this.communicationDiagrams.size(); i++) {
+			obj = this.communicationDiagrams.get(i);
 			if (obj.name.compareTo(name) == 0) {
 				return obj;
 			}

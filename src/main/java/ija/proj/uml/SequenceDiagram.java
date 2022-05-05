@@ -6,8 +6,8 @@ import javafx.collections.FXCollections;
 import java.util.ArrayList;
 
 public class SequenceDiagram extends Element {
-    ArrayList<UMLClass> classList;
     ArrayList<UMLMessage> messageList;
+    ArrayList<UMLActivation> activationList;
     Boolean opened;
     ArrayList<String> seqDiagAllClassList;
     ArrayList<String> seqDiagClassList;
@@ -16,12 +16,13 @@ public class SequenceDiagram extends Element {
     ArrayList<Double> instancePosXList;
     int messageCounter;
     int instanceCounter;
+    int activationCounter;
 
 
     public SequenceDiagram(String name) {
         super(name);
-        this.classList = new ArrayList<>();
         this.messageList = new ArrayList<>();
+        this.activationList = new ArrayList<>();
         this.opened = false;
         this.seqDiagAllClassList = new ArrayList<>();
         this.seqDiagClassList = new ArrayList<>();
@@ -33,10 +34,15 @@ public class SequenceDiagram extends Element {
         }
         this.messageCounter = 0;
         this.instanceCounter = 0;
+        this.activationCounter = 0;
     }
 
     public ArrayList<UMLMessage> getMsgList() {
         return messageList;
+    }
+
+    public ArrayList<UMLActivation> getActList() {
+        return activationList;
     }
 
     public int getMsgCounter() {
@@ -55,10 +61,21 @@ public class SequenceDiagram extends Element {
         instanceCounter++;
     }
 
+    public int getActivationCounter() {
+        return activationCounter;
+    }
+
     public UMLMessage createMessage(String name, String class1, String class2, String type, String operation) {
         UMLMessage message = new UMLMessage(name, class1, class2, type, operation);
         messageList.add(message);
         return message;
+    }
+
+    public UMLActivation createActivation(String name, String class1, Double posY, Double len) {
+        UMLActivation activation = new UMLActivation(name, class1, posY, len);
+        activationList.add(activation);
+        activationCounter++;
+        return activation;
     }
 
     public ArrayList<String> getSeqDiagAllClassList() {
@@ -78,15 +95,15 @@ public class SequenceDiagram extends Element {
     }
     public void removeClassFromList(String name) {
         seqDiagAllClassList.remove(name);
+        seqDiagClassList.remove(name);
+        //TODO instance
     }
     public void renameClassInList(String oldName, String newName) {
         if (seqDiagAllClassList.contains(oldName)) {
-            seqDiagAllClassList.remove(oldName);
-            seqDiagAllClassList.add(newName);
+            seqDiagAllClassList.set(seqDiagAllClassList.indexOf(oldName), newName);
         }
         if (seqDiagClassList.contains(oldName)) {
-            seqDiagClassList.remove(oldName);
-            seqDiagClassList.add(newName);
+            seqDiagClassList.set(seqDiagClassList.indexOf(oldName), newName);
             //prejmenovani ve zpravach
             for (int i = 0; i < messageList.size(); i++){
                 if (messageList.get(i).getClass1().compareTo(oldName) == 0)

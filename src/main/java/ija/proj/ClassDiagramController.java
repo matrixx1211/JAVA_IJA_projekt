@@ -227,11 +227,16 @@ public class ClassDiagramController extends App {
                 newRelationClass2.setValue("");
                 newRelationClass3.setValue("");
                 seqDiagList.removeAll(seqDiagList);
-
+                //seq diag
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
                     seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
                 }
                 seqDiagChoice.setItems(seqDiagList);
+                //comm diag
+                for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++){
+                    commDiagList.add(classDiagram.communicationDiagrams.get(i).getName());
+                }
+                commDiagChoice.setItems(commDiagList);
             } catch (Exception e) {
                 leftStatusLabel.setText(e.toString());
             }
@@ -1055,16 +1060,61 @@ public class ClassDiagramController extends App {
         else
             leftStatusLabel.setText("diagram se nepodarilo smazat");
     }
+
+    /* ========= SEKCE PRO COMM DIAGRAM ========*/
+
+    @FXML private TextField commDiagName;
+    @FXML private ChoiceBox<String> commDiagChoice;
+    @FXML private Button createCommDiag;
+    @FXML private Button openCommDiag;
+    @FXML private Button removeCommDiag;
+    public static ObservableList<String> commDiagList = FXCollections.observableArrayList();
+    public static String commTitle;
+
     @FXML
     public void clickedCreateCommDiag() {
-
+        if (commDiagName.getText() != null) {
+            CommunicationDiagram newCommDiag = classDiagram.createCommDiagram(commDiagName.getText());
+            if (newCommDiag == null) {
+                leftStatusLabel.setText("diagram jiz existuje");
+                return;
+            }
+            commDiagList.add(newCommDiag.getName());
+            commDiagChoice.setItems(commDiagList);
+        }
     }
     @FXML
     public void clickedOpenCommDiag() {
+        title = commDiagChoice.getValue();
+        if (commDiagChoice.getValue() == null) {
+            leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        try {
+            Scene commScene = new Scene(App.loadFXML("CommunicationDiagram"));
+            Stage commStage = new Stage();
 
+            commStage.setTitle(commDiagChoice.getValue());
+            commStage.setScene(commScene);
+
+            commStage.show();
+        }
+        catch (Exception e) {
+            leftStatusLabel.setText(e.toString());
+        }
     }
     @FXML
     public void  clickedDeleteCommDiag() {
-
+        if (commDiagChoice.getValue() == null) {
+            leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        String name = commDiagChoice.getValue();
+        if (classDiagram.deleteCommDiagram(name)) {
+            commDiagList.remove(name);
+            commDiagChoice.setItems(commDiagList);
+        }
+        else
+            leftStatusLabel.setText("diagram se nepodarilo smazat");
     }
 }
