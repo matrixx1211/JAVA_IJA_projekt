@@ -66,13 +66,13 @@ public class ClassDiagram extends Element {
 		UMLClass obj;
 		for (int i = 0; i < this.classes.size(); i++) {
 			obj = this.classes.get(i);
-			if (obj.name.compareTo(name) == 0) {
+			if (obj.getName().compareTo(name) == 0) {
 				return null;
 			}
 		}
 		UMLClass newObj = new UMLClass(name, id, isInterface);
 		this.classes.add(newObj);
-		this.classifiers.add(newObj);
+		this.classifierForName(name);
 		return newObj;
 	}
 

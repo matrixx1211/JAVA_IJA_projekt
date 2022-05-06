@@ -213,6 +213,21 @@ public class UMLClass extends UMLClassifier {
         }
         return null;
     }
+    /**
+     * Hledá atribut, jestli existuje
+     * @param name jméno atributu
+     * @return atribut nebo null
+     */
+    public UMLAttribute findAttribute(String name) {
+        UMLAttribute obj;
+        for (int i = 0; i < this.attributes.size(); i++) {
+            obj = this.attributes.get(i);
+            if (obj.getName().compareTo(name) == 0) {
+                return obj;
+            }
+        }
+        return null;
+    }
 
     /**
      * Získá nemodifikovatelný seznam attributů

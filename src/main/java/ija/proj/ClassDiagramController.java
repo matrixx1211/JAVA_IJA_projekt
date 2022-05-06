@@ -27,6 +27,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -180,7 +181,7 @@ public class ClassDiagramController extends App {
                 main.getChildren().removeAll(main.getChildren());
 
                 detailText.setText("Detail");
-                System.out.println("1");
+                System.out.println("OPEN 1!!!");
 
                 deleteClassBtn.setDisable(true);
 
@@ -256,7 +257,7 @@ public class ClassDiagramController extends App {
             main.getChildren().removeAll(main.getChildren());
 
             detailText.setText("Detail");
-            System.out.println("1");
+            System.out.println("UNDO 1!!!");
 
             deleteClassBtn.setDisable(true);
 
@@ -323,7 +324,7 @@ public class ClassDiagramController extends App {
         // vytvoření gsonu
         Gson gson = new Gson();
         // export json dat do undoData
-        classDiagram.undoData = gson.toJson(classDiagram);
+        classDiagram.undoData = gson.toJson(classDiagram).replaceAll("\\\\", "");
     }
 
     /**
@@ -343,7 +344,7 @@ public class ClassDiagramController extends App {
             attributes.setId((newclass.getName() + "Attributes").replaceAll("\\s+", "€"));
             for (int i = 0; i < newclass.attributes.size(); i++) {
                 UMLAttribute attr = newclass.attributes.get(i);
-                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType());
+                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType().getName());
                 attributes.getChildren().add(attribute);
             }
             // separátor
@@ -416,23 +417,23 @@ public class ClassDiagramController extends App {
                     // výběrový box
                     // přistupnost
                     VBox accessCol = new VBox();
-                    ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
-                    accessColChoiceBox.setDisable(true);
-                    accessColChoiceBox.setItems(accessibilityList);
-                    accessColChoiceBox.setValue(access);
-                    accessCol.getChildren().add(accessColChoiceBox);
+                    TextField accessColText = new TextField();
+                    accessColText.setEditable(false);
+                    accessColText.setText(access);
+                    accessColText.setPrefWidth(40);
+                    accessCol.getChildren().add(accessColText);
                     row.getChildren().add(accessCol);
                     // texty
                     // jméno
                     VBox nameCol = new VBox();
                     TextField nameColText = new TextField(name);
-                    nameColText.setDisable(true);
+                    nameColText.setEditable(false);
                     nameCol.getChildren().add(nameColText);
                     row.getChildren().add(nameCol);
                     // typ
                     VBox typeCol = new VBox();
                     TextField typeColText = new TextField(type);
-                    typeColText.setDisable(true);
+                    typeColText.setEditable(false);
                     typeCol.getChildren().add(typeColText);
                     row.getChildren().add(typeCol);
                     // tlačítka
@@ -559,7 +560,9 @@ public class ClassDiagramController extends App {
             newClassName.setText(activeObjName);
             leftStatusLabel.setText("No class name typed. Please enter some characters.");
         } else {
-            saveToUndoData();
+            if (classDiagram.findClass(newName) == null) {
+                saveToUndoData();
+            }
             if (classDiagram.changeClassName(activeObjName, newName)) {
                 detailText.setText("Detail of " + newName);
                 TitledPane classTable = ((TitledPane) main.lookup("#" + activeObjName.replaceAll("\\s+", "€")));
@@ -625,17 +628,18 @@ public class ClassDiagramController extends App {
         if (name.isEmpty() || type.isEmpty()) {
             leftStatusLabel.setText("Attribute name or type not entered.");
         } else {
-            saveToUndoData();
-            UMLClassifier classifier = classDiagram.findClassifier(type);
-            if (classifier == null) {
-                classifier = new UMLClassifier(type, true);
-                classDiagram.classifiers.add(classifier);
-            }
-            UMLAttribute attr = new UMLAttribute(newAttributeName.getText(), classifier, access);
-            if (activeObj.addAttribute(attr)) {
+            if (activeObj.findAttribute(name) == null) {
+                saveToUndoData();
+                UMLClassifier classifier = classDiagram.findClassifier(type);
+                if (classifier == null) {
+                    classifier = new UMLClassifier(type, true);
+                    classDiagram.classifiers.add(classifier);
+                }
+                UMLAttribute attr = new UMLAttribute(name, classifier, access);
+                activeObj.addAttribute(attr);
                 VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
                 Text attribute = new Text(access + " <-> " + name + ":" + type);
-                System.out.println(name);
+                System.out.println("name: " + name);
                 attribute.setId(name + "Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
@@ -643,62 +647,26 @@ public class ClassDiagramController extends App {
                 // výběrový box
                 // přistupnost
                 VBox accessCol = new VBox();
-                ChoiceBox<String> accessColChoiceBox = new ChoiceBox();
-                accessColChoiceBox.setDisable(true);
-                accessColChoiceBox.setItems(accessibilityList);
-                accessColChoiceBox.setValue(access);
-                accessCol.getChildren().add(accessColChoiceBox);
+                TextField accessColText = new TextField();
+                accessColText.setEditable(false);
+                accessColText.setText(access);
+                accessColText.setPrefWidth(40);
+                accessCol.getChildren().add(accessColText);
                 row.getChildren().add(accessCol);
                 // texty
                 // jméno
                 VBox nameCol = new VBox();
                 TextField nameColText = new TextField(name);
-                nameColText.setDisable(true);
+                nameColText.setEditable(false);
                 nameCol.getChildren().add(nameColText);
                 row.getChildren().add(nameCol);
                 // typ
                 VBox typeCol = new VBox();
                 TextField typeColText = new TextField(type);
-                typeColText.setDisable(true);
+                typeColText.setEditable(false);
                 typeCol.getChildren().add(typeColText);
                 row.getChildren().add(typeCol);
-                // tlačítka
-                // editace
-                VBox editCol = new VBox();
-                Button editColBtn = new Button("Edit");
-                editColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        ChoiceBox c1 = ((ChoiceBox) ((VBox) row.getChildren().get(0)).getChildren().get(0));
-                        TextField c2 = ((TextField) ((VBox) row.getChildren().get(1)).getChildren().get(0));
-                        TextField c3 = ((TextField) ((VBox) row.getChildren().get(2)).getChildren().get(0));
-                        Button c4 = ((Button) ((VBox) row.getChildren().get(3)).getChildren().get(0));
-
-                        if (c1.isDisabled()) {
-                            // staré hodnoty
-                            String oldC1Value = c1.getSelectionModel().getSelectedItem().toString();
-                            String oldC2Value = c2.getText();
-                            String oldC3Value = c3.getText();
-
-                            // povolím úpravu hodnot + signalizace na tlačítku
-                            c1.setDisable(false);
-                            c2.setDisable(false);
-                            c3.setDisable(false);
-                            c4.setText("Save");
-
-
-                            // upravím hodnoty a dělám věci
-
-
-                        }
-
-                        //!TODO urobít zítra :), coz mozek need spánek
-                        System.out.println(c1 + " " + c2 + " " + c3);
-                    }
-                });
-                editCol.getChildren().add(editColBtn);
-                row.getChildren().add(editCol);
-                // mazání
+                // tlačítko mazání
                 VBox removeCol = new VBox();
                 Button removeColBtn = new Button("Remove");
                 removeColBtn.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -711,9 +679,7 @@ public class ClassDiagramController extends App {
                 });
                 removeCol.getChildren().add(removeColBtn);
                 row.getChildren().add(removeCol);
-
                 attributesList.getChildren().add(attributes.getChildren().size() - 1, row);
-                System.out.println(attributesList.getChildren().size() - 1);
             }
         }
     }
@@ -736,7 +702,7 @@ public class ClassDiagramController extends App {
             drawClass(activeObj);
         } else {
             //operace jiz existuje
-            leftStatusLabel.setText("Operations actually exists.");
+            leftStatusLabel.setText("Operations exists.");
        }
     }
 
@@ -749,11 +715,14 @@ public class ClassDiagramController extends App {
         VBox operationsCol = new VBox();
         HBox detailRow = new HBox();
         VBox accessCol = new VBox();
-        ChoiceBox<String> accessColChoiceBox = new ChoiceBox<String>();
+        TextField accessColText = new TextField();
+        accessColText.setEditable(false);
         VBox nameCol = new VBox();
         TextField nameColText = new TextField(operation.getName());
+        nameColText.setEditable(false);
         VBox returnTypeCol = new VBox();
         TextField returnTypeColText = new TextField(operation.getType().getName());
+        returnTypeColText.setEditable(false);
         VBox deleteCol = new VBox();
         Button deleteColBtn = new Button("Delete");
         //TODO toto bude jinde
@@ -763,15 +732,17 @@ public class ClassDiagramController extends App {
         HBox addRow = new HBox();
         VBox addOperationNameCol = new VBox();
         TextField addOperationNameColName = new TextField();
+        addOperationNameColName.setPromptText("Param name");
         VBox addOperationTypeCol = new VBox();
         TextField addOperationTypeColType = new TextField();
+        addOperationTypeColType.setPromptText("Param type");
         VBox addOperationBtnCol = new VBox();
         Button addOperationBtn = new Button("Add");
 
         // přidání komponent do struktury
         operationsCol.getChildren().add(detailRow);
         detailRow.getChildren().add(accessCol);
-        accessCol.getChildren().add(accessColChoiceBox);
+        accessCol.getChildren().add(accessColText);
         detailRow.getChildren().add(nameCol);
         nameCol.getChildren().add(nameColText);
         detailRow.getChildren().add(returnTypeCol);
@@ -820,8 +791,9 @@ public class ClassDiagramController extends App {
             }
         });
         // nastavení dat
-        accessColChoiceBox.setItems(accessibilityList);
-        accessColChoiceBox.setValue("+");
+        accessColText.setText(newOperationAccess.getValue());
+        accessColText.setPrefWidth(40);
+
 
         operationsList.getChildren().add(0, operationsCol);
 
@@ -925,31 +897,34 @@ public class ClassDiagramController extends App {
         // typ
         VBox typeCol = new VBox();
         TextField typeColText = new TextField(relation.getType());
-        typeColText.setDisable(true);
+        typeColText.setEditable(false);
+
         typeCol.getChildren().add(typeColText);
         row.getChildren().add(typeCol);
         // jméno
         VBox nameCol = new VBox();
         TextField nameColText = new TextField(relation.getName());
-        nameColText.setDisable(true);
+        nameColText.setEditable(false);
         nameCol.getChildren().add(nameColText);
         row.getChildren().add(nameCol);
         // class1
         VBox class1Col = new VBox();
         TextField class1ColText = new TextField(relation.getClass1());
-        class1ColText.setDisable(true);
+        class1ColText.setEditable(false);
         class1Col.getChildren().add(class1ColText);
         row.getChildren().add(class1Col);
         // class2
         VBox class2Col = new VBox();
         TextField class2ColText = new TextField(relation.getClass2());
-        class2ColText.setDisable(true);
+        class2ColText.setEditable(false);
         class2Col.getChildren().add(class2ColText);
         row.getChildren().add(class2Col);
         // class3
         VBox class3Col = new VBox();
         TextField class3ColText = new TextField(relation.getClass3());
-        class3ColText.setDisable(true);
+        if (relation.getClass3() == "")
+            class3ColText.setText("-");
+        class3ColText.setEditable(false);
         class3Col.getChildren().add(class3ColText);
         row.getChildren().add(class3Col);
         // tlačítka
