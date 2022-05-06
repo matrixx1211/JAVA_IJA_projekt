@@ -26,6 +26,9 @@ import javafx.stage.Window;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import static ija.proj.App.commHelp;
+import static ija.proj.App.seqHelp;
+
 public class SequenceDiagramController {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
@@ -73,6 +76,7 @@ public class SequenceDiagramController {
     SequenceDiagram seqDiag;
 
     public void initialize(){
+        // TODO chyba při undo když je otevřené -> rozmrdá se
         seqDiag = ClassDiagramController.classDiagram.findSeqDiagram(ClassDiagramController.title);
         seqDiag.setOpened(true);
 
@@ -635,14 +639,16 @@ public class SequenceDiagramController {
 
     @FXML
     public void undo() {
-
+        App.controller.undo();
+        reload();
     }
     @FXML
     public void reload() {
-
+        main.getChildren().removeAll(main.getChildren());
+        initialize();
     }
     @FXML
     public void openHelp() {
-
+        seqHelp.show();
     }
 }

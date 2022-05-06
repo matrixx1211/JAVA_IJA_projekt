@@ -314,6 +314,7 @@ public class ClassDiagramController extends App {
             commDiagChoice.setItems(commDiagList);
         } catch (Exception e) {
             leftStatusLabel.setText(e.toString());
+            System.out.println(e);
         }
     }
 
@@ -324,7 +325,7 @@ public class ClassDiagramController extends App {
         // vytvoření gsonu
         Gson gson = new Gson();
         // export json dat do undoData
-        classDiagram.undoData = gson.toJson(classDiagram).replaceAll("\\\\", "");
+        classDiagram.undoData = gson.toJson(classDiagram);//.replaceAll("\\\\", "");
     }
 
     /**
@@ -1099,17 +1100,7 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void openHelp() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("Help.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-            Stage stage = new Stage();
-            stage.setTitle("Help");
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Failed to create new Window." + e);
-        }
+        classHelp.show();
     }
     /* ========= SEKCE PRO SEQ DIAGRAM ========*/
 

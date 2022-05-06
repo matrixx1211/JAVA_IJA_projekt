@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -40,7 +41,12 @@ public class App extends Application {
      */
     public static ObservableList<String> classList = FXCollections.observableArrayList();
 
+    public static ClassDiagramController controller;
+
     public Stage stage;
+    public static Stage seqHelp;
+    public static Stage commHelp;
+    public static Stage classHelp;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -51,11 +57,30 @@ public class App extends Application {
         stage.show();
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
-        Scene scene = new Scene(loadFXML("Help") , 600, 400);
+        // main help
+        Scene helpScene = new Scene(loadFXML("Help") , 600, 400);
         Stage helpStage = new Stage();
-        helpStage.setTitle("Help");
-        helpStage.setScene(scene);
+        helpStage.setTitle("Main help");
+        helpStage.setScene(helpScene);
         //helpStage.show(); //FIXME odkomentovat v poslední fázi
+
+        // seq help
+        Scene seqHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        seqHelp = new Stage();
+        seqHelp.setTitle("Sequence diagram help");
+        seqHelp.setScene(seqHelpScene);
+
+        // comm help
+        Scene commHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        commHelp = new Stage();
+        commHelp.setTitle("Communication diagram help");
+        commHelp.setScene(commHelpScene);
+
+        // class help
+        Scene classHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        classHelp = new Stage();
+        classHelp.setTitle("Class diagram help");
+        classHelp.setScene(classHelpScene);
     }
 
     /**
@@ -70,7 +95,11 @@ public class App extends Application {
 
     public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        Parent load = fxmlLoader.load();
+        if (fxml == "ClassDiagram") {
+            controller = fxmlLoader.getController();
+        }
+        return load;
     }
 
     /**

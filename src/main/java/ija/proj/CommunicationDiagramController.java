@@ -1,12 +1,15 @@
 package ija.proj;
 
 import ija.proj.uml.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +23,12 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import static ija.proj.App.commHelp;
+import static ija.proj.App.controller;
 
 public class CommunicationDiagramController {
     double orgSceneX, orgSceneY;
@@ -70,17 +79,24 @@ public class CommunicationDiagramController {
 
     Popup popup = new Popup();
 
-    ObservableList<String> classUsedList = FXCollections.observableArrayList();
-    ObservableList<String> classNotUsedList = FXCollections.observableArrayList();
-    ObservableList<String> class1List = FXCollections.observableArrayList();
-    ObservableList<String> instanceList = FXCollections.observableArrayList();
-    ObservableList<String> operationList = FXCollections.observableArrayList();
-    ObservableList<String> userList = FXCollections.observableArrayList();
-    ObservableList<String> msgTypeList = FXCollections.observableArrayList();
+    ObservableList<String> classUsedList;
+    ObservableList<String> classNotUsedList;
+    ObservableList<String> class1List;
+    ObservableList<String> instanceList;
+    ObservableList<String> operationList;
+    ObservableList<String> userList;
+    ObservableList<String> msgTypeList;
 
     CommunicationDiagram commDiag;
 
     public void initialize(){
+        classUsedList  = FXCollections.observableArrayList();
+        classNotUsedList  = FXCollections.observableArrayList();
+        class1List  = FXCollections.observableArrayList();
+        instanceList  = FXCollections.observableArrayList();
+        operationList  = FXCollections.observableArrayList();
+        userList  = FXCollections.observableArrayList();
+        msgTypeList  = FXCollections.observableArrayList();
         commDiag = ClassDiagramController.classDiagram.findCommDiagram(ClassDiagramController.title);
         commDiag.setOpened(true);
 
@@ -168,7 +184,8 @@ public class CommunicationDiagramController {
 
     @FXML
     public void classAddBtnClicked() {
-        if (classNewChoice.getValue() != null){
+        if (classNewChoice.getValue() != null) {
+            controller.saveToUndoData();
             String name = classNewChoice.getValue();
             commDiag.getCommDiagAllClassList().remove(name);
             commDiag.getCommDiagClassList().add(name);
@@ -249,6 +266,7 @@ public class CommunicationDiagramController {
     @FXML
     public void classDelBtnClicked() {
         if (classChoice.getValue() != null){
+            controller.saveToUndoData();
             String name = classChoice.getValue();
 
             //mazani spojeni
@@ -297,6 +315,7 @@ public class CommunicationDiagramController {
                 leftStatusLabel.setText("jiz existuje class se stejnym jmenem");
                 return;
             }
+            controller.saveToUndoData();
             UMLUser user = commDiag.createUser(name, 40, 40);
 
             userList.add(name);
@@ -307,7 +326,7 @@ public class CommunicationDiagramController {
 
     @FXML
     public void userDelBtnClicked(){
-
+        controller.saveToUndoData(); // TODO někde
     }
 
     public void drawUser(UMLUser user){
@@ -381,6 +400,7 @@ public class CommunicationDiagramController {
                     return;
                 }
             }
+            controller.saveToUndoData();
             UMLConnection connection = commDiag.createConnection(class1, class2);
 
             drawConnection(connection);
@@ -461,6 +481,7 @@ public class CommunicationDiagramController {
                 if (commDiag.getConnList().get(i).getClass1().compareTo(class1) == 0 && commDiag.getConnList().get(i).getClass2().compareTo(class2) == 0
                         || commDiag.getConnList().get(i).getClass1().compareTo(class2) == 0 && commDiag.getConnList().get(i).getClass2().compareTo(class1) == 0){
                     //existuje
+                    controller.saveToUndoData();
                     UMLMessage message = commDiag.getConnList().get(i).createMessage(class1, class2, msgTypeChoice.getValue(), msgOperationChoice.getValue());
 
                     //vytvareni a mazani instanci
@@ -577,6 +598,9 @@ public class CommunicationDiagramController {
     }
 
     public void removeMsg(UMLMessage message, UMLConnection connection) {
+        if (!main.lookupAll("#" + message.getName().replaceAll("\\s+", "€")).isEmpty()) {
+            controller.saveToUndoData();
+        }
         main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€")));
         //vyreseni poctu instanci
         if (message.getType().compareTo("New Instance") == 0 || message.getType().compareTo("Rem Instance") == 0) {
@@ -608,14 +632,16 @@ public class CommunicationDiagramController {
 
     @FXML
     public void undo() {
-
+        App.controller.undo();
+        reload();
     }
     @FXML
     public void reload() {
-
+        main.getChildren().removeAll(main.getChildren());
+        initialize();
     }
     @FXML
     public void openHelp() {
-
+        commHelp.show();
     }
 }
