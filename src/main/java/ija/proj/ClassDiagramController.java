@@ -590,18 +590,24 @@ public class ClassDiagramController extends App {
                         classDiagram.relations.get(i).setClass3(newName);
                 }
 
-                activeObjName = newName;
-
-                //prekresleni - nastavi id na graficke elementy
+                //prekresleni - nastavi id na graficke elementy relaci
 
                 for (int i = 0; i < main.getChildren().size(); i++)
                     if (main.getChildren().get(i).getId().contains("ß")){
                         main.getChildren().remove(i);
                         i--;
                     }
+
+                relationsList.getChildren().remove(0, relationsList.getChildren().size()-1);
                 for (int i = 0; i < classDiagram.relations.size(); i++) {
-                    drawRelation(classDiagram.relations.get(i));
+                    createRelation(classDiagram.relations.get(i));
                 }
+
+                //zmena nazvu v detailu vytvareni relace
+                newRelationClass1.getItems().set(newRelationClass1.getItems().indexOf(activeObjName), newName);
+
+
+                activeObjName = newName;
             } else {
                 leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
             }
