@@ -545,6 +545,10 @@ public class ClassDiagramController extends App {
         for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
             classDiagram.sequenceDiagrams.get(i).removeClassFromList(activeObjName);
         }
+        //odstraneni z comm diagramu
+        for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
+            classDiagram.communicationDiagrams.get(i).removeClassFromList(activeObjName);
+        }
         // obnovení proměnných
         activeObj = null;
         activeObjName = null;
@@ -581,6 +585,11 @@ public class ClassDiagramController extends App {
                 //provazani se seq diagramem
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
                     classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName, newName);
+                }
+
+                //provazani s comm diagramem
+                for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
+                    classDiagram.communicationDiagrams.get(i).renameClassInList(activeObjName, newName);
                 }
 
                 //provazani s relacemi
@@ -856,6 +865,10 @@ public class ClassDiagramController extends App {
                 //provazani se seq diagramem
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
                     classDiagram.sequenceDiagrams.get(i).addClassToList(name);
+                }
+                //provazani s comm diagramem
+                for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
+                    classDiagram.communicationDiagrams.get(i).addClassToList(name);
                 }
             }
         }
