@@ -117,9 +117,10 @@ public class SequenceDiagramController {
                         string = (string + " " + split[i]);
                     class2 = ClassDiagramController.classDiagram.getObject(string);
                 }
-                for (int i = 0; i < class2.operations.size(); i++) {
-                    msgOperationChoice.getItems().add(class2.operations.get(i).getName());
-                }
+                if (class2 != null)
+                    for (int i = 0; i < class2.operations.size(); i++) {
+                        msgOperationChoice.getItems().add(class2.operations.get(i).getName());
+                    }
             }
         });
         //nastaveni class 2 listu a operaci podle vybraneho typu
@@ -177,6 +178,40 @@ public class SequenceDiagramController {
         }
     }
 
+    public boolean checkClassForInconsistency(String class1){
+        for (int i = 0; i < ClassDiagramController.classDiagram.classes.size(); i++){
+            if (class1.compareTo(ClassDiagramController.classDiagram.classes.get(i).getName()) == 0)
+                return true;
+        }
+        //pokud nenajde
+        return false;
+    }
+
+    public boolean checkMessageForInconsistency(UMLMessage message){
+        UMLClass class2 = null;
+        String[] split;
+        String string = "";
+        System.out.println("hej " + message.getOperation());
+        if (seqDiag.getSeqDiagClassList().contains(message.getClass2()))
+            class2 = ClassDiagramController.classDiagram.getObject(message.getClass2());
+        else if (seqDiag.getInstancesList().contains(message.getClass2())) {
+            split = message.getClass2().split(" ", 0);
+            if (split.length >= 4)
+                string = split[3];
+            for (int i = 4; i < split.length; i++)
+                string = (string + " " + split[i]);
+            class2 = ClassDiagramController.classDiagram.getObject(string);
+        }
+        if (class2 != null)
+            for (int i = 0; i < class2.operations.size(); i++){
+                System.out.println(class2.operations.get(i).getName());
+                if (class2.operations.get(i).getName().compareTo(message.getOperation()) == 0)
+                    return true;
+            }
+        //pokud nenajde
+        return false;
+    }
+
     @FXML
     public void classAddBtnClicked() {
         if (classNewChoice.getValue() != null){
@@ -211,6 +246,11 @@ public class SequenceDiagramController {
         line.setTranslateX(seqDiag.getClassPosX(name));
         line.getStrokeDashArray().addAll(10d, 4d);
         line.setId(name.replaceAll("\\s+", "€") + "Line");
+
+        if(! checkClassForInconsistency(name)){
+            textField.setStyle("-fx-text-inner-color: red;");
+            line.setStroke(Color.RED);
+        }
 
         //horizontalni drag
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -267,6 +307,23 @@ public class SequenceDiagramController {
         line.setTranslateX(seqDiag.getInstancePosX(name));
         line.getStrokeDashArray().addAll(10d, 4d);
         line.setId(name.replaceAll("\\s+", "€") + "Line");
+
+        //ziskani jmena class
+        String[] split;
+        String string = "";
+        split = name.split(" ", 0);
+        if (split.length >= 4)
+            string = split[3];
+        for (int i = 4; i < split.length; i++)
+            string = (string + " " + split[i]);
+        //kontrola class
+        System.out.println(string);
+        if (! checkClassForInconsistency(string)){
+            textField.setStyle("-fx-text-inner-color: red;");
+            line.setStroke(Color.RED);
+        }
+
+
         //horizontalni drag
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -334,17 +391,18 @@ public class SequenceDiagramController {
                 }
             }
 
+            seqDiag.removeClassPosX(name);
             seqDiag.getSeqDiagClassList().remove(name);
             seqDiag.getSeqDiagAllClassList().add(name);
             classUsedList.remove(name);
             classNotUsedList.add(name);
             class1List.remove(name);
             actClassList.remove(name);
-            seqDiag.removeClassPosX(name);
+
             //update vyvolanim eventu pri zmene typu
             String type = msgTypeChoice.getValue();
             msgTypeChoice.setValue("Asynch");
-            msgTypeChoice.setValue("null");
+            msgTypeChoice.setValue(null);
             msgTypeChoice.setValue(type);
 
             //mazani graficke reprezentace
@@ -574,6 +632,14 @@ public class SequenceDiagramController {
         if (message.getType().compareTo("Return") == 0)
             line.getStrokeDashArray().addAll(4d, 4d);
 
+        //inkonzistence
+        if (message.getType().compareTo("Asynch") == 0 || message.getType().compareTo("Synch") == 0)
+            if (! checkMessageForInconsistency(message)){
+                poly.setFill(Color.RED);
+                line.setStroke(Color.RED);
+                text.setStroke(Color.RED);
+            }
+
         main.getChildren().add(line);
         main.getChildren().add(text);
     }
@@ -603,6 +669,26 @@ public class SequenceDiagramController {
         rectangle.setFill(Color.WHITE);
         rectangle.setStroke(Color.BLACK);
         rectangle.setId(activation.getName());
+
+        if (! checkClassForInconsistency(activation.getClass1()))
+            rectangle.setStroke(Color.RED);
+        else {
+            //mozny pripad instance
+            //ziskani jmena class
+            String[] split;
+            String string = "";
+            split = activation.getClass1().split(" ", 0);
+            if (split.length >= 4) {
+                string = split[3];
+                for (int i = 4; i < split.length; i++)
+                    string = (string + " " + split[i]);
+                //kontrola class
+                if (split[0].compareTo("Instance") == 0)
+                    if (!checkClassForInconsistency(string)) {
+                        rectangle.setStroke(Color.RED);
+                    }
+            }
+        }
 
         rectangle.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
