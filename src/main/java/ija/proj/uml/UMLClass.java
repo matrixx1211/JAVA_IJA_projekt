@@ -199,6 +199,22 @@ public class UMLClass extends UMLClassifier {
     }
 
     /**
+     * Hledá operaci, jestli existuje
+     * @param name jméno operace
+     * @return operaci nebo null
+     */
+    public UMLOperation findOperation(String name) {
+        UMLOperation obj;
+        for (int i = 0; i < this.operations.size(); i++) {
+            obj = this.operations.get(i);
+            if (obj.getName().compareTo(name) == 0) {
+                return obj;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Získá nemodifikovatelný seznam attributů
      * @return seznam attributů
      */

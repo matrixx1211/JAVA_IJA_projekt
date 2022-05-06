@@ -4,6 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
@@ -17,6 +20,21 @@
 
 <VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.CommunicationDiagramController">
    <children>
+      <MenuBar>
+         <menus>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem fx:id="menuUndo" mnemonicParsing="false" onAction="#undo" text="Undo" />
+                  <MenuItem fx:id="menuReload" mnemonicParsing="false" onAction="#reload" text="Reload" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem fx:id="menuHelp" mnemonicParsing="false" onAction="#openHelp" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
       <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <items>
             <ScrollPane prefHeight="-1.0" prefWidth="-1.0">

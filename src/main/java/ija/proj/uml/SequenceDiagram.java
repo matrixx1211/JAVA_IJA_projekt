@@ -4,6 +4,7 @@ import ija.proj.ClassDiagramController;
 import javafx.collections.FXCollections;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SequenceDiagram extends Element {
     ArrayList<UMLMessage> messageList;

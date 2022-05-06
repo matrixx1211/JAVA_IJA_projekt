@@ -35,6 +35,10 @@ public class ClassDiagram extends Element {
 	 * seznam komunikačních diagramů
 	 */
 	public List<CommunicationDiagram> communicationDiagrams;
+	/**
+	 * data pro undo
+	 */
+	public String undoData;
 
 	/**
 	 * Konstruktor pro ClassDiagram
@@ -47,6 +51,7 @@ public class ClassDiagram extends Element {
 		this.relations = new ArrayList<UMLRelation>();
 		this.sequenceDiagrams = new ArrayList<SequenceDiagram>();
 		this.communicationDiagrams = new ArrayList<CommunicationDiagram>();
+		this.undoData = null;
 	}
 
 	/**
@@ -77,7 +82,6 @@ public class ClassDiagram extends Element {
 	 */
 	public void deleteClass(UMLClass obj) {
 		this.classes.remove(obj);
-		this.classifiers.remove(obj);
 	}
 
 	/**
@@ -161,7 +165,23 @@ public class ClassDiagram extends Element {
 		UMLClassifier obj;
 		for (int i = 0; i < this.classifiers.size(); i++) {
 			obj = this.classifiers.get(i);
-			if (obj.name == name) {
+			if (obj.getName().compareTo(name) == 0) {
+				return obj;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Zjistí zda class daného jména již existuje
+	 * @param name jméno classy
+	 * @return nalezená classa / null
+	 */
+	public UMLClass findClass(String name) {
+		UMLClass obj;
+		for (int i = 0; i < this.classes.size(); i++) {
+			obj = this.classes.get(i);
+			if (obj.getName().compareTo(name) == 0) {
 				return obj;
 			}
 		}
@@ -201,9 +221,11 @@ public class ClassDiagram extends Element {
 	 * @return nalezená relace / null
 	 */
 	public UMLRelation findRelation(String class1, String class2){
+		UMLRelation obj;
 		for (int i = 0; i < this.relations.size(); i++) {
-			if ((this.relations.get(i).getClass1().compareTo(class1) == 0) && (this.relations.get(i).getClass2().compareTo(class2) == 0)) {
-				return this.relations.get(i);
+			obj = this.relations.get(i);
+			if ((obj.getClass1().compareTo(class1) == 0) && (obj.getClass2().compareTo(class2) == 0)) {
+				return obj;
 			}
 		}
 		return null;

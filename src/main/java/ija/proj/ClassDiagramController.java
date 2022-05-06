@@ -124,7 +124,7 @@ public class ClassDiagramController extends App {
     @FXML
     public void newFile() throws IOException {
         classDiagram = new ClassDiagram("Diagram");
-        App.setRoot("UMLEditor");
+        App.setRoot("ClassDiagram");
         this.openedFromFile = false;
         this.file = null;
     }
@@ -245,6 +245,90 @@ public class ClassDiagramController extends App {
         }
     }
 
+    @FXML
+    public void undo() {
+        if (classDiagram.undoData == null) {
+            leftStatusLabel.setText("Cannot perform undo operation.");
+            return;
+        }
+        try {
+            main.getChildren().removeAll(main.getChildren());
+
+            detailText.setText("Detail");
+            System.out.println("1");
+
+            deleteClassBtn.setDisable(true);
+
+            classDetailPane.setDisable(true);
+            classDetailPane.setExpanded(false);
+            attributesPane.setDisable(true);
+            attributesPane.setExpanded(false);
+            operationsPane.setDisable(true);
+            operationsPane.setExpanded(false);
+            relationsPane.setDisable(false);
+            relationsPane.setExpanded(true);
+            System.out.println("2");
+            newAttributeAccess.setItems(accessibilityList);
+            newAttributeAccess.setValue("+");
+            newOperationAccess.setItems(accessibilityList);
+            newOperationAccess.setValue("+");
+            relationsList.getChildren().remove(0, relationsList.getChildren().size() - 1);
+            System.out.println("3");
+
+            Gson gson = new Gson();
+            classDiagram = gson.fromJson(classDiagram.undoData, ClassDiagram.class);
+            idCounter --;
+
+            System.out.println("32");
+            System.out.println(classDiagram.getName());
+            classList.removeAll(classList);
+            System.out.println("4");
+            for (int i = 0; i < classDiagram.classes.size(); i++) {
+                drawClass(classDiagram.classes.get(i));
+                //nastaveni listu pro vyber class na relaci
+                classList.add(classDiagram.classes.get(i).getName());
+            }
+            Platform.runLater(() -> {
+                for (int i = 0; i < classDiagram.relations.size(); i++) {
+                    createRelation(classDiagram.relations.get(i));
+                }
+            });
+            newRelationClass1.setItems(classList);
+            newRelationClass2.setItems(classList);
+            newRelationClass3.setItems(classList);
+            newRelationClass1.setValue("");
+            newRelationClass2.setValue("");
+            newRelationClass3.setValue("");
+            seqDiagList.removeAll(seqDiagList);
+            //seq diag
+            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
+                seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
+            }
+            seqDiagChoice.setItems(seqDiagList);
+            //comm diag
+            for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++){
+                commDiagList.add(classDiagram.communicationDiagrams.get(i).getName());
+            }
+            commDiagChoice.setItems(commDiagList);
+        } catch (Exception e) {
+            leftStatusLabel.setText(e.toString());
+        }
+    }
+
+    /**
+     * Naplní undoData pro provádění undo operace
+     */
+    public void saveToUndoData() {
+        // vytvoření gsonu
+        Gson gson = new Gson();
+        // export json dat do undoData
+        classDiagram.undoData = gson.toJson(classDiagram);
+    }
+
+    /**
+     * Vykreslí třídu do main okna
+     * @param newclass třída, která se má vykreslit
+     */
     public void drawClass(UMLClass newclass) {
         //mazani stare
         main.getChildren().remove(main.lookup(("#" + newclass.getName()).replaceAll("\\s+", "€")));
@@ -258,7 +342,7 @@ public class ClassDiagramController extends App {
             attributes.setId((newclass.getName() + "Attributes").replaceAll("\\s+", "€"));
             for (int i = 0; i < newclass.attributes.size(); i++) {
                 UMLAttribute attr = newclass.attributes.get(i);
-                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType());
+                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType().getName());
                 attributes.getChildren().add(attribute);
             }
             // separátor
@@ -413,6 +497,7 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void deleteClass() {
+        saveToUndoData();
         classDiagram.deleteClass(activeObj);
 
         List<UMLRelation> relations = classDiagram.findAllRelationsOfClass(activeObjName);
@@ -470,33 +555,35 @@ public class ClassDiagramController extends App {
     public void changeClassName() {
         String newName = newClassName.getText();
         if (newName.isEmpty()) {
-            newName = " ";
-        }
-        if (classDiagram.changeClassName(activeObjName, newName)) {
-            detailText.setText("Detail of " + newName);
-            TitledPane classTable = ((TitledPane) main.lookup("#" + activeObjName.replaceAll("\\s+", "€")));
-            classTable.setText(newName);
-            classTable.setId(newName.replaceAll("\\s+", "€"));
-
-            // změny ID pro attributes a operations
-            if (!activeObj.isInterface()) {
-                VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
-                attributes.setId((newName + "Attributes").replaceAll("\\s+", "€"));
-            }
-
-            VBox operations = ((VBox) main.lookup(("#" + activeObjName + "Operations").replaceAll("\\s+", "€")));
-            operations.setId((newName + "Operations").replaceAll("\\s+", "€"));
-
-            //provazani se seq diagramem
-            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
-                classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName ,newName);
-            }
-
-            activeObjName = newName;
+            leftStatusLabel.setText("No class name typed. Please enter some characters.");
         } else {
-            leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
+            saveToUndoData();
+            if (classDiagram.changeClassName(activeObjName, newName)) {
+                detailText.setText("Detail of " + newName);
+                TitledPane classTable = ((TitledPane) main.lookup("#" + activeObjName.replaceAll("\\s+", "€")));
+                classTable.setText(newName);
+                classTable.setId(newName.replaceAll("\\s+", "€"));
+
+                // změny ID pro attributes a operations
+                if (!activeObj.isInterface()) {
+                    VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+                    attributes.setId((newName + "Attributes").replaceAll("\\s+", "€"));
+                }
+
+                VBox operations = ((VBox) main.lookup(("#" + activeObjName + "Operations").replaceAll("\\s+", "€")));
+                operations.setId((newName + "Operations").replaceAll("\\s+", "€"));
+
+                //provazani se seq diagramem
+                for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+                    classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName, newName);
+                }
+
+                activeObjName = newName;
+            } else {
+                leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
+            }
+            newClassName.setText(activeObjName);
         }
-        newClassName.setText(activeObjName);
     }
 
     /**
@@ -510,6 +597,7 @@ public class ClassDiagramController extends App {
         if (name.isEmpty() || type.isEmpty()) {
             leftStatusLabel.setText("Attribute name or type not entered.");
         } else {
+            saveToUndoData();
             UMLClassifier classifier = classDiagram.findClassifier(type);
             if (classifier == null) {
                 classifier = new UMLClassifier(type, true);
@@ -607,18 +695,27 @@ public class ClassDiagramController extends App {
      */
     @FXML public void addOperation() {
         String name = newOperationName.getText();
-        UMLOperation operation = new UMLOperation(name, UMLClassifier.forName(newOperationReturnType.getText()) , newOperationAccess.getValue());
-        if (! activeObj.addOperation(operation))
+        // pokud neexistuje vytvořím
+        if (activeObj.findOperation(name) == null)
         {
-            //TODO chyba operace jiz existuje
-            return;
-        }
-
-        detailOperationFill(operation);
-
-        drawClass(activeObj);
+            saveToUndoData();
+            // vytvoření operace
+            UMLOperation operation = new UMLOperation(name, UMLClassifier.forName(newOperationReturnType.getText()) , newOperationAccess.getValue());
+            activeObj.addOperation(operation);
+            // zobrazení v pravé části
+            detailOperationFill(operation);
+            // vykreslení třídy
+            drawClass(activeObj);
+        } else {
+            //operace jiz existuje
+            leftStatusLabel.setText("Operations actually exists.");
+       }
     }
 
+    /**
+     * Přidání jedné operace do TitledPanu s operacemi
+     * @param operation operace, která se má přidat
+     */
     public void detailOperationFill(UMLOperation operation){
         // vytvoření komponent
         VBox operationsCol = new VBox();
@@ -736,6 +833,9 @@ public class ClassDiagramController extends App {
         if (name.isEmpty()) {
             leftStatusLabel.setText("No name entered!");
         } else {
+            if (classDiagram.findClass(name) == null) {
+                saveToUndoData();
+            }
             UMLClass newObj = classDiagram.createClass(name, idCounter, isInterface);
             if (newObj != null) {
                 newObj.setPosition(10 * idCounter, 10 * idCounter);
@@ -773,19 +873,20 @@ public class ClassDiagramController extends App {
         String class3 = ((ChoiceBox) (relationsPane.lookup("#newRelationClass3"))).getValue().toString();
         System.out.println(class1.length());
         if (class1.isEmpty() || class2.isEmpty()) {
-            //TODO chyba nezadane data
+            leftStatusLabel.setText("Relation data not set.");
             return;
         }
         if (((class1 == class2) || (!class3.isEmpty())) && (type.compareTo("association") != 0) || (class1 == class3) || (class2 == class3)) {
-            //TODO chyba zle zadana relace
+            leftStatusLabel.setText("Relation is set incorrectly.");
             return;
         }
-        UMLRelation relation = classDiagram.createRelation(name, type, class1, class2, class3);
-        if (relation == null) {
-            //TODO chyba relace jiz existuje
-            return;
+        if (classDiagram.findRelation(class1, class2) == null) {
+            saveToUndoData();
+            UMLRelation relation = classDiagram.createRelation(name, type, class1, class2, class3);
+            createRelation(relation);
+        } else {
+            leftStatusLabel.setText("Relation exists.");
         }
-        createRelation(relation);
     }
 
     public void createRelation(UMLRelation relation) {
