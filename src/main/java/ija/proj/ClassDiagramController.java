@@ -556,6 +556,7 @@ public class ClassDiagramController extends App {
     public void changeClassName() {
         String newName = newClassName.getText();
         if (newName.isEmpty()) {
+            newClassName.setText(activeObjName);
             leftStatusLabel.setText("No class name typed. Please enter some characters.");
         } else {
             saveToUndoData();
@@ -579,21 +580,21 @@ public class ClassDiagramController extends App {
                     classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName, newName);
                 }
 
-            //provazani s relacemi
-            for (int i = 0; i < classDiagram.relations.size(); i++){
-                if (classDiagram.relations.get(i).getClass1().compareTo(activeObjName) == 0)
-                    classDiagram.relations.get(i).setClass1(newName);
-                if (classDiagram.relations.get(i).getClass2().compareTo(activeObjName) == 0)
-                    classDiagram.relations.get(i).setClass2(newName);
-                if (classDiagram.relations.get(i).getClass3().compareTo(activeObjName) == 0)
-                    classDiagram.relations.get(i).setClass3(newName);
-            }
+                //provazani s relacemi
+                for (int i = 0; i < classDiagram.relations.size(); i++) {
+                    if (classDiagram.relations.get(i).getClass1().compareTo(activeObjName) == 0)
+                        classDiagram.relations.get(i).setClass1(newName);
+                    if (classDiagram.relations.get(i).getClass2().compareTo(activeObjName) == 0)
+                        classDiagram.relations.get(i).setClass2(newName);
+                    if (classDiagram.relations.get(i).getClass3().compareTo(activeObjName) == 0)
+                        classDiagram.relations.get(i).setClass3(newName);
+                }
 
-            activeObjName = newName;
-        } else {
-            leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
+                activeObjName = newName;
+            } else {
+                leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
+            }
         }
-        newClassName.setText(activeObjName);
     }
 
     /**
