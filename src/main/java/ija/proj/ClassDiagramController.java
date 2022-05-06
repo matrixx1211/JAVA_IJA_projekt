@@ -591,6 +591,17 @@ public class ClassDiagramController extends App {
                 }
 
                 activeObjName = newName;
+
+                //prekresleni - nastavi id na graficke elementy
+
+                for (int i = 0; i < main.getChildren().size(); i++)
+                    if (main.getChildren().get(i).getId().contains("ß")){
+                        main.getChildren().remove(i);
+                        i--;
+                    }
+                for (int i = 0; i < classDiagram.relations.size(); i++) {
+                    drawRelation(classDiagram.relations.get(i));
+                }
             } else {
                 leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
             }
