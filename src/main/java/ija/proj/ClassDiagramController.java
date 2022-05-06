@@ -11,6 +11,7 @@ package ija.proj;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gson.Gson;
 
@@ -34,6 +35,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ClassDiagramController extends App {
@@ -327,6 +329,23 @@ public class ClassDiagramController extends App {
         classDiagram.undoData = gson.toJson(classDiagram).replaceAll("\\\\", "");
     }
 
+    public boolean warning(){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Inconsistency!");
+        alert.setHeaderText("Warning! Deleting this will create inconsistency!");
+        alert.setContentText("Do you want to remove all mentions in other diagrams?");
+        alert.initModality(Modality.APPLICATION_MODAL);
+
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getDialogPane().getButtonTypes().add(cancelButtonType);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Vykreslí třídu do main okna
      * @param newclass třída, která se má vykreslit
@@ -499,6 +518,22 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void deleteClass() {
+        //inkonzistence
+        Boolean conflict = false;
+        for (int i = 0; i < classDiagram.sequenceDiagrams.size() && conflict == false; i++)
+            if (classDiagram.sequenceDiagrams.get(i).getSeqDiagClassList().contains(activeObjName)) {
+                conflict = true;
+            }
+        for (int i = 0; i < classDiagram.communicationDiagrams.size() && conflict == false; i++)
+            if (classDiagram.communicationDiagrams.get(i).getCommDiagClassList().contains(activeObjName)) {
+                conflict = true;
+            }
+
+        if (conflict) {
+            System.out.println("conflict");
+            if (!warning())
+                return;
+        }
         saveToUndoData();
         classDiagram.deleteClass(activeObj);
 
