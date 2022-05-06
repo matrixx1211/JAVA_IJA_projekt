@@ -606,5 +606,16 @@ public class CommunicationDiagramController {
         }
     }
 
+    @FXML
+    public void undo() {
 
+    }
+    @FXML
+    public void reload() {
+
+    }
+    @FXML
+    public void openHelp() {
+
+    }
 }

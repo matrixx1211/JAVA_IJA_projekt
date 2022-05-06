@@ -633,4 +633,16 @@ public class SequenceDiagramController {
         main.getChildren().removeAll(main.lookupAll("#" + activation.getName()));
     }
 
+    @FXML
+    public void undo() {
+
+    }
+    @FXML
+    public void reload() {
+
+    }
+    @FXML
+    public void openHelp() {
+
+    }
 }

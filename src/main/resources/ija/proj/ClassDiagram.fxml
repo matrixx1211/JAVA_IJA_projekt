@@ -184,6 +184,9 @@
                                                 <TextField fx:id="newOperationReturnType" prefHeight="25.0" promptText="Type" />
                                                 <Button id="addOperationBtn" fx:id="addOperationBtn" disable="true" mnemonicParsing="false" onAction="#addOperation" prefHeight="25.0" text="Add" />
                                              </children>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
                                           </HBox>
                                        </children>
                                     </VBox>
