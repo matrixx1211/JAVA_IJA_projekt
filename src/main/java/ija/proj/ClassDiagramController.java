@@ -227,6 +227,7 @@ public class ClassDiagramController extends App {
                 newRelationClass2.setValue("");
                 newRelationClass3.setValue("");
                 seqDiagList.removeAll(seqDiagList);
+                commDiagList.removeAll(commDiagList);
                 //seq diag
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
                     seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
@@ -342,7 +343,7 @@ public class ClassDiagramController extends App {
             attributes.setId((newclass.getName() + "Attributes").replaceAll("\\s+", "€"));
             for (int i = 0; i < newclass.attributes.size(); i++) {
                 UMLAttribute attr = newclass.attributes.get(i);
-                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType().getName());
+                Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType());
                 attributes.getChildren().add(attribute);
             }
             // separátor
@@ -578,12 +579,21 @@ public class ClassDiagramController extends App {
                     classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName, newName);
                 }
 
-                activeObjName = newName;
-            } else {
-                leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
+            //provazani s relacemi
+            for (int i = 0; i < classDiagram.relations.size(); i++){
+                if (classDiagram.relations.get(i).getClass1().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass1(newName);
+                if (classDiagram.relations.get(i).getClass2().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass2(newName);
+                if (classDiagram.relations.get(i).getClass3().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass3(newName);
             }
-            newClassName.setText(activeObjName);
+
+            activeObjName = newName;
+        } else {
+            leftStatusLabel.setText("Name \"" + newName + "\" already exists!");
         }
+        newClassName.setText(activeObjName);
     }
 
     /**
@@ -1131,9 +1141,15 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        if (classDiagram.findSeqDiagram(title).getOpened()) {
+            leftStatusLabel.setText("diagram je jiz otevren");
+            return;
+        }
         try {
             Scene seqScene = new Scene(App.loadFXML("SequenceDiagram"));
             Stage seqStage = new Stage();
+
+            seqStage.setOnCloseRequest(e -> classDiagram.findSeqDiagram(title).setOpened(false));
 
             seqStage.setTitle(seqDiagChoice.getValue());
             seqStage.setScene(seqScene);
@@ -1191,9 +1207,14 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        if (classDiagram.findCommDiagram(title).getOpened()) {
+            leftStatusLabel.setText("diagram je jiz otevren");
+            return;
+        }
         try {
             Scene commScene = new Scene(App.loadFXML("CommunicationDiagram"));
             Stage commStage = new Stage();
+            commStage.setOnCloseRequest(e -> classDiagram.findCommDiagram(title).setOpened(false));
 
             commStage.setTitle(commDiagChoice.getValue());
             commStage.setScene(commScene);

@@ -97,7 +97,20 @@ public class SequenceDiagram extends Element {
     public void removeClassFromList(String name) {
         seqDiagAllClassList.remove(name);
         seqDiagClassList.remove(name);
-        //TODO instance
+        //instance
+        String[] split;
+        String string = "";
+        for (int i = 0; i < instancesList.size(); i++) {
+            split = instancesList.get(i).split(" ", 0);
+            if (split.length >= 4)
+                string = split[3];
+            for (int j = 4; j < split.length; j++)
+                string = (string + " " + split[j]);
+            if (name.compareTo(string) == 0) {
+                instancesList.remove(i);
+                i--; //posunuti indexu pri mazani
+            }
+        }
     }
     public void renameClassInList(String oldName, String newName) {
         if (seqDiagAllClassList.contains(oldName)) {
@@ -113,7 +126,18 @@ public class SequenceDiagram extends Element {
                     messageList.get(i).class2 = newName;
             }
             //prejmenovani instanci
-            //TODO
+            String[] split;
+            String string = "";
+            for (int i = 0; i < instancesList.size(); i++) {
+                split = instancesList.get(i).split(" ", 0);
+                if (split.length >= 4)
+                    string = split[3];
+                for (int j = 4; j < split.length; j++)
+                    string = (string + " " + split[j]);
+                if (name.compareTo(string) == 0) {
+                    instancesList.set(i, split[0] + " " + split[1] + " " + split [2] + " " + newName);
+                }
+            }
         }
     }
     public void addClassPosX(double x){
@@ -152,4 +176,11 @@ public class SequenceDiagram extends Element {
         instancePosXList.remove(instancesList.indexOf(class1));
     }
 
+    public void setOpened(boolean opened){
+        this.opened = opened;
+    }
+
+    public boolean getOpened(){
+        return opened;
+    }
 }

@@ -76,4 +76,28 @@ public class UMLRelation extends Element {
 	public String getClass3() {
 		return class3;
 	}
+
+	/**
+	 * metoda setClass1
+	 * @return název prvního člena relace
+	 */
+	public void setClass1(String newName) {
+		class1 = newName;
+	}
+
+	/**
+	 * metoda setClass2
+	 * @return název druhého člena relace
+	 */
+	public void setClass2(String newName) {
+		class2 = newName;
+	}
+
+	/**
+	 * metoda setClass3
+	 * @return název třetího člena relace
+	 */
+	public void setClass3(String newName) {
+		class3 = newName;
+	}
 }

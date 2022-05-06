@@ -74,6 +74,8 @@ public class SequenceDiagramController {
 
     public void initialize(){
         seqDiag = ClassDiagramController.classDiagram.findSeqDiagram(ClassDiagramController.title);
+        seqDiag.setOpened(true);
+
         classNotUsedList.addAll(seqDiag.getSeqDiagAllClassList());
         classUsedList.addAll(seqDiag.getSeqDiagClassList());
         class1List.addAll(classUsedList);
