@@ -19,6 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 
 public class CommunicationDiagramController {
     double orgSceneX, orgSceneY;
@@ -67,6 +68,8 @@ public class CommunicationDiagramController {
     @FXML
     Button msgAddBtn;
 
+    Popup popup = new Popup();
+
     ObservableList<String> classUsedList = FXCollections.observableArrayList();
     ObservableList<String> classNotUsedList = FXCollections.observableArrayList();
     ObservableList<String> class1List = FXCollections.observableArrayList();
@@ -79,6 +82,8 @@ public class CommunicationDiagramController {
 
     public void initialize(){
         commDiag = ClassDiagramController.classDiagram.findCommDiagram(ClassDiagramController.title);
+        commDiag.setOpened(true);
+
         classNotUsedList.addAll(commDiag.getCommDiagAllClassList());
         classUsedList.addAll(commDiag.getCommDiagClassList());
         for (int i = 0; i < commDiag.getUserList().size(); i++)

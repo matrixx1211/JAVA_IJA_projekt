@@ -124,7 +124,7 @@ public class ClassDiagramController extends App {
     @FXML
     public void newFile() throws IOException {
         classDiagram = new ClassDiagram("Diagram");
-        App.setRoot("UMLEditor");
+        App.setRoot("ClassDiagram");
         this.openedFromFile = false;
         this.file = null;
     }
@@ -227,6 +227,7 @@ public class ClassDiagramController extends App {
                 newRelationClass2.setValue("");
                 newRelationClass3.setValue("");
                 seqDiagList.removeAll(seqDiagList);
+                commDiagList.removeAll(commDiagList);
                 //seq diag
                 for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++){
                     seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
@@ -490,6 +491,16 @@ public class ClassDiagramController extends App {
             //provazani se seq diagramem
             for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
                 classDiagram.sequenceDiagrams.get(i).renameClassInList(activeObjName ,newName);
+            }
+
+            //provazani s relacemi
+            for (int i = 0; i < classDiagram.relations.size(); i++){
+                if (classDiagram.relations.get(i).getClass1().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass1(newName);
+                if (classDiagram.relations.get(i).getClass2().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass2(newName);
+                if (classDiagram.relations.get(i).getClass3().compareTo(activeObjName) == 0)
+                    classDiagram.relations.get(i).setClass3(newName);
             }
 
             activeObjName = newName;
@@ -1030,9 +1041,15 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        if (classDiagram.findSeqDiagram(title).getOpened()) {
+            leftStatusLabel.setText("diagram je jiz otevren");
+            return;
+        }
         try {
             Scene seqScene = new Scene(App.loadFXML("SequenceDiagram"));
             Stage seqStage = new Stage();
+
+            seqStage.setOnCloseRequest(e -> classDiagram.findSeqDiagram(title).setOpened(false));
 
             seqStage.setTitle(seqDiagChoice.getValue());
             seqStage.setScene(seqScene);
@@ -1090,9 +1107,14 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        if (classDiagram.findCommDiagram(title).getOpened()) {
+            leftStatusLabel.setText("diagram je jiz otevren");
+            return;
+        }
         try {
             Scene commScene = new Scene(App.loadFXML("CommunicationDiagram"));
             Stage commStage = new Stage();
+            commStage.setOnCloseRequest(e -> classDiagram.findCommDiagram(title).setOpened(false));
 
             commStage.setTitle(commDiagChoice.getValue());
             commStage.setScene(commScene);

@@ -72,6 +72,24 @@ public class CommunicationDiagram extends Element {
     public void removeClassFromList(String name) {
         commDiagAllClassList.remove(name);
         commDiagClassList.remove(name);
+        //prejmenovani ve spojenich
+        for (int i = 0; i < connectionList.size(); i++){
+            if (connectionList.get(i).getClass1().compareTo(name) == 0)
+                connectionList.remove(i);
+            else if (connectionList.get(i).getClass2().compareTo(name) == 0)
+                connectionList.remove(i);
+            //prejmenovani ve zpravach
+            for (int j = 0; i < connectionList.get(i).messageList.size(); j++){
+                if (connectionList.get(i).messageList.get(j).getClass1().compareTo(name) == 0) {
+                    connectionList.get(i).messageList.remove(j);
+                    j--;
+                }
+                else if (connectionList.get(i).messageList.get(j).getClass2().compareTo(name) == 0) {
+                    connectionList.get(i).messageList.remove(j);
+                    j--;
+                }
+            }
+        }
     }
     public void renameClassInList(String oldName, String newName) {
         if (commDiagAllClassList.contains(oldName)) {
@@ -79,13 +97,20 @@ public class CommunicationDiagram extends Element {
         }
         if (commDiagClassList.contains(oldName)) {
             commDiagClassList.set(commDiagClassList.indexOf(oldName), newName);
-            //prejmenovani ve zpravach
-            /*for (int i = 0; i < messageList.size(); i++){
-                if (messageList.get(i).getClass1().compareTo(oldName) == 0)
-                    messageList.get(i).class1 = newName;
-                if (messageList.get(i).getClass2().compareTo(oldName) == 0)
-                    messageList.get(i).class2 = newName;
-            }*/
+            //prejmenovani ve spojenich
+            for (int i = 0; i < connectionList.size(); i++){
+                if (connectionList.get(i).getClass1().compareTo(oldName) == 0)
+                    connectionList.get(i).class1 = newName;
+                if (connectionList.get(i).getClass2().compareTo(oldName) == 0)
+                    connectionList.get(i).class2 = newName;
+                //prejmenovani ve zpravach
+                for (int j = 0; i < connectionList.get(i).messageList.size(); j++){
+                    if (connectionList.get(i).messageList.get(j).getClass1().compareTo(oldName) == 0)
+                        connectionList.get(i).messageList.get(j).class1 = newName;
+                    if (connectionList.get(i).messageList.get(j).getClass2().compareTo(oldName) == 0)
+                        connectionList.get(i).messageList.get(j).class2 = newName;
+                }
+            }
         }
     }
 
@@ -134,5 +159,13 @@ public class CommunicationDiagram extends Element {
                 return userList.get(i).getPosY();
         }
         return 0;
+    }
+
+    public void setOpened(boolean opened){
+        this.opened = opened;
+    }
+
+    public boolean getOpened(){
+        return opened;
     }
 }
