@@ -111,7 +111,7 @@ public class SequenceDiagram extends Element {
      * @param class2 jméno druhé třídy
      * @param type typ zprávy
      * @param operation operace
-     * @return
+     * @return zprávu
      */
     public UMLMessage createMessage(String name, String class1, String class2, String type, String operation) {
         UMLMessage message = new UMLMessage(name, class1, class2, type, operation);
@@ -125,7 +125,7 @@ public class SequenceDiagram extends Element {
      * @param class1 jméno třídy
      * @param posY pozice aktivace na ose Y
      * @param len výška aktivace
-     * @return
+     * @return aktivaci
      */
     public UMLActivation createActivation(String name, String class1, Double posY, Double len) {
         UMLActivation activation = new UMLActivation(name, class1, posY, len);

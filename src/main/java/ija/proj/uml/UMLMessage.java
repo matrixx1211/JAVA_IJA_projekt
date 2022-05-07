@@ -95,6 +95,7 @@ public class UMLMessage extends Element {
 
     /**
      * Nastaví pořadí
+     * @param order pořadí
      */
     public void setOrder(String order){
         this.order = order;

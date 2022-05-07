@@ -79,7 +79,7 @@ public class UMLRelation extends Element {
 
 	/**
 	 * metoda setClass1
-	 * @return název prvního člena relace
+	 * @param newName nové jméno
 	 */
 	public void setClass1(String newName) {
 		class1 = newName;
@@ -87,7 +87,7 @@ public class UMLRelation extends Element {
 
 	/**
 	 * metoda setClass2
-	 * @return název druhého člena relace
+	 * @param newName nové jméno
 	 */
 	public void setClass2(String newName) {
 		class2 = newName;
@@ -95,7 +95,7 @@ public class UMLRelation extends Element {
 
 	/**
 	 * metoda setClass3
-	 * @return název třetího člena relace
+	 * @param newName nové jméno
 	 */
 	public void setClass3(String newName) {
 		class3 = newName;

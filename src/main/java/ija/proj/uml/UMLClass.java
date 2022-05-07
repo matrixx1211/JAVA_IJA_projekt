@@ -239,6 +239,7 @@ public class UMLClass extends UMLClassifier {
 
     /**
      * Získá seznam attributů z rodiče (dědičnost)
+     * @param classDiagram  diagram tříd
      * @return seznam attributů
      */
     public List<List<String>> getParentAttributes(ClassDiagram classDiagram) {
@@ -281,6 +282,7 @@ public class UMLClass extends UMLClassifier {
 
     /**
      * Získá seznam operací z rodiče (dědičnost)
+     * @param classDiagram diagram tříd
      * @return seznam attributů z rodiče a finální seznam atributů
      */
     public List<List<String>> getParentOperations(ClassDiagram classDiagram) {
