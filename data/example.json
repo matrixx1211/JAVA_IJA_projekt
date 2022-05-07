@@ -106,14 +106,6 @@
             "name": "List\u003cUMLClassifier\u003e"
           },
           "name": "classes"
-        },
-        {
-          "accessibility": "+",
-          "type": {
-            "isUserDefined": true,
-            "name": "String"
-          },
-          "name": "name"
         }
       ],
       "operations": [
