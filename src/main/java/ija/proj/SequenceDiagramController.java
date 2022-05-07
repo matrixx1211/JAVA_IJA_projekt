@@ -129,9 +129,7 @@ public class SequenceDiagramController {
                     class2 = ClassDiagramController.classDiagram.getObject(string);
                 }
                 if (class2 != null)
-                    for (int i = 0; i < class2.operations.size(); i++) {
-                        msgOperationChoice.getItems().add(class2.operations.get(i).getName());
-                    }
+                    msgOperationChoice.getItems().addAll(class2.getParentOperations(classDiagram).get(0));
             }
         });
         //nastaveni class 2 listu a operaci podle vybraneho typu
@@ -223,10 +221,8 @@ public class SequenceDiagramController {
             class2 = ClassDiagramController.classDiagram.getObject(string);
         }
         if (class2 != null)
-            for (int i = 0; i < class2.operations.size(); i++){
-                if (class2.operations.get(i).getName().compareTo(message.getOperation()) == 0)
+            if (class2.getParentOperations(classDiagram).get(0).contains(message.getOperation()))
                     return true;
-            }
         //pokud nenajde
         return false;
     }
@@ -550,7 +546,7 @@ public class SequenceDiagramController {
                 line = new Line(main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX() + 50, message.getHeight(), main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX() + 100, message.getHeight());
         }
         Text text = new Text(message.getOperation());
-        text.setLayoutY(message.getHeight() - 2);
+        text.setLayoutY(message.getHeight() - 5);
         text.setLayoutX((main.lookup("#" + message.getClass1().replaceAll("\\s+", "€") + "Line").getTranslateX() + main.lookup("#" + message.getClass2().replaceAll("\\s+", "€") + "Line").getTranslateX() + 100 - text.getBoundsInLocal().getWidth())/2);
         line.setId(message.getName()+"line");
         text.setId(message.getName()+"line");

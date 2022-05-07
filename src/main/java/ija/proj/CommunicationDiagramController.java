@@ -27,8 +27,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static ija.proj.App.commHelp;
-import static ija.proj.App.controller;
+import static ija.proj.App.*;
 
 public class CommunicationDiagramController {
     double orgSceneX, orgSceneY;
@@ -130,9 +129,7 @@ public class CommunicationDiagramController {
                 if (commDiag.getCommDiagClassList().contains(msgClass2Choice.getValue())) {
                     UMLClass class2 = ClassDiagramController.classDiagram.getObject(msgClass2Choice.getValue());
                     if (class2 != null)
-                        for (int i = 0; i < class2.operations.size(); i++) {
-                            msgOperationChoice.getItems().add(class2.operations.get(i).getName());
-                        }
+                        msgOperationChoice.getItems().addAll(class2.getParentOperations(classDiagram).get(0));
                 }
             }
         });
@@ -195,10 +192,8 @@ public class CommunicationDiagramController {
         UMLClass class2 = null;
         class2 = ClassDiagramController.classDiagram.getObject(message.getClass2());
         if (class2 != null)
-            for (int i = 0; i < class2.operations.size(); i++){
-                if (class2.operations.get(i).getName().compareTo(message.getOperation()) == 0)
-                    return true;
-            }
+            if (class2.getParentOperations(classDiagram).get(0).contains(message.getOperation()))
+                return true;
         //pokud nenajde
         return false;
     }
@@ -492,6 +487,7 @@ public class CommunicationDiagramController {
             leftStatusLabel.setText("nastala chyba pri vykresleni - nenalezena class2");
             return;
         }
+
         Line line = new Line(class1X, class1Y, class2X, class2Y);
         line.setId(connection.getName());
         line.setStrokeWidth(3);
