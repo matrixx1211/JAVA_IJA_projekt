@@ -125,14 +125,16 @@ public class ClassDiagramController extends App {
     public void closeAllWindowsOfDiagrams () {
         if (classDiagram.communicationDiagrams.size() != 0) {
             for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
-                if (classDiagram.communicationDiagrams.get(i).stage.isShowing())
-                    classDiagram.communicationDiagrams.get(i).stage.close();
+                if (classDiagram.communicationDiagrams.get(i).stage != null)
+                    if (classDiagram.communicationDiagrams.get(i).stage.isShowing())
+                        classDiagram.communicationDiagrams.get(i).stage.close();
             }
         }
         if (classDiagram.sequenceDiagrams.size() != 0) {
             for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
-                if (classDiagram.sequenceDiagrams.get(i).stage.isShowing())
-                    classDiagram.sequenceDiagrams.get(i).stage.close();
+                if (classDiagram.sequenceDiagrams.get(i).stage != null)
+                    if (classDiagram.sequenceDiagrams.get(i).stage.isShowing())
+                        classDiagram.sequenceDiagrams.get(i).stage.close();
             }
         }
     }
