@@ -734,23 +734,33 @@ public class SequenceDiagramController {
         rectangle.setStroke(Color.BLACK);
         rectangle.setId(activation.getName());
 
-        if (! checkClassForInconsistency(activation.getClass1()))
-            rectangle.setStroke(Color.RED);
-        else {
-            //mozny pripad instance
+        if (! checkClassForInconsistency(activation.getClass1())){
+            //nenalezeno v classes- mozny pripad instance
             //ziskani jmena class
             String[] split;
             String string = "";
             split = activation.getClass1().split(" ", 0);
+            System.out.println(activation.getClass1());
+            System.out.println("0" + split.length);
+            System.out.println("1" + split);
             if (split.length >= 4) {
                 string = split[3];
                 for (int i = 4; i < split.length; i++)
                     string = (string + " " + split[i]);
                 //kontrola class
-                if (split[0].compareTo("Instance") == 0)
+                System.out.println("1" + split[0]);
+                if (split[0].compareTo("Instance") == 0) {
+                    System.out.println("1" + string);
                     if (!checkClassForInconsistency(string)) {
                         rectangle.setStroke(Color.RED);
                     }
+                }
+                else { //je incons - neni instance
+                    rectangle.setStroke(Color.RED);
+                }
+            }
+            else { //je incons - neni instance
+                rectangle.setStroke(Color.RED);
             }
         }
 

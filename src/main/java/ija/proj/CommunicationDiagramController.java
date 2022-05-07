@@ -129,9 +129,10 @@ public class CommunicationDiagramController {
                 msgOperationChoice.getItems().removeAll(msgOperationChoice.getItems());
                 if (commDiag.getCommDiagClassList().contains(msgClass2Choice.getValue())) {
                     UMLClass class2 = ClassDiagramController.classDiagram.getObject(msgClass2Choice.getValue());
-                    for (int i = 0; i < class2.operations.size(); i++) {
-                        msgOperationChoice.getItems().add(class2.operations.get(i).getName());
-                    }
+                    if (class2 != null)
+                        for (int i = 0; i < class2.operations.size(); i++) {
+                            msgOperationChoice.getItems().add(class2.operations.get(i).getName());
+                        }
                 }
             }
         });
@@ -181,6 +182,27 @@ public class CommunicationDiagramController {
         }
     }
 
+    public boolean checkClassForInconsistency(String class1){
+        for (int i = 0; i < ClassDiagramController.classDiagram.classes.size(); i++){
+            if (class1.compareTo(ClassDiagramController.classDiagram.classes.get(i).getName()) == 0)
+                return true;
+        }
+        //pokud nenajde
+        return false;
+    }
+
+    public boolean checkMessageForInconsistency(UMLMessage message){
+        UMLClass class2 = null;
+        class2 = ClassDiagramController.classDiagram.getObject(message.getClass2());
+        if (class2 != null)
+            for (int i = 0; i < class2.operations.size(); i++){
+                if (class2.operations.get(i).getName().compareTo(message.getOperation()) == 0)
+                    return true;
+            }
+        //pokud nenajde
+        return false;
+    }
+
     @FXML
     public void classAddBtnClicked() {
         if (classNewChoice.getValue() != null) {
@@ -210,6 +232,10 @@ public class CommunicationDiagramController {
         textField.setPrefHeight(30);
         textField.setEditable(false);
         textField.setId(name.replaceAll("\\s+", "€"));
+
+        if(! checkClassForInconsistency(name)){
+            textField.setStyle("-fx-text-inner-color: red;");
+        }
 
         //drag
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -242,21 +268,6 @@ public class CommunicationDiagramController {
                         drawConnection(commDiag.getConnList().get(i));
                     }
                 }
-
-                /*
-                //prekresleni zprav
-                for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
-                    if (name.compareTo(seqDiag.getMsgList().get(i).getClass1()) == 0 || name.compareTo(seqDiag.getMsgList().get(i).getClass2()) == 0){
-                        drawMessage(seqDiag.getMsgList().get(i));
-                    }
-                }
-
-                //prekresleni aktivaci
-                for (int i = 0; i < seqDiag.getActList().size(); i++) {
-                    if (name.compareTo(seqDiag.getActList().get(i).getClass1()) == 0){
-                        drawActivation(seqDiag.getActList().get(i));
-                    }
-                }*/
             }
         });
         main.getChildren().add(textField);
@@ -285,9 +296,11 @@ public class CommunicationDiagramController {
 
             commDiag.remClassPos(name);
             commDiag.getCommDiagClassList().remove(name);
-            commDiag.getCommDiagAllClassList().add(name);
             classUsedList.remove(name);
-            classNotUsedList.add(name);
+            if (checkClassForInconsistency(name)) {
+                commDiag.getCommDiagAllClassList().add(name);
+                classNotUsedList.add(name);
+            }
             class1List.remove(name);
 
             //update vyvolanim eventu pri zmene typu
@@ -326,7 +339,43 @@ public class CommunicationDiagramController {
 
     @FXML
     public void userDelBtnClicked(){
-        controller.saveToUndoData(); // TODO někde
+        if (userChoice.getValue() != null){
+            controller.saveToUndoData();
+            String name = userChoice.getValue();
+
+            //mazani spojeni
+            for (int i = 0; i < commDiag.getConnList().size(); i++) {
+                if (commDiag.getConnList().get(i).getClass1().compareTo(name) == 0 || commDiag.getConnList().get(i).getClass2().compareTo(name) == 0) {
+                    main.getChildren().removeAll(main.lookupAll("#" + commDiag.getConnList().get(i).getName()));
+                    for (int j = 0; j < commDiag.getConnList().get(i).getMsgList().size(); j++) {
+                        removeMsg(commDiag.getConnList().get(i).getMsgList().get(j), commDiag.getConnList().get(i));
+                        commDiag.getConnList().get(i).getMsgList().remove(commDiag.getConnList().get(i).getMsgList().get(j));
+                        j--; //index se posunul smazanim
+                    }
+                    commDiag.getConnList().remove(i);
+                    i--; //index se posunul smazanim
+                }
+            }
+
+            //smazani uzivatele
+            for (int i = 0; i < commDiag.getUserList().size(); i++)
+                if (commDiag.getUserList().get(i).getName().compareTo(name) == 0){
+                    commDiag.getUserList().remove(i);
+                    break;
+                }
+
+            class1List.remove(name);
+            userList.remove(name);
+
+            //update vyvolanim eventu pri zmene typu
+            String type = msgTypeChoice.getValue();
+            msgTypeChoice.setValue("Asynch");
+            msgTypeChoice.setValue("null");
+            msgTypeChoice.setValue(type);
+
+            //mazani graficke reprezentace
+            main.getChildren().removeAll(main.lookupAll("#" + name.replaceAll("\\s+", "€")));
+        }
     }
 
     public void drawUser(UMLUser user){
@@ -451,7 +500,9 @@ public class CommunicationDiagramController {
             if (event.getButton() == MouseButton.SECONDARY){
                 controller.saveToUndoData();
                 //main.getChildren().removeAll(main.lookupAll("#" + connection.getName()));
-                //mazani
+                //mazani prepocitava pocet instanci
+                for (int i = 0; i < connection.getMsgList().size(); i++)
+                    removeMsg(connection.getMsgList().get(i), connection);
                 commDiag.getConnList().remove(connection);
                 reload();
             }
@@ -553,6 +604,15 @@ public class CommunicationDiagramController {
 
         group.getChildren().add(text);
 
+        //inkonzistence
+        if (message.getType().compareTo("Asynch") == 0 || message.getType().compareTo("Synch") == 0)
+            if (! checkMessageForInconsistency(message)){
+                line1.setStroke(Color.RED);
+                line2.setStroke(Color.RED);
+                line3.setStroke(Color.RED);
+                text.setStroke(Color.RED);
+            }
+
         double sin = Math.sin(Math.toRadians(rotation));
         double cos = Math.cos(Math.toRadians(rotation));
 
@@ -603,7 +663,7 @@ public class CommunicationDiagramController {
             for (int i = 0; i < connection.getMsgList().size(); i++){
                 if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("New Instance") == 0)
                     countIns++;
-                   else if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("Rem Instance") == 0)
+                else if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("Rem Instance") == 0)
                     countIns--;
             }
             int countIns2 = 0;
