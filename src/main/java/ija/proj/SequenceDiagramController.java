@@ -13,26 +13,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-
-import java.lang.invoke.MethodHandles;
-import java.util.List;
 
 import static ija.proj.App.*;
 
@@ -44,37 +34,23 @@ public class SequenceDiagramController {
     double orgTranslateX, orgTranslateY;
     double orgHeight;
 
-    @FXML
-    AnchorPane main;
-    @FXML
-    Label leftStatusLabel;
+    @FXML AnchorPane main;
+    @FXML Label leftStatusLabel;
 
-    @FXML
-    ChoiceBox<String> classNewChoice;
-    @FXML
-    ChoiceBox<String> classChoice;
-    @FXML
-    Button classAddBtn;
-    @FXML
-    Button classDelBtn;
+    @FXML ChoiceBox<String> classNewChoice;
+    @FXML ChoiceBox<String> classChoice;
+    @FXML Button classAddBtn;
+    @FXML Button classDelBtn;
 
-    @FXML
-    ChoiceBox<String> msgClass1Choice;
-    @FXML
-    ChoiceBox<String> msgClass2Choice;
-    @FXML
-    ChoiceBox<String> msgTypeChoice;
-    @FXML
-    ChoiceBox<String> msgOperationChoice;
-    @FXML
-    Button msgAddBtn;
+    @FXML ChoiceBox<String> msgClass1Choice;
+    @FXML ChoiceBox<String> msgClass2Choice;
+    @FXML ChoiceBox<String> msgTypeChoice;
+    @FXML ChoiceBox<String> msgOperationChoice;
+    @FXML Button msgAddBtn;
 
-    @FXML
-    ChoiceBox<String> actClassChoice;
-    @FXML
-    TextField actLen;
-    @FXML
-    Button actAddBtn;
+    @FXML ChoiceBox<String> actClassChoice;
+    @FXML TextField actLen;
+    @FXML Button actAddBtn;
 
     ObservableList<String> classUsedList;
     ObservableList<String> classNotUsedList;

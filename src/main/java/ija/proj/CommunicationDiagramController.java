@@ -9,82 +9,50 @@
 package ija.proj;
 
 import ija.proj.uml.*;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Box;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-
 import static ija.proj.App.*;
 
+/**
+ * Třída slouží pro všechny akce komunikačního diagramu.
+ */
 public class CommunicationDiagramController {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
 
-    @FXML
-    AnchorPane main;
-    @FXML
-    Label leftStatusLabel;
+    @FXML AnchorPane main;
+    @FXML Label leftStatusLabel;
 
-    @FXML
-    ChoiceBox<String> classNewChoice;
-    @FXML
-    ChoiceBox<String> classChoice;
-    @FXML
-    Button classAddBtn;
-    @FXML
-    Button classDelBtn;
+    @FXML ChoiceBox<String> classNewChoice;
+    @FXML ChoiceBox<String> classChoice;
+    @FXML Button classAddBtn;
+    @FXML Button classDelBtn;
 
-    @FXML
-    TextField newUser;
-    @FXML
-    ChoiceBox<String> userChoice;
-    @FXML
-    Button userAddBtn;
-    @FXML
-    Button userDelBtn;
-
-    @FXML
-    ChoiceBox<String> connClass1Choice;
-    @FXML
-    ChoiceBox<String> connClass2Choice;
-    @FXML
-    Button connAddBtn;
-
-    @FXML
-    ChoiceBox<String> msgClass1Choice;
-    @FXML
-    ChoiceBox<String> msgClass2Choice;
-    @FXML
-    ChoiceBox<String> msgTypeChoice;
-    @FXML
-    ChoiceBox<String> msgOperationChoice;
-    @FXML
-    TextField msgOrder;
-    @FXML
-    Button msgAddBtn;
-
-    Popup popup = new Popup();
+    @FXML TextField newUser;
+    @FXML ChoiceBox<String> userChoice;
+    @FXML Button userAddBtn;
+    @FXML Button userDelBtn;
+    @FXML ChoiceBox<String> connClass1Choice;
+    @FXML ChoiceBox<String> connClass2Choice;
+    @FXML Button connAddBtn;
+    @FXML ChoiceBox<String> msgClass1Choice;
+    @FXML ChoiceBox<String> msgClass2Choice;
+    @FXML ChoiceBox<String> msgTypeChoice;
+    @FXML ChoiceBox<String> msgOperationChoice;
+    @FXML TextField msgOrder;
+    @FXML Button msgAddBtn;
 
     ObservableList<String> classUsedList;
     ObservableList<String> classNotUsedList;
@@ -96,6 +64,9 @@ public class CommunicationDiagramController {
 
     CommunicationDiagram commDiag;
 
+    /**
+     * Inicializace a překreslení
+     */
     public void initialize(){
         classUsedList  = FXCollections.observableArrayList();
         classNotUsedList  = FXCollections.observableArrayList();
@@ -187,6 +158,11 @@ public class CommunicationDiagramController {
         }
     }
 
+    /**
+     * Kontrola nekonzistencí u tříd
+     * @param class1 jméno třídy
+     * @return true při nekonzistenci jinak false
+     */
     public boolean checkClassForInconsistency(String class1){
         for (int i = 0; i < ClassDiagramController.classDiagram.classes.size(); i++){
             if (class1.compareTo(ClassDiagramController.classDiagram.classes.get(i).getName()) == 0)
@@ -196,6 +172,11 @@ public class CommunicationDiagramController {
         return false;
     }
 
+    /**
+     * Kontrola nekonzistencí u zpráv
+     * @param message zpráva
+     * @return true při nekonzistenci jinak false
+     */
     public boolean checkMessageForInconsistency(UMLMessage message){
         UMLClass class2 = null;
         class2 = ClassDiagramController.classDiagram.getObject(message.getClass2());
@@ -206,8 +187,10 @@ public class CommunicationDiagramController {
         return false;
     }
 
-    @FXML
-    public void classAddBtnClicked() {
+    /**
+     * Přidání třídy
+     */
+    @FXML public void classAddBtnClicked() {
         if (classNewChoice.getValue() != null) {
             controller.saveToUndoData();
             String name = classNewChoice.getValue();
@@ -226,6 +209,10 @@ public class CommunicationDiagramController {
         }
     }
 
+    /**
+     * Vykreslení třídy
+     * @param name jméno třidy
+     */
     public void drawClass(String name){
         TextField textField = new TextField(name);
         textField.setAlignment(Pos.CENTER);
@@ -277,8 +264,10 @@ public class CommunicationDiagramController {
 
     }
 
-    @FXML
-    public void classDelBtnClicked() {
+    /**
+     * Smazání třídy
+     */
+    @FXML public void classDelBtnClicked() {
         if (classChoice.getValue() != null){
             controller.saveToUndoData();
             String name = classChoice.getValue();
@@ -317,8 +306,10 @@ public class CommunicationDiagramController {
         }
     }
 
-    @FXML
-    public void userAddBtnClicked(){
+    /**
+     * Přidání uživatele
+     */
+    @FXML public void userAddBtnClicked(){
         if (newUser.getText() != null){
             String name = newUser.getText();
             for (int i = 0; i < commDiag.getUserList().size(); i++){
@@ -340,8 +331,10 @@ public class CommunicationDiagramController {
         }
     }
 
-    @FXML
-    public void userDelBtnClicked(){
+    /**
+     * Smaže uživatele
+     */
+    @FXML public void userDelBtnClicked(){
         if (userChoice.getValue() != null){
             controller.saveToUndoData();
             String name = userChoice.getValue();
@@ -381,6 +374,10 @@ public class CommunicationDiagramController {
         }
     }
 
+    /**
+     * Vykreslí uživatele
+     * @param user uživatel
+     */
     public void drawUser(UMLUser user){
         Group group = new Group();
         //panacek
@@ -440,8 +437,10 @@ public class CommunicationDiagramController {
         main.getChildren().add(group);
     }
 
-    @FXML
-    public void connAddBtnClicked(){
+    /**
+     * Přidání propojení na mezi třídami
+     */
+    @FXML public void connAddBtnClicked(){
         if (connClass1Choice.getValue() != null && connClass1Choice.getValue() != null){
             String class1 = connClass1Choice.getValue();
             String class2 = connClass2Choice.getValue();
@@ -462,6 +461,10 @@ public class CommunicationDiagramController {
             leftStatusLabel.setText("nevybran objekt");
     }
 
+    /**
+     * Vykreslí propojení
+     * @param connection propojení
+     */
     public void drawConnection(UMLConnection connection){
         //pripad prekresleni
         main.getChildren().removeAll(main.lookupAll("#" + connection.getName()));
@@ -524,8 +527,10 @@ public class CommunicationDiagramController {
         main.lookup("#" + connection.getClass2().replaceAll("\\s+", "€")).toFront();
     }
 
-    @FXML
-    public void msgAddBtnClicked(){
+    /**
+     * Přídání zprávy na plochu
+     */
+    @FXML public void msgAddBtnClicked(){
         if (msgClass1Choice.getValue() != null && msgClass2Choice.getValue() != null && msgTypeChoice.getValue() != null && msgOperationChoice.getValue() != null && msgOrder.getText() != null){
             String class1 = msgClass1Choice.getValue();
             String class2 = msgClass2Choice.getValue();
@@ -585,6 +590,12 @@ public class CommunicationDiagramController {
             leftStatusLabel.setText("nezadana vsechna data");
     }
 
+    /**
+     * Vykreslí zprávu
+     * @param message zpráva
+     * @param connLine čára propojení
+     * @param connection propojení
+     */
     public void drawMessage(UMLMessage message, Line connLine, UMLConnection connection){
         //pripad prekresleni
         main.getChildren().removeAll(main.lookupAll("#" + message.getName()));
@@ -658,6 +669,11 @@ public class CommunicationDiagramController {
         main.getChildren().add(group);
     }
 
+    /**
+     * Odstraní zprávu
+     * @param message zpráva
+     * @param connection propojení
+     */
     public void removeMsg(UMLMessage message, UMLConnection connection) {
         main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€")));
         //vyreseni poctu instanci
@@ -688,13 +704,18 @@ public class CommunicationDiagramController {
         }
     }
 
-    @FXML
-    public void undo() {
+    /**
+     * Operace undo
+     */
+    @FXML public void undo() {
         App.controller.undo();
         reload();
     }
-    @FXML
-    public void reload() {
+
+    /**
+     * Překreslení
+     */
+    @FXML public void reload() {
         main.getChildren().removeAll(main.getChildren());
         try {
             initialize();
@@ -703,8 +724,11 @@ public class CommunicationDiagramController {
             controller.leftStatusLabel.setText("All Communication Diagrams were closed, because one of them no longer exists.");
         }
     }
-    @FXML
-    public void openHelp() {
+
+    /**
+     * Zobrazí nápovědu komunikačního diagramu
+     */
+    @FXML public void openHelp() {
         commHelp.show();
     }
 }

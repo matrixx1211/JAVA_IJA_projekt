@@ -8,8 +8,6 @@
 
 package ija.proj.uml;
 
-import ija.proj.App;
-
 /**
  * Třída pro Element (nadtřída ostatních UML prvků)
  */

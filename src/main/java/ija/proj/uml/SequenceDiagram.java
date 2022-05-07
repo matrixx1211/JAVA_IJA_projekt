@@ -10,7 +10,6 @@ package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 
 /**

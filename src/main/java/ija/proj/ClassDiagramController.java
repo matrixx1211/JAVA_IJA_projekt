@@ -9,12 +9,9 @@
 package ija.proj;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import com.google.gson.Gson;
-
 import com.google.gson.GsonBuilder;
 import ija.proj.uml.*;
 import javafx.application.Platform;
@@ -22,13 +19,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -43,16 +38,8 @@ public class ClassDiagramController extends App {
     private UMLClass activeObj;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
-    private String activeAttrName;
     private Boolean openedFromFile = false;
     private File file = null;
-
-    // menu
-    @FXML
-    private MenuItem openFileBtn;
-
-    // celá appka
-    @FXML private VBox all;
 
     // levá část
     @FXML private TextField className;
@@ -62,55 +49,28 @@ public class ClassDiagramController extends App {
     @FXML private AnchorPane main;
 
     // pravá část
-    @FXML private AnchorPane detail;
     @FXML private Label detailText;
-
     @FXML private TitledPane classDetailPane;
     @FXML private TextField newClassName;
-
     @FXML private TitledPane attributesPane;
-    @FXML
-    private VBox attributesList;
-    @FXML
-    private HBox attributesListAddRow;
-    @FXML
-    private ChoiceBox<String> newAttributeAccess;
-    @FXML
-    private TextField newAttributeName;
-    @FXML
-    private TextField newAttributeType;
-    @FXML
-    private Button addAttributeBtn;
-
-    @FXML
-    private TitledPane operationsPane;
-    @FXML
-    private VBox operationsList;
+    @FXML private VBox attributesList;
+    @FXML private ChoiceBox<String> newAttributeAccess;
+    @FXML private TextField newAttributeName;
+    @FXML private TextField newAttributeType;
+    @FXML private Button addAttributeBtn;
+    @FXML private TitledPane operationsPane;
+    @FXML private VBox operationsList;
     @FXML ChoiceBox<String> newOperationAccess;
     @FXML TextField newOperationName;
     @FXML TextField newOperationReturnType;
-    @FXML
-    private Button addOperationBtn;
-    @FXML
-    private TitledPane relationsPane;
-    @FXML
-    private VBox relationsList;
-    @FXML
-    private ChoiceBox<String> newRelationType;
-    @FXML
-    private TextField newRelationName;
-    @FXML
-    private ChoiceBox<String> newRelationClass1;
-    @FXML
-    private ChoiceBox<String> newRelationClass2;
-    @FXML
-    private ChoiceBox<String> newRelationClass3;
+    @FXML private Button addOperationBtn;
+    @FXML private TitledPane relationsPane;
+    @FXML private VBox relationsList;
+    @FXML private ChoiceBox<String> newRelationClass1;
+    @FXML private ChoiceBox<String> newRelationClass2;
+    @FXML private ChoiceBox<String> newRelationClass3;
     @FXML private Button addRelationBtn;
-
-    @FXML
-    public Label leftStatusLabel;
-    @FXML
-    private Label rightStatusLabel;
+    @FXML public Label leftStatusLabel;
 
     /**
      * Ukončí program

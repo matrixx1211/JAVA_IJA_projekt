@@ -9,11 +9,9 @@
 package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
-import javafx.collections.FXCollections;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Třídá, která v sobě uchovává všechny informace ohledně jednoho
@@ -246,7 +244,6 @@ public class CommunicationDiagram extends Element {
      * @return pozici na ose X
      */
     public double getUserPosX(String class1){
-        System.out.println("userlist size: " + userList.size());
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName().compareTo(class1) == 0) {
                 return userList.get(i).getPosX();
