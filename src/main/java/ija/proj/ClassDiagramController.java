@@ -254,7 +254,7 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void undo() {
-        if (classDiagram.undoData == null) {
+        if (undoData.size() == 0) {
             leftStatusLabel.setText("Cannot perform undo operation.");
             return;
         }
@@ -283,8 +283,9 @@ public class ClassDiagramController extends App {
             System.out.println("3");
 
             Gson gson = new Gson();
-            classDiagram = gson.fromJson(classDiagram.undoData, ClassDiagram.class);
-            idCounter --;
+
+            classDiagram = gson.fromJson(undoData.get((undoData.size()-1)), ClassDiagram.class);
+            undoData.remove(undoData.size()-1);
 
             System.out.println("32");
             System.out.println(classDiagram.getName());
@@ -331,7 +332,8 @@ public class ClassDiagramController extends App {
         // vytvoření gsonu
         Gson gson = new Gson();
         // export json dat do undoData
-        classDiagram.undoData = gson.toJson(classDiagram);//.replaceAll("\\\\", "");
+        undoData.add(gson.toJson(classDiagram));//;;.replaceAll("((\\\\)+\\\")+", "\\\\\"");
+        System.out.println(undoData);
     }
 
     /**

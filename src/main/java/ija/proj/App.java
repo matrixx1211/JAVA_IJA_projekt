@@ -18,6 +18,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hlavní třída pro GUI aplikaci
@@ -43,10 +45,11 @@ public class App extends Application {
 
     public static ClassDiagramController controller;
 
-    public Stage stage;
+    public static Stage stage;
     public static Stage seqHelp;
     public static Stage commHelp;
     public static Stage classHelp;
+    public static List<String> undoData;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -119,6 +122,9 @@ public class App extends Application {
 
         // přídání možnosti, aby šlo vybrat nic
         classList.add("");
+
+        // undo
+        undoData = new ArrayList<String>();
 
         launch();
     }

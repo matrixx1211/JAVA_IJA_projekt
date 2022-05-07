@@ -448,7 +448,8 @@ public class CommunicationDiagramController {
 
         line.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
-                main.getChildren().removeAll(main.lookupAll("#" + connection.getName()));
+                controller.saveToUndoData();
+                //main.getChildren().removeAll(main.lookupAll("#" + connection.getName()));
                 //mazani
                 commDiag.getConnList().remove(connection);
                 reload();

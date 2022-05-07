@@ -1,0 +1,90 @@
+{
+  "classes": [
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "-",
+          "type": {
+            "isUserDefined": true,
+            "name": "String"
+          },
+          "name": "abc"
+        }
+      ],
+      "operations": [
+        {
+          "args": [],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "bitch"
+          },
+          "name": "run"
+        }
+      ],
+      "id": 1,
+      "isInterface": false,
+      "x": 10.0,
+      "y": 10.0,
+      "isUserDefined": true,
+      "name": "Test"
+    },
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": true,
+            "name": "String"
+          },
+          "name": "abc"
+        }
+      ],
+      "operations": [
+        {
+          "args": [],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "bitch"
+          },
+          "name": "run"
+        }
+      ],
+      "id": 2,
+      "isInterface": false,
+      "x": 89.0,
+      "y": 292.0,
+      "isUserDefined": true,
+      "name": "Beta"
+    }
+  ],
+  "classifiers": [
+    {
+      "isUserDefined": false,
+      "name": "Test"
+    },
+    {
+      "isUserDefined": true,
+      "name": "String"
+    },
+    {
+      "isUserDefined": false,
+      "name": "Beta"
+    }
+  ],
+  "relations": [
+    {
+      "type": "aggregation",
+      "class1": "Test",
+      "class2": "Beta",
+      "class3": "",
+      "name": ""
+    }
+  ],
+  "sequenceDiagrams": [],
+  "communicationDiagrams": [],
+  "name": "Diagram"
+}

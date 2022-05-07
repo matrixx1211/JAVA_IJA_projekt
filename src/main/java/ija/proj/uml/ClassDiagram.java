@@ -35,10 +35,6 @@ public class ClassDiagram extends Element {
 	 * seznam komunikačních diagramů
 	 */
 	public List<CommunicationDiagram> communicationDiagrams;
-	/**
-	 * data pro undo
-	 */
-	public String undoData;
 
 	/**
 	 * Konstruktor pro ClassDiagram
@@ -51,7 +47,6 @@ public class ClassDiagram extends Element {
 		this.relations = new ArrayList<UMLRelation>();
 		this.sequenceDiagrams = new ArrayList<SequenceDiagram>();
 		this.communicationDiagrams = new ArrayList<CommunicationDiagram>();
-		this.undoData = null;
 	}
 
 	/**
