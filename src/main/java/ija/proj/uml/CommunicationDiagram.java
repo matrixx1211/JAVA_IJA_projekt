@@ -246,9 +246,11 @@ public class CommunicationDiagram extends Element {
      * @return pozici na ose X
      */
     public double getUserPosX(String class1){
+        System.out.println("userlist size: " + userList.size());
         for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i).getName() == class1)
+            if (userList.get(i).getName().compareTo(class1) == 0) {
                 return userList.get(i).getPosX();
+            }
         }
         return 0;
     }
@@ -260,7 +262,7 @@ public class CommunicationDiagram extends Element {
      */
     public double getUserPosY(String class1){
         for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i).getName() == class1)
+            if (userList.get(i).getName().compareTo(class1) == 0)
                 return userList.get(i).getPosY();
         }
         return 0;
