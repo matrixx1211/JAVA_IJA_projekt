@@ -130,7 +130,7 @@ public class CommunicationDiagram extends Element {
     public void removeClassFromList(String name) {
         commDiagAllClassList.remove(name);
         commDiagClassList.remove(name);
-        //prejmenovani ve spojenich
+        //smazani ve spojenich
         for (int i = 0; i < connectionList.size(); i++){
             if (connectionList.get(i).getClass1().compareTo(name) == 0) {
                 connectionList.remove(i);
@@ -140,8 +140,8 @@ public class CommunicationDiagram extends Element {
                 connectionList.remove(i);
                 i--;
             }
-            //prejmenovani ve zpravach
-            for (int j = 0; i < connectionList.get(i).messageList.size(); j++){
+            //smazani v konekcich a zpravach
+            for (int j = 0; j < connectionList.get(i).messageList.size(); j++){
                 if (connectionList.get(i).messageList.get(j).getClass1().compareTo(name) == 0) {
                     connectionList.get(i).messageList.remove(j);
                     j--;

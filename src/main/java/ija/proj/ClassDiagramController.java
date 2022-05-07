@@ -558,13 +558,15 @@ public class ClassDiagramController extends App {
             classDiagram.relations.remove(relations.get(i));
             relationsList.getChildren().remove(relationsList.lookup(("#" + relations.get(i).getClass1() + "ß" + relations.get(i).getClass2() + "RelRow").replaceAll("\\s+", "€")));
         }
-        classList.remove(activeObjName);
 
-        // odstranění záznamů atributů v detailu a v entitách
-        VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
-        attributesList.getChildren().removeAll(attributesList.lookup("#classAttributes"));
-        attributes.getChildren().removeAll();
+        if (! activeObj.isInterface()) {
+            // odstranění záznamů atributů v detailu a v entitách
+            VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
+            attributesList.getChildren().removeAll(attributesList.lookup("#classAttributes"));
+            attributes.getChildren().removeAll();
+        }
         main.getChildren().remove(main.lookup(("#" + activeObjName).replaceAll("\\s+", "€")));
+        classList.remove(activeObjName);
 
         // nový položky v listu tříd
         newRelationClass1.setItems(classList);

@@ -1,0 +1,501 @@
+{
+  "classes": [
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": true,
+            "name": "String"
+          },
+          "name": "name"
+        }
+      ],
+      "operations": [
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "String"
+              },
+              "name": "name"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": ""
+          },
+          "name": "Element"
+        },
+        {
+          "args": [],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "String"
+          },
+          "name": "getName"
+        },
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "String"
+              },
+              "name": "name"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "void"
+          },
+          "name": "rename"
+        }
+      ],
+      "id": 1,
+      "isInterface": false,
+      "x": 328.0,
+      "y": 57.0,
+      "isUserDefined": true,
+      "name": "Element"
+    },
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "UMLClassifier"
+          },
+          "name": "type"
+        }
+      ],
+      "operations": [
+        {
+          "args": [],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "UMLClassifier"
+          },
+          "name": "getType"
+        }
+      ],
+      "id": 2,
+      "isInterface": false,
+      "x": 27.0,
+      "y": 256.0,
+      "isUserDefined": true,
+      "name": "UMLAttribute"
+    },
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": true,
+            "name": "List\u003cUMLClassifier\u003e"
+          },
+          "name": "classes"
+        },
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": true,
+            "name": "String"
+          },
+          "name": "name"
+        }
+      ],
+      "operations": [
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "String"
+              },
+              "name": "name"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "UMLClass"
+          },
+          "name": "createClass"
+        },
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "String"
+              },
+              "name": "name"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "UMLClassifier"
+          },
+          "name": "classifierForName"
+        }
+      ],
+      "id": 4,
+      "isInterface": false,
+      "x": 668.0,
+      "y": 241.0,
+      "isUserDefined": true,
+      "name": "ClassDiagram"
+    },
+    {
+      "isAbstract": false,
+      "attributes": [
+        {
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": true,
+            "name": "List\u003cUMLAttributes\u003e"
+          },
+          "name": "attributes"
+        }
+      ],
+      "operations": [
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "UMLAttribute"
+              },
+              "name": "attr"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "bolean"
+          },
+          "name": "addAttribute"
+        },
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "UMLAttribute"
+              },
+              "name": "attr"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "int"
+          },
+          "name": "getAttrPosition"
+        }
+      ],
+      "id": 6,
+      "isInterface": false,
+      "x": 232.0,
+      "y": 421.0,
+      "isUserDefined": true,
+      "name": "UMLClass"
+    },
+    {
+      "isAbstract": false,
+      "attributes": [],
+      "operations": [
+        {
+          "args": [
+            {
+              "accessibility": "",
+              "type": {
+                "isUserDefined": false,
+                "name": "String"
+              },
+              "name": "name"
+            }
+          ],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": ""
+          },
+          "name": "UMLClassifier"
+        },
+        {
+          "args": [],
+          "accessibility": "+",
+          "type": {
+            "isUserDefined": false,
+            "name": "boolean"
+          },
+          "name": "isUserDefined"
+        }
+      ],
+      "id": 7,
+      "isInterface": true,
+      "x": 318.0,
+      "y": 254.0,
+      "isUserDefined": true,
+      "name": "UMLClassifier"
+    }
+  ],
+  "classifiers": [
+    {
+      "isUserDefined": false,
+      "name": "Element"
+    },
+    {
+      "isUserDefined": false,
+      "name": "UMLAttribute"
+    },
+    {
+      "isUserDefined": false,
+      "name": "ClassDiagram"
+    },
+    {
+      "isUserDefined": false,
+      "name": "UMLClassifier"
+    },
+    {
+      "isUserDefined": false,
+      "name": "UMLClass"
+    },
+    {
+      "isUserDefined": true,
+      "name": "String"
+    },
+    {
+      "isUserDefined": true,
+      "name": "List\u003cUMLClassifier\u003e"
+    },
+    {
+      "isUserDefined": true,
+      "name": "List\u003cUMLAttributes\u003e"
+    },
+    {
+      "isUserDefined": false,
+      "name": "Main"
+    }
+  ],
+  "relations": [
+    {
+      "type": "association",
+      "class1": "UMLClass",
+      "class2": "UMLAttribute",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "association",
+      "class1": "UMLAttribute",
+      "class2": "UMLClassifier",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "association",
+      "class1": "ClassDiagram",
+      "class2": "UMLClassifier",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "generalization",
+      "class1": "Element",
+      "class2": "UMLAttribute",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "generalization",
+      "class1": "Element",
+      "class2": "ClassDiagram",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "generalization",
+      "class1": "Element",
+      "class2": "UMLClassifier",
+      "class3": "",
+      "name": ""
+    },
+    {
+      "type": "generalization",
+      "class1": "UMLClassifier",
+      "class2": "UMLClass",
+      "class3": "",
+      "name": ""
+    }
+  ],
+  "sequenceDiagrams": [
+    {
+      "messageList": [
+        {
+          "type": "Synch",
+          "class1": "Main",
+          "class2": "ClassDiagram",
+          "operation": "createClass",
+          "height": 106.0,
+          "order": "1",
+          "name": "msg0"
+        },
+        {
+          "type": "Synch",
+          "class1": "Main",
+          "class2": "ClassDiagram",
+          "operation": "classifierForName",
+          "height": 221.0,
+          "order": "1",
+          "name": "msg1"
+        },
+        {
+          "type": "Return",
+          "class1": "ClassDiagram",
+          "class2": "Main",
+          "operation": "Return",
+          "height": 163.0,
+          "order": "1",
+          "name": "msg2"
+        },
+        {
+          "type": "Return",
+          "class1": "ClassDiagram",
+          "class2": "Main",
+          "operation": "Return",
+          "height": 248.0,
+          "order": "1",
+          "name": "msg3"
+        },
+        {
+          "type": "New Instance",
+          "class1": "ClassDiagram",
+          "class2": "Instance 0 of UMLClass",
+          "operation": "Create Instance",
+          "height": 120.0,
+          "order": "1",
+          "name": "msg4"
+        },
+        {
+          "type": "New Instance",
+          "class1": "Main",
+          "class2": "Instance 1 of UMLAttribute",
+          "operation": "Create Instance",
+          "height": 299.0,
+          "order": "1",
+          "name": "msg5"
+        },
+        {
+          "type": "Synch",
+          "class1": "Main",
+          "class2": "Instance 0 of UMLClass",
+          "operation": "addAttribute",
+          "height": 371.0,
+          "order": "1",
+          "name": "msg6"
+        },
+        {
+          "type": "Return",
+          "class1": "Instance 0 of UMLClass",
+          "class2": "Main",
+          "operation": "Return",
+          "height": 422.0,
+          "order": "1",
+          "name": "msg7"
+        },
+        {
+          "type": "Synch",
+          "class1": "Main",
+          "class2": "Instance 1 of UMLAttribute",
+          "operation": "isAbstact",
+          "height": 474.0,
+          "order": "1",
+          "name": "msg8"
+        },
+        {
+          "type": "Return",
+          "class1": "Instance 1 of UMLAttribute",
+          "class2": "Main",
+          "operation": "Return",
+          "height": 526.0,
+          "order": "1",
+          "name": "msg9"
+        }
+      ],
+      "activationList": [
+        {
+          "class1": "Main",
+          "posY": 11.0,
+          "len": 450.0,
+          "name": "act1"
+        },
+        {
+          "class1": "ClassDiagram",
+          "posY": 19.0,
+          "len": 70.0,
+          "name": "act2"
+        },
+        {
+          "class1": "Instance 0 of UMLClass",
+          "posY": 286.0,
+          "len": 60.0,
+          "name": "act3"
+        },
+        {
+          "class1": "Instance 1 of UMLAttribute",
+          "posY": 391.0,
+          "len": 60.0,
+          "name": "act4"
+        }
+      ],
+      "opened": false,
+      "seqDiagAllClassList": [
+        "Element",
+        "UMLAttribute",
+        "UMLClass",
+        "UMLClassifier"
+      ],
+      "seqDiagClassList": [
+        "Main",
+        "ClassDiagram"
+      ],
+      "instancesList": [
+        "Instance 0 of UMLClass",
+        "Instance 1 of UMLAttribute"
+      ],
+      "classPosXList": [
+        24.0,
+        229.0
+      ],
+      "instancePosXList": [
+        516.0,
+        652.0
+      ],
+      "messageCounter": 10,
+      "instanceCounter": 2,
+      "activationCounter": 5,
+      "name": "broken example"
+    }
+  ],
+  "communicationDiagrams": [],
+  "name": "Diagram"
+}
