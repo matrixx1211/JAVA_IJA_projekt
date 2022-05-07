@@ -108,7 +108,7 @@ public class ClassDiagramController extends App {
     @FXML private Button addRelationBtn;
 
     @FXML
-    private Label leftStatusLabel;
+    public Label leftStatusLabel;
     @FXML
     private Label rightStatusLabel;
 
@@ -120,12 +120,31 @@ public class ClassDiagramController extends App {
     }
 
     /**
+     * Uzavře všechny okna všech diagramů.
+     */
+    public void closeAllWindowsOfDiagrams () {
+        if (classDiagram.communicationDiagrams.size() != 0) {
+            for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
+                if (classDiagram.communicationDiagrams.get(i).stage.isShowing())
+                    classDiagram.communicationDiagrams.get(i).stage.close();
+            }
+        }
+        if (classDiagram.sequenceDiagrams.size() != 0) {
+            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+                if (classDiagram.sequenceDiagrams.get(i).stage.isShowing())
+                    classDiagram.sequenceDiagrams.get(i).stage.close();
+            }
+        }
+    }
+
+    /**
      * Vytvoří nový soubor a vše co nebylo uloženo se vymaže
      *
      * @throws IOException chyba při načítaní fxml
      */
     @FXML
     public void newFile() throws IOException {
+        closeAllWindowsOfDiagrams();
         classDiagram = new ClassDiagram("Diagram");
         App.setRoot("ClassDiagram");
         this.openedFromFile = false;
@@ -144,6 +163,7 @@ public class ClassDiagramController extends App {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         }
         fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All files", ".*"),
                 new FileChooser.ExtensionFilter("JSON file", ".json"),
                 new FileChooser.ExtensionFilter("JSON file in TXT", ".txt"));
         File file = fileChooser.showSaveDialog(stage);
@@ -176,6 +196,7 @@ public class ClassDiagramController extends App {
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
+            closeAllWindowsOfDiagrams();
             String filePath = file.getPath();
             this.openedFromFile = true;
             this.file = file;
@@ -183,7 +204,6 @@ public class ClassDiagramController extends App {
                 main.getChildren().removeAll(main.getChildren());
 
                 detailText.setText("Detail");
-                System.out.println("OPEN 1!!!");
 
                 deleteClassBtn.setDisable(true);
 
@@ -195,24 +215,18 @@ public class ClassDiagramController extends App {
                 operationsPane.setExpanded(false);
                 relationsPane.setDisable(false);
                 relationsPane.setExpanded(true);
-                System.out.println("2");
                 newAttributeAccess.setItems(accessibilityList);
                 newAttributeAccess.setValue("+");
                 newOperationAccess.setItems(accessibilityList);
                 newOperationAccess.setValue("+");
                 relationsList.getChildren().remove(0, relationsList.getChildren().size() - 1);
-                System.out.println("3");
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting()
                         .create();
 
                 Reader reader = new FileReader(filePath);
-                System.out.println("31");
                 classDiagram = gson.fromJson(reader, ClassDiagram.class);
-                System.out.println("32");
-                System.out.println(classDiagram.getName());
                 classList.removeAll(classList);
-                System.out.println("4");
                 for (int i = 0; i < classDiagram.classes.size(); i++) {
                     drawClass(classDiagram.classes.get(i));
                     //nastaveni listu pro vyber class na relaci
@@ -258,11 +272,38 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("Cannot perform undo operation.");
             return;
         }
+        Gson gson = new Gson();
+
+        // test jestli můžu provést undo
+        ClassDiagram newClassDiagram = gson.fromJson(undoData.get((undoData.size()-1)), ClassDiagram.class);
+        // test na smazání komunikačního diagramu
+        if (newClassDiagram.communicationDiagrams.size() < classDiagram.communicationDiagrams.size() || newClassDiagram.sequenceDiagrams.size() < classDiagram.sequenceDiagrams.size()) {
+            CommunicationDiagram commDiagTemp;
+            for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++) {
+                commDiagTemp = classDiagram.findCommDiagram(classDiagram.communicationDiagrams.get(i).getName());
+                try {
+                    commDiagTemp.stage.close();
+                } catch (Exception e) {
+                    leftStatusLabel.setText(e.toString());
+                }
+            }
+            // test na smazání sekvenčního diagramu
+            SequenceDiagram seqDiagTemp;
+            for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++) {
+                seqDiagTemp = classDiagram.findSeqDiagram(classDiagram.sequenceDiagrams.get(i).getName());
+                try {
+                    seqDiagTemp.stage.close();
+                } catch (Exception e) {
+                    leftStatusLabel.setText(e.toString());
+                }
+            }
+        }
+
+
         try {
             main.getChildren().removeAll(main.getChildren());
 
             detailText.setText("Detail");
-            System.out.println("UNDO 1!!!");
 
             deleteClassBtn.setDisable(true);
 
@@ -274,23 +315,17 @@ public class ClassDiagramController extends App {
             operationsPane.setExpanded(false);
             relationsPane.setDisable(false);
             relationsPane.setExpanded(true);
-            System.out.println("2");
             newAttributeAccess.setItems(accessibilityList);
             newAttributeAccess.setValue("+");
             newOperationAccess.setItems(accessibilityList);
             newOperationAccess.setValue("+");
             relationsList.getChildren().remove(0, relationsList.getChildren().size() - 1);
-            System.out.println("3");
-
-            Gson gson = new Gson();
 
             classDiagram = gson.fromJson(undoData.get((undoData.size()-1)), ClassDiagram.class);
+
             undoData.remove(undoData.size()-1);
 
-            System.out.println("32");
-            System.out.println(classDiagram.getName());
             classList.removeAll(classList);
-            System.out.println("4");
             for (int i = 0; i < classDiagram.classes.size(); i++) {
                 drawClass(classDiagram.classes.get(i));
                 //nastaveni listu pro vyber class na relaci
@@ -321,7 +356,6 @@ public class ClassDiagramController extends App {
             commDiagChoice.setItems(commDiagList);
         } catch (Exception e) {
             leftStatusLabel.setText(e.toString());
-            System.out.println(e);
         }
     }
 
@@ -332,8 +366,7 @@ public class ClassDiagramController extends App {
         // vytvoření gsonu
         Gson gson = new Gson();
         // export json dat do undoData
-        undoData.add(gson.toJson(classDiagram));//;;.replaceAll("((\\\\)+\\\")+", "\\\\\"");
-        System.out.println(undoData);
+        undoData.add(gson.toJson(classDiagram));
     }
 
     /**
@@ -521,7 +554,6 @@ public class ClassDiagramController extends App {
         });
 
         // vložení panu do mainu
-        System.out.println(titledPane.getLayoutX() + " " + titledPane.getTranslateX() + " " + newclass.getPositionX());
         main.getChildren().add(titledPane);
     }
 
@@ -694,7 +726,6 @@ public class ClassDiagramController extends App {
                 activeObj.addAttribute(attr);
                 VBox attributes = ((VBox) main.lookup(("#" + activeObjName + "Attributes").replaceAll("\\s+", "€")));
                 Text attribute = new Text(access + " <-> " + name + ":" + type);
-                System.out.println("name: " + name);
                 attribute.setId(name + "Attr");
                 attributes.getChildren().add(attribute);
                 HBox row = new HBox();
@@ -826,7 +857,6 @@ public class ClassDiagramController extends App {
                     return;
                 }
                 drawClass(activeObj);
-                System.out.println(addOperationNameColName.getText());
                 TextField operationName = new TextField(addOperationNameColName.getText());
                 TextField operationType = new TextField(addOperationTypeColType.getText());
                 operationsNameCol.getChildren().add(operationName);
@@ -963,7 +993,6 @@ public class ClassDiagramController extends App {
         String class1 = ((ChoiceBox) (relationsPane.lookup("#newRelationClass1"))).getValue().toString();
         String class2 = ((ChoiceBox) (relationsPane.lookup("#newRelationClass2"))).getValue().toString();
         String class3 = ((ChoiceBox) (relationsPane.lookup("#newRelationClass3"))).getValue().toString();
-        System.out.println(class1.length());
         if (class1.isEmpty() || class2.isEmpty()) {
             leftStatusLabel.setText("Relation data not set.");
             return;
@@ -988,7 +1017,6 @@ public class ClassDiagramController extends App {
     public void createRelation(UMLRelation relation) {
         HBox row = new HBox();
         row.setId((relation.getClass1() + "ß" + relation.getClass2() + "RelRow").replaceAll("\\s+", "€"));
-        System.out.println(row.getId());
         // texty
         // typ
         VBox typeCol = new VBox();
@@ -1070,7 +1098,6 @@ public class ClassDiagramController extends App {
         double h3;
         double w3;
 
-        System.out.println(w1);
 
         if (type.compareTo("association") == 0) {
             if (class1 != class2) {
@@ -1220,29 +1247,28 @@ public class ClassDiagramController extends App {
     @FXML
     public void clickedOpenSeqDiag() {
         title = seqDiagChoice.getValue();
-        if (seqDiagChoice.getValue() == null) {
-            leftStatusLabel.setText("diagram neni vybran");
-            return;
-        }
-        if (classDiagram.findSeqDiagram(title).getOpened()) {
-            leftStatusLabel.setText("diagram je jiz otevren");
-            return;
-        }
-        try {
-            Scene seqScene = new Scene(App.loadFXML("SequenceDiagram"));
-            Stage seqStage = new Stage();
-
-            seqStage.setOnCloseRequest(e -> classDiagram.findSeqDiagram(title).setOpened(false));
-
-            seqStage.setTitle(seqDiagChoice.getValue());
-            seqStage.setScene(seqScene);
-
-            seqStage.show();
-        }
-        catch (Exception e) {
-            leftStatusLabel.setText(e.toString());
+        if (title != null) {
+            SequenceDiagram seqDiag = classDiagram.findSeqDiagram(title);
+            if (seqDiag.stage == null) {
+                try {
+                    seqDiag.stage = new Stage();
+                    seqDiag.stage.setTitle(seqDiagChoice.getValue());
+                    seqDiag.stage.setScene(new Scene(App.loadFXML("SequenceDiagram")));
+                    seqDiag.stage.show();
+                } catch (Exception e) {
+                    leftStatusLabel.setText(e.toString());
+                    return;
+                }
+            } else {
+                if (!seqDiag.stage.isShowing()) {
+                    seqDiag.stage.show();
+                }
+            }
+        } else {
+            leftStatusLabel.setText("Sequence diagram not selected.");
         }
     }
+
     /**
      * Smaže sekvenční diagram
      */
@@ -1250,6 +1276,10 @@ public class ClassDiagramController extends App {
     public void clickedDeleteSeqDiag() {
         if (seqDiagChoice.getValue() == null) {
             leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        if (classDiagram.findSeqDiagram(seqDiagChoice.getValue()).stage.isShowing()) {
+            leftStatusLabel.setText("diagram otevřen");
             return;
         }
         saveToUndoData();
@@ -1291,32 +1321,36 @@ public class ClassDiagramController extends App {
     @FXML
     public void clickedOpenCommDiag() {
         title = commDiagChoice.getValue();
-        if (commDiagChoice.getValue() == null) {
-            leftStatusLabel.setText("diagram neni vybran");
-            return;
-        }
-        if (classDiagram.findCommDiagram(title).getOpened()) {
-            leftStatusLabel.setText("diagram je jiz otevren");
-            return;
-        }
-        try {
-            Scene commScene = new Scene(App.loadFXML("CommunicationDiagram"));
-            Stage commStage = new Stage();
-            commStage.setOnCloseRequest(e -> classDiagram.findCommDiagram(title).setOpened(false));
-
-            commStage.setTitle(commDiagChoice.getValue());
-            commStage.setScene(commScene);
-
-            commStage.show();
-        }
-        catch (Exception e) {
-            leftStatusLabel.setText(e.toString());
+        if (title != null) {
+            CommunicationDiagram commDiag = classDiagram.findCommDiagram(title);
+            if (commDiag.stage == null) {
+                try {
+                    commDiag.stage = new Stage();
+                    commDiag.stage.setTitle(commDiagChoice.getValue());
+                    commDiag.stage.setScene(new Scene(App.loadFXML("CommunicationDiagram")));
+                    commDiag.stage.show();
+                } catch (Exception e) {
+                    leftStatusLabel.setText(e.toString());
+                    return;
+                }
+            } else {
+                if (!commDiag.stage.isShowing()) {
+                    commDiag.stage.show();
+                }
+            }
+        } else {
+            leftStatusLabel.setText("Communication diagram not selected.");
         }
     }
+
     @FXML
     public void  clickedDeleteCommDiag() {
         if (commDiagChoice.getValue() == null) {
             leftStatusLabel.setText("diagram neni vybran");
+            return;
+        }
+        if (classDiagram.findCommDiagram(commDiagChoice.getValue()).stage.isShowing()) {
+            leftStatusLabel.setText("diagram otevřen");
             return;
         }
         saveToUndoData();
@@ -1329,3 +1363,4 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram se nepodarilo smazat");
     }
 }
+

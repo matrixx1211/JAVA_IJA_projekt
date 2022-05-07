@@ -2,26 +2,34 @@ package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
 import javafx.collections.FXCollections;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Třídá, která v sobě uchovává všechny informace ohledně jednoho
+ * komunikačního diagramu a dědí od Elementu.
+ */
 public class CommunicationDiagram extends Element {
     ArrayList<UMLConnection> connectionList;
     ArrayList<UMLUser> userList;
-    Boolean opened;
     ArrayList<String> commDiagAllClassList;
     ArrayList<String> commDiagClassList;
     ArrayList<String> instanceList;
     ArrayList<Double> classPosXList;
     ArrayList<Double> classPosYList;
     int connectionCounter;
+    transient public Stage stage;
 
+    /**
+     * Konstruktor pro diagram komunikace
+     * @param name jméno diagramu
+     */
     public CommunicationDiagram(String name) {
         super(name);
         this.connectionList = new ArrayList<>();
         this.userList = new ArrayList<>();
-        this.opened = false;
         this.commDiagAllClassList = new ArrayList<>();
         this.commDiagClassList = new ArrayList<>();
         this.instanceList = new ArrayList<>();
@@ -31,23 +39,45 @@ public class CommunicationDiagram extends Element {
             this.commDiagAllClassList.add(ClassDiagramController.classDiagram.classes.get(i).getName());
         }
         this.connectionCounter = 0;
+        this.stage = null;
     }
 
+    /**
+     * Získá list propojení
+     * @return list propojení
+     */
     public ArrayList<UMLConnection> getConnList() {
         return connectionList;
     }
 
+    /**
+     * Získá list uživatelů
+     * @return list uživatelů
+     */
     public ArrayList<UMLUser> getUserList() {
         return userList;
     }
 
-    public  UMLUser createUser(String name, double X, double Y){
+    /**
+     * Vytvoří uživatele
+     * @param name jméno uživatele
+     * @param X souřadnice na X
+     * @param Y souřadnice na Y
+     * @return vytvořený uživatel
+     */
+    public UMLUser createUser(String name, double X, double Y){
         UMLUser user = new UMLUser(name, X, Y);
         userList.add(user);
         return user;
     }
 
-    public  UMLConnection createConnection(String class1, String class2){
+    /**
+     * Vytvoří spojení
+     * @param class1 první třída
+     * @param class2 druhá třída
+     * @return spojení
+     */
+    public UMLConnection createConnection(String class1, String class2){
         String name = "connß" + connectionCounter;
         UMLConnection connection = new UMLConnection(name, class1, class2);
         connectionList.add(connection);
@@ -55,21 +85,42 @@ public class CommunicationDiagram extends Element {
         return connection;
     }
 
+    /**
+     * Získá všechny třídy, které ještě nebyli přidány
+     * @return třídy, které nejsou v diagramu
+     */
     public ArrayList<String> getCommDiagAllClassList() {
         return commDiagAllClassList;
     }
 
+    /**
+     * Získá všechny třídy, které jsou přidány
+     * @return třídy, které jsou v diagramu
+     */
     public ArrayList<String> getCommDiagClassList() {
         return commDiagClassList;
     }
 
+    /**
+     * Získá list instancí
+     * @return list instancí
+     */
     public ArrayList<String> getInstanceList() {
         return instanceList;
     }
 
+    /**
+     * Přidá třídu do listu tříd
+     * @param name jméno třídy
+     */
     public void addClassToList(String name) {
         commDiagAllClassList.add(name);
     }
+
+    /**
+     * Odstraní třídu z listu tříd
+     * @param name jméno třídy
+     */
     public void removeClassFromList(String name) {
         commDiagAllClassList.remove(name);
         commDiagClassList.remove(name);
@@ -96,6 +147,12 @@ public class CommunicationDiagram extends Element {
             }
         }
     }
+
+    /**
+     * Přejmenuje třídu v listu tříd
+     * @param oldName staré jméno
+     * @param newName nové jméno
+     */
     public void renameClassInList(String oldName, String newName) {
         if (commDiagAllClassList.contains(oldName)) {
             commDiagAllClassList.set(commDiagAllClassList.indexOf(oldName), newName);
@@ -119,11 +176,22 @@ public class CommunicationDiagram extends Element {
         }
     }
 
+    /**
+     * Přídá do listu souřadnic souřadnice třídy na ose X a Y
+     * @param X souřadnice na X
+     * @param Y souřadnice na Y
+     */
     public void addClassPosXY(double X, double Y){
         classPosXList.add(X);
         classPosYList.add(Y);
     }
 
+    /**
+     * Nastaví souřadnice třídy na ose X a Y
+     * @param class1 třída
+     * @param X souřadnice na X
+     * @param Y souřadnice na Y
+     */
     public void setClassPosXY(String class1, double X, double Y){
         if (commDiagClassList.contains(class1)) {
             classPosXList.set(commDiagClassList.indexOf(class1), X);
@@ -131,6 +199,11 @@ public class CommunicationDiagram extends Element {
         }
     }
 
+    /**
+     * Získá souřadnice na ose X třídy z plochy
+     * @param class1 třída
+     * @return souřadnice na ose X
+     */
     public double getClassPosX(String class1){
         if (commDiagClassList.contains(class1))
             return classPosXList.get(commDiagClassList.indexOf(class1));
@@ -138,6 +211,11 @@ public class CommunicationDiagram extends Element {
             return 0;
     }
 
+    /**
+     * Získá souřadnice na ose Y třídy z plochy
+     * @param class1 třída
+     * @return souřadnice na ose Y
+     */
     public double getClassPosY(String class1){
         if (commDiagClassList.contains(class1))
             return classPosYList.get(commDiagClassList.indexOf(class1));
@@ -145,11 +223,20 @@ public class CommunicationDiagram extends Element {
             return 0;
     }
 
+    /**
+     * Odstraní souřadnice třídy z listu souřadnic na ploše
+     * @param class1 třída
+     */
     public void remClassPos(String class1){
         classPosXList.remove(commDiagClassList.indexOf(class1));
         classPosYList.remove(commDiagClassList.indexOf(class1));
     }
 
+    /**
+     * Získá pozici na ose X uživatele
+     * @param class1 třída
+     * @return pozici na ose X
+     */
     public double getUserPosX(String class1){
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName() == class1)
@@ -158,19 +245,16 @@ public class CommunicationDiagram extends Element {
         return 0;
     }
 
+    /**
+     * Získá pozici na ose Y uživatele
+     * @param class1 třída
+     * @return pozici na ose Y
+     */
     public double getUserPosY(String class1){
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName() == class1)
                 return userList.get(i).getPosY();
         }
         return 0;
-    }
-
-    public void setOpened(boolean opened){
-        this.opened = opened;
-    }
-
-    public boolean getOpened(){
-        return opened;
     }
 }

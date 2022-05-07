@@ -98,7 +98,6 @@ public class CommunicationDiagramController {
         userList  = FXCollections.observableArrayList();
         msgTypeList  = FXCollections.observableArrayList();
         commDiag = ClassDiagramController.classDiagram.findCommDiagram(ClassDiagramController.title);
-        commDiag.setOpened(true);
 
         classNotUsedList.addAll(commDiag.getCommDiagAllClassList());
         classUsedList.addAll(commDiag.getCommDiagClassList());
@@ -216,6 +215,7 @@ public class CommunicationDiagramController {
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneX = event.getSceneX();
                 orgSceneY = event.getSceneY();
                 orgTranslateX = ((TextField) (event.getSource())).getTranslateX();
@@ -355,6 +355,7 @@ public class CommunicationDiagramController {
         group.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneX = event.getSceneX();
                 orgSceneY = event.getSceneY();
                 orgTranslateX = ((Group) (event.getSource())).getTranslateX();
@@ -546,8 +547,6 @@ public class CommunicationDiagramController {
         group.getChildren().add(line2);
         group.getChildren().add(line3);
 
-        System.out.println(rotation);
-
         //text
         Text text = new Text(message.getOrder() + ":" + message.getOperation());
         text.setX(-text.getBoundsInLocal().getWidth()/2);
@@ -581,6 +580,7 @@ public class CommunicationDiagramController {
         //mazani
         group.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
+                controller.saveToUndoData();
                 connection.getMsgList().remove(message);
                 //prekresleni
                 for (int i = 0; i < connection.getMsgList().size(); i++){
@@ -595,9 +595,6 @@ public class CommunicationDiagramController {
     }
 
     public void removeMsg(UMLMessage message, UMLConnection connection) {
-        if (!main.lookupAll("#" + message.getName().replaceAll("\\s+", "€")).isEmpty()) {
-            controller.saveToUndoData();
-        }
         main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€")));
         //vyreseni poctu instanci
         if (message.getType().compareTo("New Instance") == 0 || message.getType().compareTo("Rem Instance") == 0) {
@@ -606,7 +603,7 @@ public class CommunicationDiagramController {
             for (int i = 0; i < connection.getMsgList().size(); i++){
                 if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("New Instance") == 0)
                     countIns++;
-                else if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("Rem Instance") == 0)
+                   else if (message.getClass2().compareTo(connection.getMsgList().get(i).getClass2()) == 0 && connection.getMsgList().get(i).getType().compareTo("Rem Instance") == 0)
                     countIns--;
             }
             int countIns2 = 0;
@@ -635,7 +632,12 @@ public class CommunicationDiagramController {
     @FXML
     public void reload() {
         main.getChildren().removeAll(main.getChildren());
-        initialize();
+        try {
+            initialize();
+        } catch (Exception e) {
+            // odstranil jsem diagram
+            controller.leftStatusLabel.setText("All Communication Diagrams were closed, because one of them no longer exists.");
+        }
     }
     @FXML
     public void openHelp() {

@@ -25,8 +25,8 @@
       ],
       "id": 1,
       "isInterface": false,
-      "x": 10.0,
-      "y": 10.0,
+      "x": 207.0,
+      "y": 81.0,
       "isUserDefined": true,
       "name": "Test"
     },
@@ -55,8 +55,8 @@
       ],
       "id": 2,
       "isInterface": false,
-      "x": 89.0,
-      "y": 292.0,
+      "x": 128.0,
+      "y": 488.0,
       "isUserDefined": true,
       "name": "Beta"
     }
@@ -84,7 +84,120 @@
       "name": ""
     }
   ],
-  "sequenceDiagrams": [],
-  "communicationDiagrams": [],
+  "sequenceDiagrams": [
+    {
+      "messageList": [
+        {
+          "type": "Asynch",
+          "class1": "Test",
+          "class2": "Beta",
+          "operation": "run",
+          "height": 100.0,
+          "order": "1",
+          "name": "msg0"
+        },
+        {
+          "type": "Return",
+          "class1": "Beta",
+          "class2": "Test",
+          "operation": "Return",
+          "height": 199.0,
+          "order": "1",
+          "name": "msg1"
+        }
+      ],
+      "activationList": [
+        {
+          "class1": "Test",
+          "posY": 0.0,
+          "len": 150.0,
+          "name": "act1"
+        },
+        {
+          "class1": "Beta",
+          "posY": -7.0,
+          "len": 150.0,
+          "name": "act2"
+        }
+      ],
+      "seqDiagAllClassList": [],
+      "seqDiagClassList": [
+        "Test",
+        "Beta"
+      ],
+      "instancesList": [],
+      "classPosXList": [
+        0.0,
+        437.0
+      ],
+      "instancePosXList": [],
+      "messageCounter": 2,
+      "instanceCounter": 0,
+      "activationCounter": 3,
+      "name": "Test"
+    }
+  ],
+  "communicationDiagrams": [
+    {
+      "connectionList": [
+        {
+          "class1": "Test",
+          "class2": "Beta",
+          "messageList": [
+            {
+              "type": "Asynch",
+              "class1": "Test",
+              "class2": "Beta",
+              "operation": "run",
+              "height": 100.0,
+              "order": "1",
+              "name": "msgß0ßTestßBeta"
+            },
+            {
+              "type": "Return",
+              "class1": "Beta",
+              "class2": "Test",
+              "operation": "Return",
+              "height": 100.0,
+              "order": "2",
+              "name": "msgß1ßBetaßTest"
+            }
+          ],
+          "messageCounter": 2,
+          "name": "connß0"
+        },
+        {
+          "class1": "Test",
+          "class2": "Franta",
+          "messageList": [],
+          "messageCounter": 0,
+          "name": "connß4"
+        }
+      ],
+      "userList": [
+        {
+          "posX": 431.0,
+          "posY": 438.0,
+          "name": "Franta"
+        }
+      ],
+      "commDiagAllClassList": [],
+      "commDiagClassList": [
+        "Test",
+        "Beta"
+      ],
+      "instanceList": [],
+      "classPosXList": [
+        145.0,
+        633.0
+      ],
+      "classPosYList": [
+        267.0,
+        183.0
+      ],
+      "connectionCounter": 5,
+      "name": "Test"
+    }
+  ],
   "name": "Diagram"
 }

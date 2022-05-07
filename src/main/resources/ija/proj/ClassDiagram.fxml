@@ -22,7 +22,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.ClassDiagramController">
+<VBox fx:id="all" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.proj.ClassDiagramController">
    <children>
       <MenuBar VBox.vgrow="NEVER">
          <menus>
@@ -65,10 +65,8 @@
                         <Button fx:id="createInterfaceBtn" layoutY="30.0" mnemonicParsing="false" onAction="#clickedInterfaceBtn" prefHeight="25.0" prefWidth="175.0" text="Create Interface" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="50.0" />
                      </children>
                   </AnchorPane>
-                  <TextField layoutY="60.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" />
-                  <Button layoutX="17.0" layoutY="43.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Add type" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="0.0" />
                   <Button fx:id="deleteClassBtn" disable="true" layoutY="130.0" mnemonicParsing="false" onAction="#deleteClass" text="Delete active class" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
-                  <AnchorPane layoutY="173.0">
+                  <AnchorPane layoutY="173.0" AnchorPane.topAnchor="175.0">
                      <children>
                         <Label text="Create sequence diagram" textFill="#9f9f9f" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <TextField fx:id="seqDiagName" prefHeight="25.0" promptText="Sequence diagram name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
@@ -79,7 +77,7 @@
                         <Label layoutY="78.0" text="Open or Remove sequence diagram" textFill="#9f9f9f" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutY="343.0" prefHeight="155.0" prefWidth="350.0">
+                  <AnchorPane layoutY="343.0" prefHeight="155.0" prefWidth="350.0" AnchorPane.topAnchor="375.0">
                      <children>
                         <Label layoutY="6.0" text="Create communication diagram" textFill="#9f9f9f" />
                         <TextField fx:id="commDiagName" layoutY="23.0" prefHeight="25.0" prefWidth="350.0" promptText="Communication diagram name" />

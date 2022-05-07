@@ -26,9 +26,11 @@ import javafx.stage.Window;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import static ija.proj.App.commHelp;
-import static ija.proj.App.seqHelp;
+import static ija.proj.App.*;
 
+/**
+ * Třída pro všechny akce, které se dějí na sekvenčním diagramu
+ */
 public class SequenceDiagramController {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
@@ -66,19 +68,28 @@ public class SequenceDiagramController {
     @FXML
     Button actAddBtn;
 
-    ObservableList<String> classUsedList = FXCollections.observableArrayList();
-    ObservableList<String> classNotUsedList = FXCollections.observableArrayList();
-    ObservableList<String> class1List = FXCollections.observableArrayList();
-    ObservableList<String> class2List = FXCollections.observableArrayList();
-    ObservableList<String> operationList = FXCollections.observableArrayList();
-    ObservableList<String> msgTypeList = FXCollections.observableArrayList();
-    ObservableList<String> actClassList = FXCollections.observableArrayList();
+    ObservableList<String> classUsedList;
+    ObservableList<String> classNotUsedList;
+    ObservableList<String> class1List;
+    ObservableList<String> class2List;
+    ObservableList<String> operationList;
+    ObservableList<String> msgTypeList;
+    ObservableList<String> actClassList;
     SequenceDiagram seqDiag;
 
+    /**
+     * Iniciaizace a překreslení
+     */
     public void initialize(){
-        // TODO chyba při undo když je otevřené -> rozmrdá se
+        classUsedList  = FXCollections.observableArrayList();
+        classNotUsedList  = FXCollections.observableArrayList();
+        class1List  = FXCollections.observableArrayList();
+        class2List  = FXCollections.observableArrayList();
+        operationList  = FXCollections.observableArrayList();
+        msgTypeList  = FXCollections.observableArrayList();
+        actClassList  = FXCollections.observableArrayList();
+
         seqDiag = ClassDiagramController.classDiagram.findSeqDiagram(ClassDiagramController.title);
-        seqDiag.setOpened(true);
 
         classNotUsedList.addAll(seqDiag.getSeqDiagAllClassList());
         classUsedList.addAll(seqDiag.getSeqDiagClassList());
@@ -178,6 +189,11 @@ public class SequenceDiagramController {
         }
     }
 
+    /**
+     * Kontrola nekonzistence u třídy
+     * @param class1 třída
+     * @return true při nekonzistenci jinak false
+     */
     public boolean checkClassForInconsistency(String class1){
         for (int i = 0; i < ClassDiagramController.classDiagram.classes.size(); i++){
             if (class1.compareTo(ClassDiagramController.classDiagram.classes.get(i).getName()) == 0)
@@ -187,11 +203,15 @@ public class SequenceDiagramController {
         return false;
     }
 
+    /**
+     * Kontrola nekonzistence u zprávy
+     * @param message zpráva
+     * @return true při nekonzistenci jinak false
+     */
     public boolean checkMessageForInconsistency(UMLMessage message){
         UMLClass class2 = null;
         String[] split;
         String string = "";
-        System.out.println("hej " + message.getOperation());
         if (seqDiag.getSeqDiagClassList().contains(message.getClass2()))
             class2 = ClassDiagramController.classDiagram.getObject(message.getClass2());
         else if (seqDiag.getInstancesList().contains(message.getClass2())) {
@@ -204,7 +224,6 @@ public class SequenceDiagramController {
         }
         if (class2 != null)
             for (int i = 0; i < class2.operations.size(); i++){
-                System.out.println(class2.operations.get(i).getName());
                 if (class2.operations.get(i).getName().compareTo(message.getOperation()) == 0)
                     return true;
             }
@@ -212,9 +231,13 @@ public class SequenceDiagramController {
         return false;
     }
 
+    /**
+     * Akce pro přidání třídy
+     */
     @FXML
     public void classAddBtnClicked() {
         if (classNewChoice.getValue() != null){
+            controller.saveToUndoData();
             String name = classNewChoice.getValue();
             seqDiag.getSeqDiagAllClassList().remove(name);
             seqDiag.getSeqDiagClassList().add(name);
@@ -232,6 +255,10 @@ public class SequenceDiagramController {
         }
     }
 
+    /**
+     * Vykreslení třídy na plochu
+     * @param name jméno třídy
+     */
     public void drawClass(String name) {
         //vytvoreni grafickeho elementu
         TextField textField = new TextField(name);
@@ -256,6 +283,7 @@ public class SequenceDiagramController {
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneX = event.getSceneX();
                 orgTranslateX = ((TextField) (event.getSource())).getTranslateX();
             }
@@ -289,6 +317,11 @@ public class SequenceDiagramController {
         main.getChildren().add(textField);
     }
 
+    /**
+     * Vykreslení instance
+     * @param name jméno instance
+     * @param Y výška vykreslení
+     */
     public void drawInstance(String name, double Y) {
         //pro prekresleni mazani stare
         main.getChildren().removeAll(main.lookupAll("#" + name.replaceAll("\\s+", "€")));
@@ -317,7 +350,6 @@ public class SequenceDiagramController {
         for (int i = 4; i < split.length; i++)
             string = (string + " " + split[i]);
         //kontrola class
-        System.out.println(string);
         if (! checkClassForInconsistency(string)){
             textField.setStyle("-fx-text-inner-color: red;");
             line.setStroke(Color.RED);
@@ -328,6 +360,7 @@ public class SequenceDiagramController {
         textField.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneX = event.getSceneX();
                 orgTranslateX = ((TextField) (event.getSource())).getTranslateX();
             }
@@ -362,9 +395,13 @@ public class SequenceDiagramController {
         main.getChildren().add(textField);
     }
 
+    /**
+     * Akce pro smazání třídy z plochy
+     */
     @FXML
     public void classDelBtnClicked() {
         if (classChoice.getValue() != null){
+            controller.saveToUndoData();
             String name = classChoice.getValue();
 
             //mazani zprav dane class
@@ -410,11 +447,19 @@ public class SequenceDiagramController {
         }
     }
 
+    /**
+     * Vymaže třídu z plochy
+     * @param class1 jméno třídy, která se má smazat
+     */
     public void eraseClass(String class1){
         main.getChildren().remove(main.lookup("#" + class1.replaceAll("\\s+", "€")));
         main.getChildren().remove(main.lookup("#" + class1.replaceAll("\\s+", "€") + "Line"));
     }
 
+    /**
+     * Vymaže instanci z plochy
+     * @param instance jméno instance, která se má smazat
+     */
     public void deleteInstance(String instance){
         //mazani zprav dane class
         for (int i = 0; i < seqDiag.getMsgList().size(); i++) {
@@ -456,11 +501,14 @@ public class SequenceDiagramController {
         eraseClass(instance);
     }
 
+    /**
+     * Akce pro přidání zprávy
+     */
     @FXML
     public void msgAddBtnClicked() {
         if (msgClass2Choice.getValue() != null && msgClass1Choice.getValue() != null && msgTypeChoice.getValue() != null && msgOperationChoice.getValue() != null){
+            controller.saveToUndoData();
             String name = ("msg" + seqDiag.getMsgCounter());
-            System.out.println(name);
             UMLMessage message;
             if (msgTypeChoice.getValue().compareTo("New Instance") != 0)
                 message = seqDiag.createMessage(name, msgClass1Choice.getValue(), msgClass2Choice.getValue(), msgTypeChoice.getValue(), msgOperationChoice.getValue());
@@ -474,6 +522,10 @@ public class SequenceDiagramController {
         }
     }
 
+    /**
+     * Vykreslí zprávu na plochu
+     * @param message zpráva
+     */
     public void drawMessage(UMLMessage message){
         //pro pripad prekreslovani
         main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€") + "line"));
@@ -534,6 +586,7 @@ public class SequenceDiagramController {
         line.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneY = event.getSceneY();
                 orgTranslateY = ((Line) (event.getSource())).getTranslateY();
                 orgHeight = message.getHeight();
@@ -576,6 +629,7 @@ public class SequenceDiagramController {
         text.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneY = event.getSceneY();
                 orgTranslateY = ((Text) (event.getSource())).getTranslateY();
                 orgHeight = message.getHeight();
@@ -617,6 +671,7 @@ public class SequenceDiagramController {
         //mazani
         text.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
+                controller.saveToUndoData();
                 seqDiag.getMsgList().remove(message);
                 main.getChildren().removeAll(main.lookupAll("#" + message.getName().replaceAll("\\s+", "€") + "line"));
                 if (message.getType().compareTo("New Instance") == 0){
@@ -644,7 +699,10 @@ public class SequenceDiagramController {
         main.getChildren().add(text);
     }
 
-
+    /**
+     * Akce pro přidání aktivace
+     */
+    @FXML
     public void actAddBtnClicked(){
         double len;
         if (actClassChoice.getValue() != null){
@@ -655,11 +713,17 @@ public class SequenceDiagramController {
                 leftStatusLabel.setText("Not a number in Activation length");
                 return;
             }
+            controller.saveToUndoData();
             Line line = (Line)main.lookup("#" + actClassChoice.getValue().replaceAll("\\s+", "€") + "Line");
             UMLActivation activation = seqDiag.createActivation("act" + seqDiag.getActivationCounter(), actClassChoice.getValue(),line.getStartY()+20 , len);
             drawActivation(activation);
         }
     }
+
+    /**
+     * Vykreslení aktivace na plochu
+     * @param activation aktivace
+     */
     public void drawActivation(UMLActivation activation){
         main.getChildren().removeAll(main.lookupAll("#" + activation.getName()));
         Rectangle rectangle = new Rectangle(50-4, 80, 8, activation.getLen());
@@ -693,6 +757,7 @@ public class SequenceDiagramController {
         rectangle.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                controller.saveToUndoData();
                 orgSceneY = event.getSceneY();
                 orgTranslateY = ((Rectangle) (event.getSource())).getTranslateY();
             }
@@ -711,6 +776,7 @@ public class SequenceDiagramController {
         //mazani
         rectangle.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
+                controller.saveToUndoData();
                 deleteActivation(activation);
             }
         });
@@ -718,21 +784,41 @@ public class SequenceDiagramController {
         main.getChildren().add(rectangle);
     }
 
+    /**
+     * Odstranění aktivace z plochy
+     * @param activation aktivace
+     */
     public void deleteActivation(UMLActivation activation){
         seqDiag.getActList().remove(activation);
         main.getChildren().removeAll(main.lookupAll("#" + activation.getName()));
     }
 
+    /**
+     * Akce pro vrácení se zpět
+     */
     @FXML
     public void undo() {
         App.controller.undo();
         reload();
     }
+
+    /**
+     * Přenačtení při špatném vykreslení
+     */
     @FXML
     public void reload() {
         main.getChildren().removeAll(main.getChildren());
-        initialize();
+        try {
+            initialize();
+        } catch (Exception e) {
+            // odstranil jsem diagram
+            controller.leftStatusLabel.setText("All Sequence Diagrams were closed, because one of them no longer exists.");
+        }
     }
+
+    /**
+     * Otevření nápovědy
+     */
     @FXML
     public void openHelp() {
         seqHelp.show();

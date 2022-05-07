@@ -2,14 +2,17 @@ package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
 import javafx.collections.FXCollections;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Třída sekvenčního diagramu, která v sobě uchovává informace o jednom diagramu.
+ */
 public class SequenceDiagram extends Element {
     ArrayList<UMLMessage> messageList;
     ArrayList<UMLActivation> activationList;
-    Boolean opened;
     ArrayList<String> seqDiagAllClassList;
     ArrayList<String> seqDiagClassList;
     ArrayList<String> instancesList;
@@ -18,13 +21,16 @@ public class SequenceDiagram extends Element {
     int messageCounter;
     int instanceCounter;
     int activationCounter;
+    transient public Stage stage;
 
-
+    /**
+     * Konstruktor pro sekvenční diagram
+     * @param name jméno diagramu
+     */
     public SequenceDiagram(String name) {
         super(name);
         this.messageList = new ArrayList<>();
         this.activationList = new ArrayList<>();
-        this.opened = false;
         this.seqDiagAllClassList = new ArrayList<>();
         this.seqDiagClassList = new ArrayList<>();
         this.instancesList = new ArrayList<>();
@@ -36,42 +42,86 @@ public class SequenceDiagram extends Element {
         this.messageCounter = 0;
         this.instanceCounter = 0;
         this.activationCounter = 0;
+        this.stage = null;
     }
 
+    /**
+     * Získá list zpráv
+     * @return list zpráv
+     */
     public ArrayList<UMLMessage> getMsgList() {
         return messageList;
     }
 
+    /**
+     * Získá list aktivaci
+     * @return list aktivaci
+     */
     public ArrayList<UMLActivation> getActList() {
         return activationList;
     }
 
+    /**
+     * Získá počítadlo zpráv
+     * @return počítadlo zpráv
+     */
     public int getMsgCounter() {
         return messageCounter;
     }
 
+    /**
+     * Zvýší počítadlo zpráv
+     */
     public void incMsgCounter() {
         messageCounter++;
     }
 
+    /**
+     * Získá počítadlo instancí
+     * @return počítadlo instancí
+     */
     public int getInstaceCounter() {
         return instanceCounter;
     }
 
+    /**
+     * Zvýší počítadlo instancí
+     */
     public void incInstanceCounter() {
         instanceCounter++;
     }
 
+    /**
+     * Získá počítadlo aktivací
+     * @return počítadlo aktivací
+     */
     public int getActivationCounter() {
         return activationCounter;
     }
 
+    /**
+     * Vytvoří zprávu
+     * @param name identifikátor zprávy
+     * @param class1 jméno první třídy
+     * @param class2 jméno druhé třídy
+     * @param type typ zprávy
+     * @param operation operace
+     * @return
+     */
     public UMLMessage createMessage(String name, String class1, String class2, String type, String operation) {
         UMLMessage message = new UMLMessage(name, class1, class2, type, operation);
         messageList.add(message);
         return message;
     }
 
+    /**
+     * Vytvoří aktivaci na třídě
+     * @param name jméno aktivace
+     * @param class1 jméno třídy
+     * @param posY pozice aktivace na ose Y
+     * @param len výška aktivace
+     * @return
+     */
     public UMLActivation createActivation(String name, String class1, Double posY, Double len) {
         UMLActivation activation = new UMLActivation(name, class1, posY, len);
         activationList.add(activation);
@@ -79,21 +129,42 @@ public class SequenceDiagram extends Element {
         return activation;
     }
 
+    /**
+     * Získá list tříd, které nejsou přídány do diagramu
+     * @return list tříd, které nejsou v diagramu
+     */
     public ArrayList<String> getSeqDiagAllClassList() {
         return seqDiagAllClassList;
     }
 
+    /**
+     * Získá list tříd, které jsou přidány do diagramu
+     * @return list tříd, které jsou v diagramu
+     */
     public ArrayList<String> getSeqDiagClassList() {
         return seqDiagClassList;
     }
 
+    /**
+     * Získá list instancí
+     * @return list instancí
+     */
     public ArrayList<String> getInstancesList() {
         return instancesList;
     }
 
+    /**
+     * Přídá třídu do listu tříd
+     * @param name jméno třídy
+     */
     public void addClassToList(String name) {
         seqDiagAllClassList.add(name);
     }
+
+    /**
+     * Odstraní třídu z listu tříd
+     * @param name jméno třídy
+     */
     public void removeClassFromList(String name) {
         seqDiagAllClassList.remove(name);
         seqDiagClassList.remove(name);
@@ -112,6 +183,12 @@ public class SequenceDiagram extends Element {
             }
         }
     }
+
+    /**
+     * Přejmenuje jméno třídy v listu tříd
+     * @param oldName staré jméno
+     * @param newName nové jméno
+     */
     public void renameClassInList(String oldName, String newName) {
         if (seqDiagAllClassList.contains(oldName)) {
             seqDiagAllClassList.set(seqDiagAllClassList.indexOf(oldName), newName);
@@ -141,10 +218,19 @@ public class SequenceDiagram extends Element {
         }
     }
 
+    /**
+     * Přídá souřadníce na ose X třídy do listu souřadnic
+     * @param x souřadnice na ose X
+     */
     public void addClassPosX(double x){
         classPosXList.add(x);
     }
 
+    /**
+     * Získá souřadníce na ose X třídy z listu souřadnic
+     * @param class1 jméno třídy
+     * @return souřadnice na ose X
+     */
     public double getClassPosX(String class1){
         if (seqDiagClassList.contains(class1))
             return classPosXList.get(seqDiagClassList.indexOf(class1));
@@ -153,35 +239,54 @@ public class SequenceDiagram extends Element {
         return 0;
     }
 
+    /**
+     * Změní souřadníce na ose X třídě v listu souřadnic
+     * @param class1 jméno třídy
+     * @param x souřadnice na ose X
+     */
     public void changeClassPosX(String class1, double x){
         classPosXList.set(seqDiagClassList.indexOf(class1), x);
     }
 
+    /**
+     * Odstraní souřadníce na ose X třídě z listu souřadnic
+     * @param class1 jméno třídy
+     */
     public void removeClassPosX(String class1){
         classPosXList.remove(seqDiagClassList.indexOf(class1));
     }
 
+    /**
+     * Přidá souřadníce na ose X instance do listu souřadnic
+     * @param x souřadnice na ose X
+     */
     public void addInstancePosX(double x){
         instancePosXList.add(x);
     }
 
+    /**
+     * Získá souřadníce na ose X instance v listu souřadnic
+     * @param class1 jméno instance
+     * @return souřadnice na ose X
+     */
     public double getInstancePosX(String class1){
         return instancePosXList.get(instancesList.indexOf(class1));
     }
 
+    /**
+     * Změní souřadníce na ose X instance v listu souřadnic
+     * @param class1 jméno instance
+     * @param x souřadnice na ose X
+     */
     public void changeInstancePosX(String class1, double x){
         instancePosXList.set(instancesList.indexOf(class1), x);
     }
 
+    /**
+     * Odstraní souřadníce na ose X instance z listu souřadnic
+     * @param class1 jméno instance
+     */
     public void removeInstancePosX(String class1){
         instancePosXList.remove(instancesList.indexOf(class1));
-    }
-
-    public void setOpened(boolean opened){
-        this.opened = opened;
-    }
-
-    public boolean getOpened(){
-        return opened;
     }
 }
