@@ -65,19 +65,19 @@ public class App extends Application {
         //helpStage.show(); //FIXME odkomentovat v poslední fázi
 
         // seq help
-        Scene seqHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        Scene seqHelpScene = new Scene(loadFXML("SequenceDiagramHelp") , 600, 400);
         seqHelp = new Stage();
         seqHelp.setTitle("Sequence diagram help");
         seqHelp.setScene(seqHelpScene);
 
         // comm help
-        Scene commHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        Scene commHelpScene = new Scene(loadFXML("CommunicationDiagramHelp") , 600, 400);
         commHelp = new Stage();
         commHelp.setTitle("Communication diagram help");
         commHelp.setScene(commHelpScene);
 
         // class help
-        Scene classHelpScene = new Scene(loadFXML("Help") , 600, 400);
+        Scene classHelpScene = new Scene(loadFXML("ClassDiagramHelp") , 600, 400);
         classHelp = new Stage();
         classHelp.setTitle("Class diagram help");
         classHelp.setScene(classHelpScene);

@@ -10,12 +10,12 @@
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" prefHeight="30.0" style="&#10;" text="Help for our project for IJA" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" prefHeight="30.0" style="&#10;" text="Sequence Diagram HELP" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <font>
             <Font size="18.0" />
           </font>
         </Label>
-            <TextArea editable="false" layoutY="30.0" prefHeight="200.0" prefWidth="200.0" style="-fx-text-alignment: center;" text="Current implementation supports most of ClassDiagram.&#10;&#10;USAGE&#10;&#10;Top menu:&#10;File-New - clears ClassDiagram&#10;File-Save - exports current configuration into ./data/JSON.json&#10;File-Open - loads configuration from ./data/JSON.json - currently doesn't draw loaded data to Diagram - Will be implemented soon&#10;Edit-Undo - not implemented&#10;Help-About - Shows this Help menu&#10;&#10;Main Body:&#10;Left Side - Here you can create/remove classes and interfaces&#10;Middle - Here you can see your diagram, you can move tables around and select table by clicking on it&#10;Right Side - Here you can edit last selected table from middle and add relation to ClassDiagram" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+            <TextArea editable="false" layoutY="30.0" prefHeight="200.0" prefWidth="200.0" style="-fx-text-alignment: center;" text="USAGE&#10;&#10;Top menu:&#10;Edit-Reload - reloads diagram&#10;Edit-Undo - undo most of the operations&#10;Help-About - shows this Help menu&#10;&#10;Main Body:&#10;Left Side -  Here you can see your diagram, you can move classes around, if you right click you can delete messages &#10;                   and activations &#10;Right Side - Here you can edit diagram, you can add and delete classes, add connections, messages and activations&#10;                    (you can be pretty creative)&#10;&#10;Bottom panel:&#10;Left status - shows errors" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
       </children>
     </AnchorPane>
   </children>

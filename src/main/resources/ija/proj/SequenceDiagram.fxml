@@ -101,7 +101,7 @@
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                        <TitledPane id="classDetailPane" fx:id="messagesPane1" text="Ativation">
+                        <TitledPane id="classDetailPane" fx:id="messagesPane1" text="Activations">
                            <content>
                               <AnchorPane prefHeight="130.0" prefWidth="348.0">
                                  <children>
