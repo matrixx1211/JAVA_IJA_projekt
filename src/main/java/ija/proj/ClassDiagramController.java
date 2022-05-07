@@ -374,6 +374,7 @@ public class ClassDiagramController extends App {
             for (int i = 0; i < newclass.attributes.size(); i++) {
                 UMLAttribute attr = newclass.attributes.get(i);
                 Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType().getName());
+                attribute.setId(attr.getName() + "Attr");
                 //kontrola zda nededi
                 if (parentAttributeList.contains(attr.getName()))
                     attribute.setStroke(Color.RED);
