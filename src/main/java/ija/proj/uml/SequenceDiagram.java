@@ -140,6 +140,7 @@ public class SequenceDiagram extends Element {
             }
         }
     }
+
     public void addClassPosX(double x){
         classPosXList.add(x);
     }

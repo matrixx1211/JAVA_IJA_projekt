@@ -449,13 +449,9 @@ public class CommunicationDiagramController {
         line.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){
                 main.getChildren().removeAll(main.lookupAll("#" + connection.getName()));
-                for (int i = 0; i < commDiag.getConnList().get(i).getMsgList().size(); i++) {
-                    removeMsg(commDiag.getConnList().get(i).getMsgList().get(i), commDiag.getConnList().get(i));
-                    commDiag.getConnList().get(i).getMsgList().remove(commDiag.getConnList().get(i).getMsgList().get(i));
-                    i--; //index se posunul smazanim
-                }
                 //mazani
                 commDiag.getConnList().remove(connection);
+                reload();
             }
         });
 
