@@ -75,10 +75,14 @@ public class CommunicationDiagram extends Element {
         commDiagClassList.remove(name);
         //prejmenovani ve spojenich
         for (int i = 0; i < connectionList.size(); i++){
-            if (connectionList.get(i).getClass1().compareTo(name) == 0)
+            if (connectionList.get(i).getClass1().compareTo(name) == 0) {
                 connectionList.remove(i);
-            else if (connectionList.get(i).getClass2().compareTo(name) == 0)
+                i--;
+            }
+            else if (connectionList.get(i).getClass2().compareTo(name) == 0) {
                 connectionList.remove(i);
+                i--;
+            }
             //prejmenovani ve zpravach
             for (int j = 0; i < connectionList.get(i).messageList.size(); j++){
                 if (connectionList.get(i).messageList.get(j).getClass1().compareTo(name) == 0) {

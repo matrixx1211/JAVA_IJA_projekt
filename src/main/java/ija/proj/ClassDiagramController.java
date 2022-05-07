@@ -531,7 +531,6 @@ public class ClassDiagramController extends App {
             }
 
         if (conflict) {
-            System.out.println("conflict");
             if (!warning())
                 return;
         }
@@ -827,6 +826,39 @@ public class ClassDiagramController extends App {
         deleteColBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                //inkonzistence
+                Boolean conflict = false;
+                for (int i = 0; i < classDiagram.sequenceDiagrams.size() && conflict == false; i++)
+                    for (int j = 0; j < classDiagram.sequenceDiagrams.get(i).getMsgList().size() && conflict == false; j++)
+                            if (classDiagram.sequenceDiagrams.get(i).getMsgList().get(j).getOperation().compareTo(operation.getName()) == 0) {
+                                conflict = true;
+                            }
+                for (int i = 0; i < classDiagram.communicationDiagrams.size() && conflict == false; i++)
+                    for (int j = 0; j < classDiagram.communicationDiagrams.get(i).getConnList().size() && conflict == false; j++)
+                        for (int k = 0; k < classDiagram.communicationDiagrams.get(i).getConnList().get(j).getMsgList().size() && conflict == false; k++)
+                            if (classDiagram.communicationDiagrams.get(i).getConnList().get(j).getMsgList().get(k).getOperation().compareTo(operation.getName()) == 0) {
+                                conflict = true;
+                            }
+                if (conflict) {
+                    if (!warning())
+                        return;
+                }
+
+                //mazani inkonzistenci
+                for (int i = 0; i < classDiagram.sequenceDiagrams.size(); i++)
+                    for (int j = 0; j < classDiagram.sequenceDiagrams.get(i).getMsgList().size(); j++)
+                        if (classDiagram.sequenceDiagrams.get(i).getMsgList().get(j).getOperation().compareTo(operation.getName()) == 0) {
+                            classDiagram.sequenceDiagrams.get(i).getMsgList().remove(j);
+                            j--;
+                        }
+                for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++)
+                    for (int j = 0; j < classDiagram.communicationDiagrams.get(i).getConnList().size(); j++)
+                        for (int k = 0; k < classDiagram.communicationDiagrams.get(i).getConnList().get(j).getMsgList().size(); k++)
+                            if (classDiagram.communicationDiagrams.get(i).getConnList().get(j).getMsgList().get(k).getOperation().compareTo(operation.getName()) == 0) {
+                                classDiagram.communicationDiagrams.get(i).getConnList().get(j).getMsgList().remove(k);
+                                k--;
+                            }
+
                 if (! activeObj.removeOperation(operation)){
                     //TODO Chyba arg jiz existuje
                     return;
