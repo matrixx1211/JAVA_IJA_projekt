@@ -249,6 +249,9 @@ public class ClassDiagramController extends App {
         }
     }
 
+    /**
+     * Provádí operaci undo, překreslí celé pole.
+     */
     @FXML
     public void undo() {
         if (classDiagram.undoData == null) {
@@ -309,6 +312,7 @@ public class ClassDiagramController extends App {
                 seqDiagList.add(classDiagram.sequenceDiagrams.get(i).getName());
             }
             seqDiagChoice.setItems(seqDiagList);
+            commDiagList.removeAll(commDiagList);
             //comm diag
             for (int i = 0; i < classDiagram.communicationDiagrams.size(); i++){
                 commDiagList.add(classDiagram.communicationDiagrams.get(i).getName());
@@ -330,6 +334,10 @@ public class ClassDiagramController extends App {
         classDiagram.undoData = gson.toJson(classDiagram);//.replaceAll("\\\\", "");
     }
 
+    /**
+     * Vypíše varování při nekonzistenci
+     * @return pokud uživatel klikne OK true jinak false
+     */
     public boolean warning(){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Inconsistency!");
@@ -396,6 +404,7 @@ public class ClassDiagramController extends App {
         titledPane.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                saveToUndoData();
                 attributesList.getChildren().remove(0, attributesList.getChildren().size()-1);
                 operationsList.getChildren().remove(0, operationsList.getChildren().size()-1);
 
@@ -970,6 +979,10 @@ public class ClassDiagramController extends App {
         }
     }
 
+    /**
+     * Vytvoří relaci na ploše
+     * @param relation třída relace
+     */
     public void createRelation(UMLRelation relation) {
         HBox row = new HBox();
         row.setId((relation.getClass1() + "ß" + relation.getClass2() + "RelRow").replaceAll("\\s+", "€"));
@@ -1184,8 +1197,12 @@ public class ClassDiagramController extends App {
      */
     @FXML
     public void clickedCreateSeqDiag() {
-        if (seqDiagName.getText() != null) {
-            SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(seqDiagName.getText());
+        String name = seqDiagName.getText();
+        if (name != null) {
+            if (classDiagram.findSeqDiagram(name) == null) {
+                saveToUndoData();
+            }
+            SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(name);
             if (newSeqDiag == null) {
                 leftStatusLabel.setText("diagram jiz existuje");
                 return;
@@ -1233,6 +1250,7 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        saveToUndoData();
         String name = seqDiagChoice.getValue();
         if (classDiagram.deleteSeqDiagram(name)) {
             seqDiagList.remove(name);
@@ -1254,8 +1272,12 @@ public class ClassDiagramController extends App {
 
     @FXML
     public void clickedCreateCommDiag() {
-        if (commDiagName.getText() != null) {
-            CommunicationDiagram newCommDiag = classDiagram.createCommDiagram(commDiagName.getText());
+        String name = commDiagName.getText();
+        if (name != null) {
+            if (classDiagram.findCommDiagram(name) == null) {
+                saveToUndoData();
+            }
+            CommunicationDiagram newCommDiag = classDiagram.createCommDiagram(name);
             if (newCommDiag == null) {
                 leftStatusLabel.setText("diagram jiz existuje");
                 return;
@@ -1295,6 +1317,7 @@ public class ClassDiagramController extends App {
             leftStatusLabel.setText("diagram neni vybran");
             return;
         }
+        saveToUndoData();
         String name = commDiagChoice.getValue();
         if (classDiagram.deleteCommDiagram(name)) {
             commDiagList.remove(name);
