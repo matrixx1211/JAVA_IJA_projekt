@@ -364,8 +364,12 @@ public class ClassDiagramController extends App {
     public void drawClass(UMLClass newclass) {
         //mazani stare
         main.getChildren().remove(main.lookup(("#" + newclass.getName()).replaceAll("\\s+", "€")));
-        //vytvoreni nove
 
+        //ziskani listu attributu a operaci, ktere trida dedi
+        List<String> parentAttributeList = newclass.getParentAttributes(classDiagram).get(1);
+        List<String> parentOperationList = newclass.getParentOperations(classDiagram).get(1);
+
+        //vytvoreni nove
         VBox vbox = new VBox();
         if (!newclass.isInterface()) {
             // atributy
@@ -375,6 +379,9 @@ public class ClassDiagramController extends App {
             for (int i = 0; i < newclass.attributes.size(); i++) {
                 UMLAttribute attr = newclass.attributes.get(i);
                 Text attribute = new Text(attr.getAccessibility() + " <-> " + attr.getName() + ":" + attr.getType().getName());
+                //kontrola zda nededi
+                if (parentAttributeList.contains(attr.getName()))
+                    attribute.setStroke(Color.RED);
                 attributes.getChildren().add(attribute);
             }
             // separátor
@@ -393,6 +400,8 @@ public class ClassDiagramController extends App {
             for (int j = 1; j < op.getArguments().size(); j++)
                 args = (args + ", " + op.getArguments().get(j).toString());
             Text operation = new Text(op.getAccessibility() + " <-> " + op.getName() + "(" + args + "):" + op.getType().getName());
+            if (parentOperationList.contains(op.getName()))
+                operation.setStroke(Color.RED);
             operations.getChildren().add(operation);
         }
 

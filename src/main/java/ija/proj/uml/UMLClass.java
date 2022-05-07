@@ -236,4 +236,108 @@ public class UMLClass extends UMLClassifier {
     public List<UMLAttribute> getAttributes() {
         return Collections.unmodifiableList(this.attributes);
     }
+
+    /**
+     * Získá seznam attributů z rodiče (dědičnost)
+     * @return seznam attributů
+     */
+    public List<List<String>> getParentAttributes(ClassDiagram classDiagram) {
+        List<UMLRelation> relationList = new ArrayList<>();
+        List<List<String>> parentAttributeList = new ArrayList<>();
+        parentAttributeList.add(new ArrayList<>());
+        parentAttributeList.add(new ArrayList<>());
+        UMLClass parent;
+        //ziskani vsech generalizaci
+        for (int i = 0; i < classDiagram.relations.size(); i++)
+            if (classDiagram.relations.get(i).getType().compareTo("generalization") == 0)
+                relationList.add(classDiagram.relations.get(i));
+        //ziskani attributu vsech parentu
+        //System.out.println("generalizace " + relationList);
+        for (int i = 0; i < relationList.size(); i++)
+            if (relationList.get(i).getClass2().compareTo(this.getName()) == 0) {
+                System.out.println("nelezen parent " + relationList.get(i).getClass1());
+                parent = classDiagram.findClass(relationList.get(i).getClass1());
+                System.out.println("nelezen parent class " + parent);
+                parentAttributeList = parent.getParentAttributes(classDiagram);
+                parentAttributeList.remove(1);
+                parentAttributeList.add(0, new ArrayList<>());
+                parentAttributeList.get(0).addAll(parentAttributeList.get(1));
+                for (int j = 0; j < attributes.size(); j++){
+                    //System.out.println("zpracovavany attribut " + attributes.get(j));
+                    System.out.println(parentAttributeList);
+                    System.out.println(attributes);
+                    System.out.println("nelezen parent class " + parent);
+                    Boolean bool = false;
+                    for (int k = 0; k < parentAttributeList.get(0).size() && bool == false; k++) {
+                        if (parentAttributeList.get(0).get(k).compareTo(attributes.get(j).getName()) == 0) {
+                            bool = true;
+                            System.out.println("nalezena shoda");
+                        }
+                    }
+                    if (! bool) {
+                        System.out.println("nenalezeno: pridan "+attributes.get(j).getName());
+                        parentAttributeList.get(0).add(attributes.get(j).getName());
+                        System.out.println(parentAttributeList);
+                    }
+                }
+            }
+        if (parentAttributeList.get(0).isEmpty()){
+            for (int i = 0; i < attributes.size(); i++) {
+                parentAttributeList.get(0).add(attributes.get(i).getName());
+            }
+        }
+        return parentAttributeList;
+    }
+
+    /**
+     * Získá seznam operací z rodiče (dědičnost)
+     * @return seznam attributů z rodiče a finální seznam atributů
+     */
+    public List<List<String>> getParentOperations(ClassDiagram classDiagram) {
+        List<UMLRelation> relationList = new ArrayList<>();
+        List<List<String>> parentOperationList = new ArrayList<>();
+        parentOperationList.add(new ArrayList<>());
+        parentOperationList.add(new ArrayList<>());
+        UMLClass parent;
+        //ziskani vsech generalizaci
+        for (int i = 0; i < classDiagram.relations.size(); i++)
+            if (classDiagram.relations.get(i).getType().compareTo("generalization") == 0)
+                relationList.add(classDiagram.relations.get(i));
+        //ziskani operace vsech parentu
+        //System.out.println("generalizace " + relationList);
+        for (int i = 0; i < relationList.size(); i++)
+            if (relationList.get(i).getClass2().compareTo(this.getName()) == 0) {
+                System.out.println("nelezen parent " + relationList.get(i).getClass1());
+                parent = classDiagram.findClass(relationList.get(i).getClass1());
+                System.out.println("nelezen parent class " + parent);
+                parentOperationList = parent.getParentOperations(classDiagram);
+                parentOperationList.remove(1);
+                parentOperationList.add(0, new ArrayList<>());
+                parentOperationList.get(0).addAll(parentOperationList.get(1));
+                for (int j = 0; j < operations.size(); j++){
+                    //System.out.println("zpracovavany attribut " + attributes.get(j));
+                    System.out.println(parentOperationList);
+                    System.out.println(operations);
+                    System.out.println("nelezen parent class " + parent);
+                    boolean bool = false;
+                    for (int k = 0; k < parentOperationList.get(0).size() && bool == false; k++) {
+                        if (parentOperationList.get(0).get(k).compareTo(operations.get(j).getName()) == 0) {
+                            bool = true;
+                            System.out.println("nalezena shoda");
+                        }
+                    }
+                    if (! bool) {
+                        System.out.println("nenalezeno: pridan "+operations.get(j).getName());
+                        parentOperationList.get(0).add(operations.get(j).getName());
+                        System.out.println(parentOperationList);
+                    }
+                }
+            }
+        if (parentOperationList.get(0).isEmpty()){
+            for (int i = 0; i < operations.size(); i++) {
+                parentOperationList.get(0).add(operations.get(i).getName());
+            }
+        }
+        return parentOperationList;
+    }
 }
