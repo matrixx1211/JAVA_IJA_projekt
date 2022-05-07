@@ -33,6 +33,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Třída slouží pro všechny akce diagramu tříd.
+ */
 public class ClassDiagramController extends App {
     private String activeObjName = null;
     private UMLClass activeObj;
