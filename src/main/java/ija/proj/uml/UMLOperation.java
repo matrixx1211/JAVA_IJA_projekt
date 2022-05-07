@@ -3,7 +3,7 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy UMLOperation
+ * Soubor pro implementaci operací.
  */
 
 package ija.proj.uml;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Třída pro operace (metody) tříd a rozhraní
+ * Třída, která sloužo pro vytvoření operace (metody) třídy a rozhraní.
  */
 public class UMLOperation extends UMLAttribute {
     /**

@@ -3,7 +3,7 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci hlavní části programu, která spouští GUI
+ * Soubor pro implementaci hlavní části programu, která spouští GUI.
  */
 
 package ija.proj;
@@ -15,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("ClassDiagram"));
-        this.stage = stage;
+        App.stage = stage;
         stage.setScene(scene);
         stage.setTitle("UML Editor");
         stage.show();
@@ -65,7 +64,7 @@ public class App extends Application {
         Stage helpStage = new Stage();
         helpStage.setTitle("Main help");
         helpStage.setScene(helpScene);
-        //helpStage.show(); //FIXME odkomentovat v poslední fázi
+        helpStage.show();
 
         // seq help
         Scene seqHelpScene = new Scene(loadFXML("SequenceDiagramHelp") , 600, 400);
@@ -96,6 +95,12 @@ public class App extends Application {
         scene.setRoot(loadFXML(fxml));
     }
 
+    /**
+     * Načítá FXML soubor
+     * @param fxml jméno fxml souboru bez .fxml
+     * @return načtený fxml
+     * @throws IOException IO chyba (soubor neexistuje atp...)
+     */
     public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         Parent load = fxmlLoader.load();

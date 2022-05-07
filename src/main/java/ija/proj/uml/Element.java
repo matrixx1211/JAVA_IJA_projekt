@@ -3,7 +3,7 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy Element
+ * Soubor pro implementaci elementu.
  */
 
 package ija.proj.uml;

@@ -1,3 +1,11 @@
+/**
+ * @author Marek Bitomský - xbitom00
+ * @author Ondrěj Darmopil - xdarmo03
+ * @author Vladimír Horák - xhorak72
+ *
+ * Soubor pro implementaci kódu spojeného s GUI sekvenčního diagramu.
+ */
+
 package ija.proj;
 
 import ija.proj.uml.*;

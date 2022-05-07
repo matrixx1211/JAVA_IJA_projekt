@@ -3,13 +3,13 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy UMLAttribute
+ * Soubor pro implementaci atributů.
  */
 
 package ija.proj.uml;
 
 /**
- * Třída pro attributy
+ * Třída, která slouží pro vytváření atributů.
  */
 public class UMLAttribute extends Element {
     /**

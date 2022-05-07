@@ -1,11 +1,17 @@
+/**
+ * @author Marek Bitomský - xbitom00
+ * @author Ondrěj Darmopil - xdarmo03
+ * @author Vladimír Horák - xhorak72
+ *
+ * Soubor pro implementaci sekvenčního diagramu.
+ */
+
 package ija.proj.uml;
 
 import ija.proj.ClassDiagramController;
-import javafx.collections.FXCollections;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Třída sekvenčního diagramu, která v sobě uchovává informace o jednom diagramu.

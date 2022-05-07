@@ -3,13 +3,13 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy UMLClassifier
+ * Soubor pro implementaci classifierů nebo-lu typů.
  */
 
 package ija.proj.uml;
 
 /**
- * Třída pro classifier nebo-li typ.
+ * Třída, která slouží pro vytvoření classifieru nebo-li typu.
  */
 public class UMLClassifier extends Element {
 	/**

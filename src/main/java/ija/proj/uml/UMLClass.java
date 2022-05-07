@@ -3,7 +3,7 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy UMLClass
+ * Soubor pro implementaci tříd a rozhraní.
  */
 
 package ija.proj.uml;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Třída pro Třídy a Rozhraní v ClassDiagramu
+ * Třída, která slouží pro vytváření Třídy a Rozhraní.
  */
 public class UMLClass extends UMLClassifier {
     public Boolean isAbstract;

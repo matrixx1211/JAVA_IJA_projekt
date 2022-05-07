@@ -3,13 +3,13 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci Třídy UMLRelation
+ * Soubor pro implementaci relaci.
  */
 
 package ija.proj.uml;
 
 /**
- * Třída obsahující informace k relacím
+ * Třída, která slouží k vytvoření relace.
  */
 public class UMLRelation extends Element {
 	/**

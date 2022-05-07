@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Třída pro ClassDiagram
+ * Třída pro ClassDiagram obsahuje všechny věci, které lze s diagramem dělal a také obsahuje
+ * všechny poddiagramy (sekvenční i komunikačni).
  */
 public class ClassDiagram extends Element {
 	/**

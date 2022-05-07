@@ -3,7 +3,7 @@
  * @author Ondrěj Darmopil - xdarmo03
  * @author Vladimír Horák - xhorak72
  *
- * Soubor pro implementaci kódu spojeného s GUI
+ * Soubor pro implementaci kódu spojeného s GUI diagramu tříd.
  */
 
 package ija.proj;
