@@ -314,12 +314,12 @@ public class CommunicationDiagramController {
             String name = newUser.getText();
             for (int i = 0; i < commDiag.getUserList().size(); i++){
                 if (commDiag.getUserList().get(i).getName().compareTo(name) == 0){
-                    leftStatusLabel.setText("user jiz existuje");
+                    leftStatusLabel.setText("User already exists.");
                     return;
                 }
             }
             if (classUsedList.contains(name) || classNotUsedList.contains(name)){
-                leftStatusLabel.setText("jiz existuje class se stejnym jmenem");
+                leftStatusLabel.setText("Class with same name already exists.");
                 return;
             }
             controller.saveToUndoData();
@@ -448,7 +448,7 @@ public class CommunicationDiagramController {
                 //pokud jiz existuje
                 if (commDiag.getConnList().get(i).getClass1().compareTo(class1) == 0 && commDiag.getConnList().get(i).getClass2().compareTo(class2) == 0
                         || commDiag.getConnList().get(i).getClass1().compareTo(class2) == 0 && commDiag.getConnList().get(i).getClass2().compareTo(class1) == 0){
-                    leftStatusLabel.setText("spojeni jiz existuje");
+                    leftStatusLabel.setText("Connection already exists.");
                     return;
                 }
             }
@@ -458,7 +458,7 @@ public class CommunicationDiagramController {
             drawConnection(connection);
         }
         else
-            leftStatusLabel.setText("nevybran objekt");
+            leftStatusLabel.setText("Object not selected.");
     }
 
     /**
@@ -483,7 +483,7 @@ public class CommunicationDiagramController {
             class1Y = commDiag.getClassPosY(connection.getClass1()) + 15;
         }
         else {
-            leftStatusLabel.setText("nastala chyba pri vykresleni - nenalezena class1");
+            leftStatusLabel.setText("Error when drawing connection - class1 not found.");
             return;
         }
         if (userList.contains(connection.getClass2())){
@@ -495,7 +495,7 @@ public class CommunicationDiagramController {
             class2Y = commDiag.getClassPosY(connection.getClass2()) + 15;
         }
         else {
-            leftStatusLabel.setText("nastala chyba pri vykresleni - nenalezena class2");
+            leftStatusLabel.setText("Error when drawing connection - class2 not found.");
             return;
         }
 
@@ -583,11 +583,11 @@ public class CommunicationDiagramController {
                     return;
                 }
             }
-            leftStatusLabel.setText("Mezi třídami neexistuje spojeni");
+            leftStatusLabel.setText("Connection between classes not exists.");
             return;
         }
         else
-            leftStatusLabel.setText("nezadana vsechna data");
+            leftStatusLabel.setText("Some fields are empty.");
     }
 
     /**

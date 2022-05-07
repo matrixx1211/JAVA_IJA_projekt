@@ -720,17 +720,12 @@ public class SequenceDiagramController {
             String[] split;
             String string = "";
             split = activation.getClass1().split(" ", 0);
-            System.out.println(activation.getClass1());
-            System.out.println("0" + split.length);
-            System.out.println("1" + split);
             if (split.length >= 4) {
                 string = split[3];
                 for (int i = 4; i < split.length; i++)
                     string = (string + " " + split[i]);
                 //kontrola class
-                System.out.println("1" + split[0]);
                 if (split[0].compareTo("Instance") == 0) {
-                    System.out.println("1" + string);
                     if (!checkClassForInconsistency(string)) {
                         rectangle.setStroke(Color.RED);
                     }

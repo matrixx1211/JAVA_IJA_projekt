@@ -1198,17 +1198,19 @@ public class ClassDiagramController extends App {
     @FXML
     public void clickedCreateSeqDiag() {
         String name = seqDiagName.getText();
-        if (name != null) {
+        if (!name.isEmpty()) {
             if (classDiagram.findSeqDiagram(name) == null) {
                 saveToUndoData();
             }
             SequenceDiagram newSeqDiag = classDiagram.createSeqDiagram(name);
             if (newSeqDiag == null) {
-                leftStatusLabel.setText("diagram jiz existuje");
+                leftStatusLabel.setText("Diagram already exists.");
                 return;
             }
             seqDiagList.add(newSeqDiag.getName());
             seqDiagChoice.setItems(seqDiagList);
+        } else {
+            leftStatusLabel.setText("No sequence diagram name typed. Please enter some characters.");
         }
     }
 
@@ -1246,12 +1248,14 @@ public class ClassDiagramController extends App {
     @FXML
     public void clickedDeleteSeqDiag() {
         if (seqDiagChoice.getValue() == null) {
-            leftStatusLabel.setText("diagram neni vybran");
+            leftStatusLabel.setText("Diagram not selected.");
             return;
         }
-        if (classDiagram.findSeqDiagram(seqDiagChoice.getValue()).stage.isShowing()) {
-            leftStatusLabel.setText("diagram otevřen");
-            return;
+        if (classDiagram.findSeqDiagram(seqDiagChoice.getValue()).stage != null) {
+            if (classDiagram.findSeqDiagram(seqDiagChoice.getValue()).stage.isShowing()) {
+                leftStatusLabel.setText("Diagram already opened.");
+                return;
+            }
         }
         saveToUndoData();
         String name = seqDiagChoice.getValue();
@@ -1260,7 +1264,7 @@ public class ClassDiagramController extends App {
             seqDiagChoice.setItems(seqDiagList);
         }
         else
-            leftStatusLabel.setText("diagram se nepodarilo smazat");
+            leftStatusLabel.setText("Error when creating diagram.");
     }
 
     /* ========= SEKCE PRO COMM DIAGRAM ========*/
@@ -1276,17 +1280,19 @@ public class ClassDiagramController extends App {
     @FXML
     public void clickedCreateCommDiag() {
         String name = commDiagName.getText();
-        if (name != null) {
+        if (!name.isEmpty()) {
             if (classDiagram.findCommDiagram(name) == null) {
                 saveToUndoData();
             }
             CommunicationDiagram newCommDiag = classDiagram.createCommDiagram(name);
             if (newCommDiag == null) {
-                leftStatusLabel.setText("diagram jiz existuje");
+                leftStatusLabel.setText("Diagram exists.");
                 return;
             }
             commDiagList.add(newCommDiag.getName());
             commDiagChoice.setItems(commDiagList);
+        } else {
+            leftStatusLabel.setText("No communication diagram name typed. Please enter some characters.");
         }
     }
     @FXML
@@ -1317,12 +1323,14 @@ public class ClassDiagramController extends App {
     @FXML
     public void  clickedDeleteCommDiag() {
         if (commDiagChoice.getValue() == null) {
-            leftStatusLabel.setText("diagram neni vybran");
+            leftStatusLabel.setText("Diagram not selected.");
             return;
         }
-        if (classDiagram.findCommDiagram(commDiagChoice.getValue()).stage.isShowing()) {
-            leftStatusLabel.setText("diagram otevřen");
-            return;
+        if (classDiagram.findCommDiagram(commDiagChoice.getValue()).stage != null) {
+            if (classDiagram.findCommDiagram(commDiagChoice.getValue()).stage.isShowing()) {
+                leftStatusLabel.setText("Diagram already opened.");
+                return;
+            }
         }
         saveToUndoData();
         String name = commDiagChoice.getValue();
@@ -1331,7 +1339,7 @@ public class ClassDiagramController extends App {
             commDiagChoice.setItems(commDiagList);
         }
         else
-            leftStatusLabel.setText("diagram se nepodarilo smazat");
+            leftStatusLabel.setText("Error when creating diagram.");
     }
 }
 
